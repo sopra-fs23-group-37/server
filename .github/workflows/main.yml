@@ -23,6 +23,9 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
+      - name: Change wrapper permissions
+        run: chmod +x gradlew
+
       - name: Test and analyze
         run: ./gradlew test jacocoTestReport sonarqube
         env:
