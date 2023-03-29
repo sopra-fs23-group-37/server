@@ -44,7 +44,7 @@ public class User implements Serializable {
   @Column(nullable = false)
   private Date creation_date;
 
-  @Column()
+  @Column(nullable = true)
   private Date birthday;
 
 
