@@ -43,10 +43,10 @@ public class LogoutService {
            new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(baseErrorMessage,userId))
     );
 
-    if(user.equals(UserStatus.OFFLINE)){
-       String ErrorMessage = "Logout failed, because the user was not logged in";
-       throw  new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
-    }
+      if(user.getUserStatus() == UserStatus.OFFLINE){
+          String errorMessage = "Logout failed, because the user was not logged in";
+          throw new ResponseStatusException(HttpStatus.CONFLICT, errorMessage);
+      }
 
     user.setUserStatus(UserStatus.OFFLINE);
 

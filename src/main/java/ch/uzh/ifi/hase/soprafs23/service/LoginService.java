@@ -44,7 +44,9 @@ public class LoginService {
     newLogin.setLoginDate(new Date());
     newLogin.setSuccessful(checkPassword(newLogin));
     User foundUser = userRepository.findByUsername(newLogin.getUsername());
-
+    if (foundUser == null) {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user with username " + newLogin.getUsername() + " does not exist!");
+     }
     newLogin.setUserId(foundUser.getUserId());
     foundUser.setUserStatus(UserStatus.ONLINE);
     newLogin.setToken(foundUser.getToken());

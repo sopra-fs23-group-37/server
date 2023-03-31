@@ -5,125 +5,118 @@ import ch.uzh.ifi.hase.soprafs23.entity.Login;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.LoginRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.when;
 
+
+@SpringBootTest
 public class LoginServiceTest {
-
-/*TODO: Fix the tests for LoginService, the error is "Login failed because username does not exist or password does not match.", it needs to be adjusted */
+    /*TODO: Implement Database, then these test will work*/
 /*
     @Mock
-    private LoginRepository loginRepository;
+    private UserRepository userRepository;
 
     @Mock
-    private UserRepository userRepository;
+    private LoginRepository loginRepository;
 
     @InjectMocks
     private LoginService loginService;
 
-    private User testUser;
-    private Login testLogin;
-    private Login testLogin2;
-
     @BeforeEach
-  public void setup() {
+    public void setup() {
         MockitoAnnotations.openMocks(this);
-
-        // create a test user and add it to userRepository
-        testUser = new User();
-        testUser.setUsername("testUsername");
-        testUser.setPassword("testPassword");
-        testUser.setUserId(1L);
-        testUser.setToken("1");
-        testUser.setCreation_date(new Date());
-        testUser.setUserStatus(UserStatus.OFFLINE);
-        userRepository.save(testUser);
-
-        Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
-        Mockito.when(userRepository.findByUserId(1L)).thenReturn(testUser);
-
-        // create test login objects
-        testLogin = new Login();
-        testLogin.setUsername(testUser.getUsername());
-        testLogin.setPassword(testUser.getPassword());
-        testLogin.setUserId(1L);
-        testLogin.setToken("1");
-        testLogin.setLoginDate(new Date());
-
-        testLogin2 = new Login();
-        testLogin2.setUsername("testUsername2");
-        testLogin2.setPassword("testPassword2");
-        testLogin2.setUserId(2L);
-        testLogin2.setToken("2");
-        testLogin2.setLoginDate(new Date());
-
-        Mockito.when(loginRepository.save(Mockito.any())).thenReturn(testLogin);
-        Mockito.when(loginRepository.findByUserId(1L)).thenReturn(testLogin);
-
     }
 
     @Test
-    public void createLogin_validInputs_success() {
-        // when -> any object is being save in loginRepository -> return the dummy
-        // testLogin
-        Login createdLogin = loginService.createLogin(testLogin);
+    public void testCreateLogin() {
+        // create a new login
+        Login newLogin = new Login();
+        newLogin.setUsername("testuser");
+        newLogin.setPassword("testpassword");
 
-        // then
-        Mockito.verify(loginRepository, Mockito.times(1)).save(Mockito.any());
+        // mock the userRepository's findByUsername() method to return a user
+        User foundUser = new User();
+        foundUser.setUsername("testuser");
+        foundUser.setPassword("testpassword");
+        foundUser.setUserId(1L);
+        foundUser.setUserStatus(UserStatus.OFFLINE);
+        foundUser.setToken("testtoken");
+        when(userRepository.findByUsername("testuser")).thenReturn(foundUser);
 
-        assertEquals(testLogin.getUserId(), createdLogin.getUserId());
-        assertEquals(testLogin.getPassword(), createdLogin.getPassword());
-        assertEquals(testLogin.getUsername(), createdLogin.getUsername());
-        assertNotNull(createdLogin.getToken());
+        // mock the loginRepository's save() method to return the same login object
+        when(loginRepository.save(newLogin)).thenReturn(newLogin);
+
+        // test the createLogin() method
+        Login createdLogin = loginService.createLogin(newLogin);
+
+        // verify that the createLogin() method returns the correct login object
+        assertEquals(newLogin, createdLogin);
+
+        // verify that the user's status was changed to ONLINE
+        assertEquals(UserStatus.ONLINE, foundUser.getUserStatus());
+
+        // verify that the token was set on the login object
+        assertEquals("testtoken", newLogin.getToken());
     }
 
     @Test
-    public void createLogin_duplicateUsername_throwsException() {
-        // given -> a first user has already been created
-        loginService.createLogin(testLogin);
+    public void testCreateLoginWithInvalidUsername() {
+        // create a new login with an invalid username
+        Login newLogin = new Login();
+        newLogin.setUsername("invaliduser");
+        newLogin.setPassword("testpassword");
 
-        // when -> setup additional mocks for LoginRepository
-        //Mockito.when(loginRepository.findByPassword(Mockito.any())).thenReturn(testUser);
-        Mockito.when(loginRepository.findByUsername(Mockito.any())).thenReturn(testLogin);
+        // mock the userRepository's findByUsername() method to return null
+        when(userRepository.findByUsername("invaliduser")).thenReturn(null);
 
-        // then -> attempt to create second user with same user -> check that an error
-        // is thrown
-        assertThrows(ResponseStatusException.class, () -> loginService.createLogin(testLogin));
+        // test that the createLogin() method throws a ResponseStatusException with status NOT_FOUND
+        ResponseStatusException exception = Assertions.assertThrows(ResponseStatusException.class, () -> {
+            loginService.createLogin(newLogin);
+        });
+        assertEquals(exception.getStatus(), org.springframework.http.HttpStatus.NOT_FOUND);
     }
 
     @Test
-    public void checkingUserSuccess() {
-        Mockito.when(loginRepository.findByUsername(Mockito.anyString())).thenReturn(testLogin);
+    public void testCreateLoginWithIncorrectPassword() {
+        // create a new user
+        User newUser = new User();
+        newUser.setUsername("johndoe");
+        newUser.setPassword("password123");
+        newUser.setBirthday(new Date(2000, 1, 1));
 
-        Boolean returnedBool = loginService.checkPassword(testLogin);
+        // save the user to the UserRepository
+        userRepository.save(newUser);
+        userRepository.flush();
 
-        assertEquals(returnedBool, true);
+        // create a new login with incorrect password
+        Login newLogin = new Login();
+        newLogin.setUsername("johndoe");
+        newLogin.setPassword("wrongpassword");
+
+        // attempt to create the login
+        try {
+            loginService.createLogin(newLogin);
+            fail("Expected ResponseStatusException was not thrown");
+        } catch (ResponseStatusException e) {
+            assertEquals(HttpStatus.UNAUTHORIZED, e.getStatus());
+            assertEquals("The password is incorrect!", e.getReason());
+        }
+
+        // verify that the login was not created
+        assertEquals(0, loginRepository.count());
     }
-
-    @Test
-    public void checkingUserFailureNull() {
-        Mockito.when(loginRepository.findByUsername(Mockito.anyString())).thenReturn(null);
-
-        assertThrows(ResponseStatusException.class, () -> loginService.checkPassword(testLogin));
-    }
-
-    @Test
-    public void checkingUserFailureWrongPassword() {
-        Mockito.when(userRepository.findByUsername(Mockito.anyString())).thenReturn(testUser);
-
-        assertThrows(ResponseStatusException.class, () -> loginService.checkPassword(testLogin2));
-    }
-
-*/
+    */
 }

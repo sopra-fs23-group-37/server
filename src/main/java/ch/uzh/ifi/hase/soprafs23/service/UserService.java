@@ -145,6 +145,16 @@ public class UserService {
         }
     }
 
+    public void deleteUser(Long userId) {
+        // check if user exists in repository
+        User userToDelete = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // delete user
+        userRepository.deleteById(userToDelete.getUserId());
+    }
+
+
 
 
 
