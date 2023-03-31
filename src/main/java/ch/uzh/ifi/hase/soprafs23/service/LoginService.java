@@ -40,12 +40,14 @@ public class LoginService {
 
 
   public Login createLogin(Login newLogin) {
+
     newLogin.setLoginDate(new Date());
     newLogin.setSuccessful(checkPassword(newLogin));
-    User user = userRepository.findByUsername(newLogin.getUsername());
-    newLogin.setUserId(user.getId());
-    user.setStatus(UserStatus.ONLINE);
-    newLogin.setToken(user.getToken());
+    User foundUser = userRepository.findByUsername(newLogin.getUsername());
+
+    newLogin.setUserId(foundUser.getUserId());
+    foundUser.setUserStatus(UserStatus.ONLINE);
+    newLogin.setToken(foundUser.getToken());
     
 
     // saves the given entity but data is only persisted in the database once
@@ -53,25 +55,25 @@ public class LoginService {
     newLogin = loginRepository.save(newLogin);
     loginRepository.flush();
 
-    userRepository.save(user);
+    userRepository.save(foundUser);
     userRepository.flush();
 
     log.debug("Created Information for Login: {}", newLogin);
     return newLogin;
   }
 
-    private Boolean checkPassword(Login newLogin) {
+    public Boolean checkPassword(Login newLogin) {
       User user = userRepository.findByUsername(newLogin.getUsername());
-      String baseErrorMessage = "Login failed because username does not exist or password does not match.";
       if (user == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, baseErrorMessage);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The username does not exist!");
         }
       String correctPassword = user.getPassword();
       String enteredPassword = newLogin.getPassword();
       if (correctPassword.equals(enteredPassword)) {
           return true;
-      } else throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, baseErrorMessage);
+      } else throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "The password is incorrect!");
 
     }
+
 
 }

@@ -11,6 +11,11 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTest {
@@ -22,18 +27,29 @@ public class UserServiceTest {
   private UserService userService;
 
   private User testUser;
+  private User testUser2;
 
   @BeforeEach
   public void setup() {
     MockitoAnnotations.openMocks(this);
 
-    // given
-    testUser = new User();
-    testUser.setId(1L);
-    //testUser.setName("testName");
-    testUser.setUsername("testUsername");
+      testUser = new User();
+      testUser.setPassword("testPassword");
+      testUser.setUsername("testUsername");
+      testUser.setUserId(1L);
+      testUser.setToken("1");
+      testUser.setUserStatus(UserStatus.ONLINE);
+      testUser.setCreation_date(new Date());
 
-    // when -> any object is being save in the userRepository -> return the dummy
+      User testUser2 = new User();
+      testUser2.setPassword("testPassword2");
+      testUser2.setUsername("testUsername2");
+      testUser2.setUserId(2L);
+      testUser2.setToken("2");
+      testUser2.setUserStatus(UserStatus.ONLINE);
+      testUser2.setCreation_date(new Date());
+
+    // when -> any object is being saved in the userRepository -> return the dummy
     // testUser
     Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
   }
@@ -47,11 +63,11 @@ public class UserServiceTest {
     // then
     Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
 
-    assertEquals(testUser.getId(), createdUser.getId());
+    assertEquals(testUser.getUserId(), createdUser.getUserId());
     //assertEquals(testUser.getName(), createdUser.getName());
     assertEquals(testUser.getUsername(), createdUser.getUsername());
     assertNotNull(createdUser.getToken());
-    assertEquals(UserStatus.ONLINE, createdUser.getStatus());
+    assertEquals(UserStatus.ONLINE, createdUser.getUserStatus());
   }
 
   // @Test
@@ -68,18 +84,31 @@ public class UserServiceTest {
   //   assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
   // }
 
-  @Test
-  public void createUser_duplicateInputs_throwsException() {
-    // given -> a first user has already been created
-    userService.createUser(testUser);
 
-    // when -> setup additional mocks for UserRepository
-    //Mockito.when(userRepository.findByName(Mockito.any())).thenReturn(testUser);
-    Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+    @Test
+    public void createUser_duplicateUsername_throwsException() {
+        // given -> a first user has already been created
+        userService.createUser(testUser);
 
-    // then -> attempt to create second user with same user -> check that an error
-    // is thrown
-    assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
-  }
+        // when -> setup additional mocks for UserRepository
+        //Mockito.when(userRepository.findByPassword(Mockito.any())).thenReturn(testUser);
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+
+        // then -> attempt to create second user with same user -> check that an error
+        // is thrown
+        assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
+    }
+
+    @Test
+    public void returnAllUsersTest() {
+        List<User> userList = new ArrayList<>();
+        userList.add(testUser);
+        userList.add(testUser2);
+
+        Mockito.when(userRepository.findAll()).thenReturn(userList);
+
+        List<User> returnedList = userService.getUsers();
+        assertEquals(userList.size(), returnedList.size());
+    }
 
 }

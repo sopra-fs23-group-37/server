@@ -54,11 +54,11 @@ public class UserServiceIntegrationTest {
     User createdUser = userService.createUser(testUser);
 
     // then
-    assertEquals(testUser.getId(), createdUser.getId());
+    assertEquals(testUser.getUserId(), createdUser.getUserId());
     //assertEquals(testUser.getName(), createdUser.getName());
     assertEquals(testUser.getUsername(), createdUser.getUsername());
     assertNotNull(createdUser.getToken());
-    assertEquals(UserStatus.ONLINE, createdUser.getStatus());
+    assertEquals(UserStatus.ONLINE, createdUser.getUserStatus());
   }
 
   // updated test from template
@@ -94,7 +94,7 @@ public class UserServiceIntegrationTest {
       userService.createUser(testUser);
 
       User createdUser = userRepository.findByUsername("testUsername");
-      Long id = createdUser.getId();
+      Long id = createdUser.getUserId();
 
       User updatedUser = new User();
       updatedUser.setUsername("updatedUsername");
@@ -120,7 +120,7 @@ public class UserServiceIntegrationTest {
         userService.createUser(testUser);
 
         User createdUser = userRepository.findByUsername("testUsername");
-        Long id = createdUser.getId();
+        Long id = createdUser.getUserId();
 
         User foundUser = userService.getUserById(id);
 
@@ -139,7 +139,7 @@ public class UserServiceIntegrationTest {
         testUser.setUsername("testUsername");
         testUser.setPassword("password");
         testUser.setCreation_date(new Date());
-        testUser.setId(1L);
+        testUser.setUserId(1L);
         userService.createUser(testUser);
 
         ResponseStatusException e =
@@ -157,7 +157,7 @@ public class UserServiceIntegrationTest {
         testUser.setUsername("testUsername");
         testUser.setPassword("password");
         testUser.setCreation_date(new Date());
-        testUser.setId(1L);
+        testUser.setUserId(1L);
         userService.createUser(testUser);
 
         User updatedUser = new User();

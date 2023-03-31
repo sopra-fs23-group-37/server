@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -51,13 +52,13 @@ public class UserControllerTest {
   @MockBean
   private UserService userService;
 
-  // test from template, updated
+  // 1. There is one user in the list, because we created just one user, so 200 OK expected
   @Test
   public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
     // given
     User user = new User();
     user.setUsername("firstname@lastname");
-    user.setStatus(UserStatus.OFFLINE);
+    user.setUserStatus(UserStatus.OFFLINE);
     user.setPassword("password");
     user.setCreation_date(new Date());
 
@@ -75,19 +76,19 @@ public class UserControllerTest {
         .andExpect(jsonPath("$", hasSize(1)))
         //.andExpect(jsonPath("$[0].name", is(user.getName())))
         .andExpect(jsonPath("$[0].username", is(user.getUsername())))
-        .andExpect(jsonPath("$[0].status", is(user.getStatus().toString())));
+        .andExpect(jsonPath("$[0].userStatus", is(user.getUserStatus().toString())));
   }
 
-  // test from template, updated
+  // 2. Create user: Status Code 201 CREATED expected
   @Test
   public void createUser_validInput_userCreated() throws Exception {
     // given
     User user = new User();
-    user.setId(1L);
+    user.setUserId(1L);
     //user.setName("Test User");
     user.setUsername("testUsername");
     user.setToken("1");
-    user.setStatus(UserStatus.ONLINE);
+    user.setUserStatus(UserStatus.ONLINE);
     user.setPassword("password");
     user.setCreation_date(new Date());
 
@@ -106,13 +107,13 @@ public class UserControllerTest {
     // then
     mockMvc.perform(postRequest)
         .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.id", is(user.getId().intValue())))
+        .andExpect(jsonPath("$.userId", is(user.getUserId().intValue())))
         //.andExpect(jsonPath("$.name", is(user.getName())))
         .andExpect(jsonPath("$.username", is(user.getUsername())))
-        .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
+        .andExpect(jsonPath("$.userStatus", is(user.getUserStatus().toString())));
   }
 
-  // new test to check POST with error
+  // 3. Create user: new user failed because username already exists: Status Code 409 CONFLICT expected
   @Test
   public void createUser_invalidInput() throws Exception {
     given(userService.createUser(Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.CONFLICT));
@@ -131,14 +132,14 @@ public class UserControllerTest {
 
   }
 
-  // new test to check GET for specific user
+  // 4. Get user: profile with userID: Status Code 200 OK expected
   @Test
   public void getUser_validInput_returnJSONUser() throws Exception {
       // given
       User user = new User();
-      user.setId(999L);
+      user.setUserId(999L);
       user.setUsername("firstname@lastname");
-      user.setStatus(UserStatus.OFFLINE);
+      user.setUserStatus(UserStatus.OFFLINE);
       user.setPassword("password");
       user.setCreation_date(new Date());
 
@@ -152,10 +153,10 @@ public class UserControllerTest {
       // then
       mockMvc.perform(getRequest).andExpect(status().isOk())
               .andExpect(jsonPath("$.username", is(user.getUsername())))
-              .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
+              .andExpect(jsonPath("$.userStatus", is(user.getUserStatus().toString())));
   }
 
-  // new test to check GET for specific user with error
+  // 5. Get user: User with userID was not found: Status Code 404 NOT_FOUND expected
   @Test
   public void getUser_invalidInput() throws Exception {
     given(userService.getUserById(Mockito.anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -165,15 +166,15 @@ public class UserControllerTest {
     mockMvc.perform(getRequest).andExpect(status().isNotFound());
   }
 
-  // new test to check PUT for specific user
+  // 6. Update user: Status Code 204 NO_CONTENT expected
   @Test
   public void updateUser_validInput_userUpdated() throws Exception {
       // given
         User user = new User();
-        user.setId(1L);
+        user.setUserId(1L);
         user.setUsername("testUsername");
         user.setToken("1");
-        user.setStatus(UserStatus.ONLINE);
+        user.setUserStatus(UserStatus.ONLINE);
         user.setPassword("password");
         user.setCreation_date(new Date());
 
@@ -194,7 +195,7 @@ public class UserControllerTest {
   }
 
 
-  // new test to check PUT for specific user with error
+  // 7. Update user: User with userID was not found: Status Code 404 NOT_FOUND expected
   @Test
   public void updateUser_invalidInput() throws Exception {
     

@@ -24,7 +24,7 @@ public class User implements Serializable {
 
   @Id
   @GeneratedValue
-  private Long id;
+  private Long userId;
 
   // @Column(nullable = false)
   // private String name;
@@ -39,7 +39,7 @@ public class User implements Serializable {
   private String token;
 
   @Column(nullable = false)
-  private UserStatus status;
+  private UserStatus userStatus;
 
   @Column(nullable = false)
   private Date creation_date;
@@ -48,12 +48,12 @@ public class User implements Serializable {
   private Date birthday;
 
 
-  public Long getId() {
-    return id;
+  public Long getUserId() {
+    return userId;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  public void setUserId(Long userId) {
+    this.userId = userId;
   }
 
   // public String getName() {
@@ -88,12 +88,12 @@ public class User implements Serializable {
     this.token = token;
   }
 
-  public UserStatus getStatus() {
-    return status;
+  public UserStatus getUserStatus() {
+    return userStatus;
   }
 
-  public void setStatus(UserStatus status) {
-    this.status = status;
+  public void setUserStatus(UserStatus userStatus) {
+    this.userStatus = userStatus;
   }
 
     public Date getCreation_date() {

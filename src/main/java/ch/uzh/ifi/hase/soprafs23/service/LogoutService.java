@@ -33,7 +33,6 @@ public class LogoutService {
     this.logoutRepository = logoutRepository;
   }
 
-
   public void createLogout(Long userId) {
     Logout newLogout = new Logout() ;
     newLogout.setLogoutDate(new Date());
@@ -41,9 +40,15 @@ public class LogoutService {
     Optional<User> optionalUser = userRepository.findById(userId);
     String baseErrorMessage = "User with id %x was not found";
     User user = optionalUser.orElseThrow(() ->
-           new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage,userId))
+           new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(baseErrorMessage,userId))
     );
-    user.setStatus(UserStatus.OFFLINE);
+
+    if(user.equals(UserStatus.OFFLINE)){
+       String ErrorMessage = "Logout failed, because the user was not logged in";
+       throw  new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
+    }
+
+    user.setUserStatus(UserStatus.OFFLINE);
 
     // saves the given entity but data is only persisted in the database once
     // flush() is called

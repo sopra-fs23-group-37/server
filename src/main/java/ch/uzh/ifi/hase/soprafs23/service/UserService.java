@@ -44,10 +44,12 @@ public class UserService {
 
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
-    newUser.setStatus(UserStatus.ONLINE);
+    newUser.setUserStatus(UserStatus.ONLINE);
     newUser.setCreation_date(new Date());
 
     checkIfUserExists(newUser);
+
+    checkIfUserIsValid(newUser);
 
     // saves the given entity but data is only persisted in the database once
     // flush() is called
@@ -70,13 +72,30 @@ public class UserService {
    */
   private void checkIfUserExists(User userToBeCreated) {
     User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
-    //User userByName = userRepository.findByName(userToBeCreated.getName());
 
     String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
     if (userByUsername != null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
     } 
   }
+
+
+    private void checkIfUserIsValid(User userToBeCreated) {
+        if(userToBeCreated.getUsername().isEmpty() && userToBeCreated.getPassword().isEmpty()){
+            String ErrorMessage = "Creating user failed because username and password are empty";
+            throw  new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
+        }
+
+        else if(userToBeCreated.getUsername().isEmpty()){
+            String ErrorMessage = "Creating a new user failed because username is empty";
+            throw  new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
+        }
+
+        else if(userToBeCreated.getPassword().isEmpty()){
+            String ErrorMessage = "Creating a new user failed because password is empty";
+            throw  new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
+        }
+    }
 
   public User getUserById(Long id) {
       Optional<User> optionalUserFound = this.userRepository.findById(id);
@@ -90,13 +109,41 @@ public class UserService {
       return user;
   }
 
-  public void updateUser(Long id, User userInput) {
-    User updateUser = getUserById(id);
-    updateUser.setUsername(userInput.getUsername());
-    updateUser.setBirthday(userInput.getBirthday());
-    userRepository.save(updateUser);
-    userRepository.flush();
+
+  public void updateUser(Long userId, User userInput) {
+    User updateUser = getUserById(userId);
+
+      if(checkIfUsernameExistsWithoutMine(userId, userInput)){
+          String ErrorMessage = "Modifying the user failed because username already exists";
+          throw  new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
+      }
+
+      else if(updateUser.getUserStatus() == UserStatus.OFFLINE){
+          String ErrorMessage = "Modifying the user failed because user is offline";
+          throw  new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage);
+      }
+      else if(userInput.getUsername().isEmpty()) {
+          String ErrorMessage = "Modifying the user failed because username is empty";
+          throw  new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
+      }
+
+      else{
+          updateUser.setUsername(userInput.getUsername());
+          updateUser.setBirthday(userInput.getBirthday());
+          userRepository.save(updateUser);
+          userRepository.flush();
+      }
   }
+
+    private boolean checkIfUsernameExistsWithoutMine(Long userId, User userToBeCreated) {
+
+        User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
+        if(userRepository.findByUserId(userId) == userByUsername) {
+            return false;
+        } else {
+            return (userByUsername != null);
+        }
+    }
 
 
 
