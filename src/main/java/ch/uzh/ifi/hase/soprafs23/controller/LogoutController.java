@@ -15,11 +15,11 @@ public class LogoutController {
     this.logoutService = logoutService;
   }
 
-  @PostMapping("/logout/{id}")
+  @PutMapping("/logout/{userId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @ResponseBody
-  public void createLogout(@PathVariable Long id) {
-    logoutService.createLogout(id);
+  public void createLogout(@PathVariable("userId") Long userId) {
+    logoutService.createLogout(userId);
 
   }
 
