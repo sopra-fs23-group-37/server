@@ -12,7 +12,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.Card;
 import ch.uzh.ifi.hase.soprafs23.entity.CardDeck;
 import ch.uzh.ifi.hase.soprafs23.entity.CardDrawResponse;
 
-public class DeckService {
+public class CardDeckService {
     public CardDeck createDeck() throws IOException, InterruptedException {
         String uri = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1";
 		// build get request and get deck id
