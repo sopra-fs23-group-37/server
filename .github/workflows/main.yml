@@ -25,6 +25,8 @@ jobs:
 
       - name: Change wrapper permissions
         run: chmod +x gradlew
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Test and analyze
         run: ./gradlew test jacocoTestReport sonarqube
