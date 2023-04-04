@@ -23,7 +23,7 @@ public class WSGameController {
     @MessageMapping("/join/{id}")
     @SendTo("/topic/game/{id}")
     public Game join(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long id, PlayerJoinMessage message) {
-        Game game = this.gameService.websocketJoin(id, message.getPlayer());
+        Game game = this.gameService.websocketJoin(id, message.getPlayerId());
         return game;
     }
 }

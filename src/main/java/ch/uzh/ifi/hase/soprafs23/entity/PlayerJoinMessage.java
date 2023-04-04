@@ -2,16 +2,16 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 public class PlayerJoinMessage {
 
-	private User player;
+	private Long playerId;
 
 	public PlayerJoinMessage() {
 	}
 
-	public PlayerJoinMessage(User player) {
-		this.player = player;
+	public PlayerJoinMessage(Long playerId) {
+		this.playerId = playerId;
 	}
 
-	public User getPlayer() {
-		return player;
+	public Long getPlayerId() {
+		return playerId;
 	}
 }

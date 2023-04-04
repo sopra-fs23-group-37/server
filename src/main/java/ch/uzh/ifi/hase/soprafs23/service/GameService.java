@@ -75,14 +75,14 @@ public class GameService {
         return this.gameRepository.findByGameId(gameId);
     }
 
-    public Game websocketJoin(Long gameId, User player) {
+    public Game websocketJoin(Long gameId, Long playerId) {
 		// get the correct game
         Game game = getGame(gameId);
 
         // update the host/guest status in the game
-        if(player == game.getHost()) {
+        if(playerId == game.getHost().getUserId()) {
             game.setHostStatus(PlayerStatus.CONNECTED);
-        } else if(player == game.getGuest()) {
+        } else if(playerId == game.getGuest().getUserId()) {
             game.setGuestStatus(PlayerStatus.CONNECTED);
         } 
 
