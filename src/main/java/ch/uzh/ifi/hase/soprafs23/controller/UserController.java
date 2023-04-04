@@ -4,7 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPutDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.UserDTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +38,7 @@ public class UserController {
 
     // convert each user to the API representation
     for (User user : users) {
-      userGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
+      userGetDTOs.add(UserDTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
     }
     return userGetDTOs;
   }
@@ -48,7 +48,7 @@ public class UserController {
   @ResponseBody
   public UserGetDTO getUser(@PathVariable Long id) {
       User user = userService.getUserById(id);
-      return DTOMapper.INSTANCE.convertEntityToUserGetDTO((user));
+      return UserDTOMapper.INSTANCE.convertEntityToUserGetDTO((user));
   }
 
 
@@ -57,19 +57,19 @@ public class UserController {
   @ResponseBody
   public UserGetDTO createUser(@RequestBody UserPostDTO userPostDTO) {
     // convert API user to internal representation
-    User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+    User userInput = UserDTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
     // create user
     User createdUser = userService.createUser(userInput);
     // convert internal representation of user back to API
-    return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+    return UserDTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
   }
 
   @PutMapping("/users/{userId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   @ResponseBody
   public void updateUser(@PathVariable Long userId, @RequestBody UserPutDTO userPutDTO) {
-      User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
+      User userInput = UserDTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
       userService.updateUser(userId, userInput);
   } 
 

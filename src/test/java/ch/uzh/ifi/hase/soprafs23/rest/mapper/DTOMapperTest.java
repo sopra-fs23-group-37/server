@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
+
 /**
  * DTOMapperTest
  * Tests if the mapping between the internal and the external/API representation
@@ -22,7 +24,7 @@ public class DTOMapperTest {
     userPostDTO.setUsername("username");
 
     // MAP -> Create user
-    User user = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+    User user = UserDTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
     // check content
     //assertEquals(userPostDTO.getName(), user.getName());
@@ -39,7 +41,7 @@ public class DTOMapperTest {
     user.setToken("1");
 
     // MAP -> Create UserGetDTO
-    UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+    UserGetDTO userGetDTO = UserDTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
 
     // check content
     assertEquals(user.getUserId(), userGetDTO.getUserId());
@@ -47,4 +49,6 @@ public class DTOMapperTest {
     assertEquals(user.getUsername(), userGetDTO.getUsername());
     assertEquals(user.getUserStatus(), userGetDTO.getUserStatus());
   }
+
+
 }
