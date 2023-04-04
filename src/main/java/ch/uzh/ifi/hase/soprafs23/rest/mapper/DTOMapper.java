@@ -56,6 +56,7 @@ public interface DTOMapper {
   @Mapping(source = "loginDate", target = "loginDate")
   @Mapping(source = "successful", target = "successful")
   @Mapping(target = "token", ignore = true)
+  @Mapping(target = "id", ignore = true)
   Login convertLoginPostDTOtoEntity(LoginPostDTO loginPostDTO);
 
   @Mapping(source = "userId", target = "userId")
@@ -72,6 +73,7 @@ public interface DTOMapper {
   @Mapping(source = "loginDate", target = "loginDate")
   @Mapping(source = "successful", target = "successful")
   @Mapping(target = "token", ignore = true)
+  @Mapping(target = "id", ignore = true)
   Login convertLoginPutDTOtoEntity(LoginPutDTO loginPutDTO);
 
 

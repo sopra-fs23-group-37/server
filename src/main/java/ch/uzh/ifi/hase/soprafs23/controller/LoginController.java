@@ -2,7 +2,6 @@ package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Login;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.LoginGetDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.LoginPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.LoginPutDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.LoginService;

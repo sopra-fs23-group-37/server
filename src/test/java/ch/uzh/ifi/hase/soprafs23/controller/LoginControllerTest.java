@@ -4,7 +4,6 @@ import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.LoginPutDTO;
 import ch.uzh.ifi.hase.soprafs23.entity.Login;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.LoginPutDTO;
 import ch.uzh.ifi.hase.soprafs23.service.LoginService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,7 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.Column;
+
 import java.util.Date;
 
 import static org.hamcrest.Matchers.is;
