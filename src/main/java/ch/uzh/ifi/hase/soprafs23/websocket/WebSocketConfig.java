@@ -12,7 +12,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer{
     
     private static final String WEBSOCKET_PREFIX = "/topic";
     private static final String WEBSOCKET_SUFFIX = "/websocket";
-    private static final String DESTINATION_PREFIX = "/app";
+    private static final String DESTINATION_PREFIX = "/game";
     private static final String ORIGIN_LOCALHOST = "http://localhost:3000";
     private static final String ORIGIN_PROD = "https://sopra-fs23-group-37-client.oa.r.appspot.com/";
 

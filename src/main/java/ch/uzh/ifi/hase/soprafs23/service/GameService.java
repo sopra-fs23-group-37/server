@@ -62,6 +62,8 @@ public class GameService {
         // set host to user
         newGame.setHost(host);
         newGame.setCreatedDate(new Date());
+        newGame.setHostStatus(PlayerStatus.WAITING);
+        newGame.setGuestStatus(PlayerStatus.WAITING);
 
         // save to repo and flush
         newGame = gameRepository.save(newGame);
