@@ -2,7 +2,9 @@ package ch.uzh.ifi.hase.soprafs23.service;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
-/*import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+/* 
+import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+
 import ch.uzh.ifi.hase.soprafs23.entity.Login;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.LoginRepository;
@@ -21,7 +23,9 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.when; */
+
+import static org.mockito.Mockito.when;
+*/
 
 
 @SpringBootTest
