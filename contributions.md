@@ -15,3 +15,10 @@
 3. Implemented carddeck api call to shuffle the deck
 4. Created the player class
 5. Added unit tests for 1-4
+
+## Sinthu
+
+1. Implemented/edited login functionality
+2. Implemented/edited registration functionality
+3. Implemented new design for registration-page
+4. Tested user-registration manually
