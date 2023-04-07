@@ -64,4 +64,16 @@ public class GameController {
         return gameGetDTO;
     }
 
+    @PutMapping("/games/join/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameGetDTO joinGame(@PathVariable Long userId) {
+
+        // join Game
+        Game joinedGame = gameService.joinGame(userId);
+
+        // convert internal representation of game back to API
+        return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(joinedGame);
+    }
+
 }
