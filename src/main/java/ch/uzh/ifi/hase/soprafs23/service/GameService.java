@@ -99,6 +99,36 @@ public class GameService {
         return game;
 
         }
+
+    public Game joinGame(Long guestId) {
+        
+        // find the player who wants to join a game 
+        User guest = userRepository.findByUserId(guestId);
+        
+        // throw error if guest is not a valid user
+        String playerErrorMessage = "Player with id %x was not found";
+        if(guest == null) {
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, 
+            String.format(playerErrorMessage, guestId));
+        }
+
+        // get open games and pick oldest one
+        List<Game> waitingGames = this.gameRepository.findByGameStatus(GameStatus.WAITING);
+        Game nextGame = waitingGames.isEmpty() ? null : waitingGames.get(0);
+
+        // throw errror if no waiting games
+        String gameErrorMessage = "There is no open game to join. Try creating your own game.";
+        if (nextGame == null) {
+            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, 
+            String.format(gameErrorMessage));
+        }
+
+        // add guest to game
+        nextGame.setGuest(guest);
+        nextGame.setGameStatus(GameStatus.GUEST_SET);
+
+        return nextGame;
+    }
         
         
 

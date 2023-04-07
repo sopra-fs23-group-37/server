@@ -34,8 +34,7 @@ public class WSGameControllerTest {
 
   @MockBean
   private GameService gameService;
-
-
+  
     @LocalServerPort
     private Integer port;
     private WebSocketStompClient webSocketStompClient;
