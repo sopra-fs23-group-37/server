@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
@@ -24,7 +25,9 @@ public class Player implements Serializable{
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
     private User player;
 
+    @Lob
     private ArrayList<Card> cardsInHand = new ArrayList<Card>();
+    @Lob
     private ArrayList<Card> cardsInDiscard = new ArrayList<Card>();
 
     private Role role;
