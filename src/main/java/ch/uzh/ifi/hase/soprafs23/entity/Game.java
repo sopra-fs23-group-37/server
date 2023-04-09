@@ -18,7 +18,6 @@ public class Game implements Serializable {
     @GeneratedValue
     private Long gameId;
 
-
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "hostId")
     private User host;
@@ -42,6 +41,38 @@ public class Game implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private GameStatus gameStatus;
+
+    @Enumerated(EnumType.STRING)
+    private Role startingPlayer;
+
+    @OneToOne(targetEntity = Round.class)
+    private Round currentRound;
+
+    private int totalRounds;
+
+    public Role getStartingPlayer() {
+        return startingPlayer;
+    }
+
+    public void setStartingPlayer(Role startingPlayer) {
+        this.startingPlayer = startingPlayer;
+    }
+    public Round getCurrentRound() {
+        return currentRound;
+    }
+
+    public void setCurrentRound(Round currentRound) {
+        this.currentRound = currentRound;
+    }
+
+    public int getTotalRounds() {
+        return totalRounds;
+    }
+
+    public void setTotalRounds(int totalRounds) {
+        this.totalRounds = totalRounds;
+    }
+
 
     public Long getGameId() {
         return gameId;

@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class ImagesTest {
-  private Images images = new Images();
+  private Image images = new Image();
 
   @BeforeEach
   public void setup() {

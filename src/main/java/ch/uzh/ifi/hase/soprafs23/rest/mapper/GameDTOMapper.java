@@ -42,6 +42,9 @@ public interface GameDTOMapper {
     @Mapping(source = "gameStatus", target = "gameStatus")
     @Mapping(target = "hostStatus", ignore = true)
     @Mapping(target = "guestStatus", ignore = true)
+    @Mapping(target = "startingPlayer", ignore = true)
+    @Mapping(target = "currentRound", ignore = true)
+    @Mapping(target = "totalRounds", ignore = true)
     Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
 
 
@@ -53,6 +56,9 @@ public interface GameDTOMapper {
     @Mapping(source = "gameStatus", target = "gameStatus")
     @Mapping(target = "hostStatus", ignore = true)
     @Mapping(target = "guestStatus", ignore = true)
+    @Mapping(target = "startingPlayer", ignore = true)
+    @Mapping(target = "currentRound", ignore = true)
+    @Mapping(target = "totalRounds", ignore = true)
     Game convertGamePutDTOtoEntity(GamePutDTO gamePutDTO);
 
 }

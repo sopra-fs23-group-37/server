@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,10 +80,11 @@ public class CardDeckServiceTest {
 
     @Test
     public void cardDraw_success() throws IOException, InterruptedException {
-        Card[] newCards = cardDeckService.drawCards(mockCardDeck, 2);
+        List<Card> newCards = new ArrayList<>();
+        newCards = cardDeckService.drawCards(mockCardDeck, 2);
 
-        assertEquals(newCards[0], mockCards[0]);
-        assertEquals(newCards[1], mockCards[1]);
+        assertEquals(newCards.get(0), mockCards[0]);
+        assertEquals(newCards.get(1), mockCards[1]);
     }
 
     @Test

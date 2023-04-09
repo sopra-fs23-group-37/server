@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
+import java.io.IOException;
+
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -20,10 +22,19 @@ public class WSGameController {
         this.gameService = gameService;
     }
 
-    @MessageMapping("/join/{id}")
-    @SendTo("/topic/game/{id}")
-    public Game join(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long id, PlayerJoinMessage message) {
-        Game game = this.gameService.websocketJoin(id, message.getPlayerId());
+    @MessageMapping("/join/{gameId}")
+    @SendTo("/topic/game/{gameId}")
+    public Game join(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId, PlayerJoinMessage message) throws IOException, InterruptedException {
+        Game game = this.gameService.websocketJoin(gameId, message.getPlayerId());
         return game;
     }
+
+
+    @MessageMapping("/start/{gameId}")
+    @SendTo("/topic/game/{gameId}")
+    public Game start(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId) throws IOException, InterruptedException {
+        Game game = this.gameService.startGame(gameId);
+        return game;
+    }
+
 }

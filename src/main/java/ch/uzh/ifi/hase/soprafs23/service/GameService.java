@@ -2,9 +2,14 @@ package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.repository.CardDeckRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.CardRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.RoundRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -33,11 +39,26 @@ public class GameService {
 
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
+    private final RoundRepository roundRepository;
+    private final PlayerRepository playerRepository;
+    private final CardDeckRepository cardDeckRepository;
+    private final CardRepository cardRepository;
+
+
+
+    private final RoundService roundService;
+       //private final UserService userService;
+
 
     @Autowired
-    public GameService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("gameRepository") GameRepository gameRepository) {
+    public GameService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("gameRepository") GameRepository gameRepository, @Qualifier("roundRepository") RoundRepository roundRepository, @Qualifier("playerRepository") PlayerRepository playerRepository, @Qualifier("cardDeckRepository") CardDeckRepository cardDeckRepository, @Qualifier("cardRepository") CardRepository cardRepository) {
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
+        this.roundRepository = roundRepository;
+        this.playerRepository = playerRepository;
+        this.cardDeckRepository = cardDeckRepository;
+        this.cardRepository = cardRepository;
+        this.roundService = new RoundService(roundRepository, playerRepository, cardDeckRepository, cardRepository, gameRepository);
     }
 
     public List<Game> getPublicGames() {
@@ -64,6 +85,7 @@ public class GameService {
         newGame.setCreatedDate(new Date());
         newGame.setHostStatus(PlayerStatus.WAITING);
         newGame.setGuestStatus(PlayerStatus.WAITING);
+        newGame.setTotalRounds(0);
 
         // save to repo and flush
         newGame = gameRepository.save(newGame);
@@ -76,29 +98,6 @@ public class GameService {
     public Game getGame(Long gameId) {
         return this.gameRepository.findByGameId(gameId);
     }
-
-    public Game websocketJoin(Long gameId, Long playerId) {
-		// get the correct game
-        Game game = getGame(gameId);
-
-        // update the host/guest status in the game
-        if(playerId == game.getHost().getUserId()) {
-            game.setHostStatus(PlayerStatus.CONNECTED);
-        } else if(playerId == game.getGuest().getUserId()) {
-            game.setGuestStatus(PlayerStatus.CONNECTED);
-        } 
-
-        // update the game status
-        if(game.getHostStatus() == PlayerStatus.CONNECTED && game.getGuestStatus() == PlayerStatus.CONNECTED) {
-            game.setGameStatus(GameStatus.CONNECTED);
-        } else if(game.getHostStatus() == PlayerStatus.CONNECTED || game.getGuestStatus() == PlayerStatus.CONNECTED) {
-            game.setGameStatus(GameStatus.WAITING);	
-        }
-
-        // return the updated game
-        return game;
-
-        }
 
     public Game joinGame(Long guestId) {
         
@@ -127,12 +126,67 @@ public class GameService {
         nextGame.setGuest(guest);
         nextGame.setGameStatus(GameStatus.GUEST_SET);
 
+        // save to repo and flush
+        nextGame = gameRepository.save(nextGame);
+        gameRepository.flush();
+
         return nextGame;
     }
-        
-        
 
+    public Game websocketJoin(Long gameId, Long playerId) throws IOException, InterruptedException {
+		// get the correct game
+        Game game = getGame(gameId);
+
+        // update the host/guest status in the game
+        if(playerId == game.getHost().getUserId()) {
+            game.setHostStatus(PlayerStatus.CONNECTED);
+        } else if(playerId == game.getGuest().getUserId()) {
+            game.setGuestStatus(PlayerStatus.CONNECTED);
+        } 
+
+        // update the game status
+        if(game.getHostStatus() == PlayerStatus.CONNECTED && game.getGuestStatus() == PlayerStatus.CONNECTED) {
+            game.setGameStatus(GameStatus.CONNECTED);
+            //startGame(game);
+        } else if(game.getHostStatus() == PlayerStatus.CONNECTED || game.getGuestStatus() == PlayerStatus.CONNECTED) {
+            game.setGameStatus(GameStatus.WAITING);	
+        }
+
+        // save to repo and flush
+        game = gameRepository.save(game);
+        gameRepository.flush();
+
+        // return the updated game
+        return game;
+        }
         
+    public Game startGame(Long gameId) throws IOException, InterruptedException {
+        
+        // update the game status
+        Game game = getGame(gameId);
+        game = setStartingPlayer(game);
+        game.setGameStatus(GameStatus.ONGOING);
+
+        // save to repo and flush
+        game = gameRepository.save(game);
+        gameRepository.flush();
+
+        // TODO: start the first round, i.e. fix this method...
+        game = roundService.newRound(gameId);
+
+        return game;
+    }    
+
+    public Game setStartingPlayer(Game game) {
+
+        // TODO: write a proper method to set the starting player
+        game.setStartingPlayer(Role.HOST);
+        
+        // save to repo and flush
+        game = gameRepository.save(game);
+        gameRepository.flush();
+        return game;
+    }
 
 
 

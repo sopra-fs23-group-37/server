@@ -1,9 +1,23 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
-public class Card {
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
+public class Card implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue
+    private Long cardId;
+
     private String code;
     private String image;
-    private Images images;
+    private Image images;
     private String value;
     private String suit;
 
@@ -31,10 +45,10 @@ public class Card {
     public void setSuit(String suit) {
         this.suit = suit;
     }
-    public Images getImages() {
+    public Image getImages() {
         return images;
     }
-    public void setImages(Images images) {
+    public void setImages(Image images) {
         this.images = images;
     }
 }

@@ -17,6 +17,7 @@ import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +63,8 @@ public class GameServiceTest {
         Mockito.when(userRepository.findByUserId(1L)).thenReturn(testHost);
         Mockito.when(userRepository.findByUserId(2L)).thenReturn(testGuest);
         Mockito.when(gameRepository.findByGameId(3L)).thenReturn(testGame);
+
+        Mockito.when(gameRepository.save(Mockito.any())).thenReturn(testGame);
     }
 
 
@@ -116,9 +119,13 @@ public class GameServiceTest {
 
     // test that the host joining the game updates statuses as expected
     @Test
-    public void websocketjoin_validInputs_host_success() {
+    public void websocketjoin_validInputs_host_success() throws IOException, InterruptedException {
         // websocket join test host to test game
+        
+
         Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId());
+
+        
         
         // check statuses
         assertEquals(PlayerStatus.CONNECTED, updatedGame.getHostStatus());
@@ -127,7 +134,7 @@ public class GameServiceTest {
 
     // test that the guest joining the game updates statuses as expected
     @Test
-    public void websocketjoin_validInputs_guest_success() {
+    public void websocketjoin_validInputs_guest_success() throws IOException, InterruptedException {
         // websocket join test guest to test game
         Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testGuest.getUserId());
 
@@ -138,7 +145,7 @@ public class GameServiceTest {
 
     // test that both the host and the guest joining the game updates statuses as expected
     @Test
-    public void websocketjoin_validInputs_guest_host_success() {
+    public void websocketjoin_validInputs_guest_host_success() throws IOException, InterruptedException {
 
         // websocket join test host and guest to test game
         Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId());updatedGame = gameService.websocketJoin(updatedGame.getGameId(), testGuest.getUserId());
