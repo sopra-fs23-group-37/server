@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Image implements Serializable{
+public class Images implements Serializable{
 
     private static final long serialVersionUID = 1L;
 

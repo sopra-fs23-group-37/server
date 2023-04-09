@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class CardTest {
   private Card card = new Card();
-  private Image images = new Image();
+  private Images images = new Images();
 
   @BeforeEach
   public void setup() {

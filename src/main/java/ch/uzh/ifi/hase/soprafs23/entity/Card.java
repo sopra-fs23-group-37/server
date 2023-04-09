@@ -17,7 +17,7 @@ public class Card implements Serializable{
 
     private String code;
     private String image;
-    private Image images;
+    private Images images;
     private String value;
     private String suit;
 
@@ -45,10 +45,10 @@ public class Card implements Serializable{
     public void setSuit(String suit) {
         this.suit = suit;
     }
-    public Image getImages() {
+    public Images getImages() {
         return images;
     }
-    public void setImages(Image images) {
+    public void setImages(Images images) {
         this.images = images;
     }
 }
