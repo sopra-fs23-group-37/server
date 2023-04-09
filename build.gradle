@@ -62,11 +62,17 @@ bootJar {
     archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
 }
 
-sonarqube {
+sonar {
   properties {
     property "sonar.projectKey", "sopra-fs23-group-37_server"
     property "sonar.organization", "sopra-fs23-group-37"
     property "sonar.host.url", "https://sonarcloud.io"
+
+    // added to fix test coverage
+    property "sonar.sources", ["src/test", "src/main/java"]
+    property "sonar.tests", "src/test"
+    property "sonar.sourceEncoding", "UTF-8"
+    property "sonar.test.inclusions", ["src/test/java"]
   }
 }
 
