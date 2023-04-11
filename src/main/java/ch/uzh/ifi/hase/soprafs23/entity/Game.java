@@ -73,7 +73,6 @@ public class Game implements Serializable {
         this.totalRounds = totalRounds;
     }
 
-
     public Long getGameId() {
         return gameId;
     }

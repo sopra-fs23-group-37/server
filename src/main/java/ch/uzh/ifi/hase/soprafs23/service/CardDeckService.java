@@ -26,9 +26,8 @@ public class CardDeckService {
 
     public CardDeck createDeck() throws IOException, InterruptedException {
         String uri = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1";
-		// build get request and get deck id
-		
 
+		// build get request and get deck id
 		HttpRequest request = HttpRequest.newBuilder()
 			.GET()
 			.uri(URI.create(uri))
@@ -44,8 +43,8 @@ public class CardDeckService {
     public List<Card> drawCards(CardDeck deck, int number) throws IOException, InterruptedException {
         List<Card> cards = new ArrayList<>();
 		String uri = String.format("https://deckofcardsapi.com/api/deck/%s/draw/?count=%s", deck.getDeck_id(), number);
-		// build get request and get deck id
 
+		// build get request and get deck id
 		HttpRequest request = HttpRequest.newBuilder()
 			.GET()
 			.uri(URI.create(uri))
@@ -62,8 +61,8 @@ public class CardDeckService {
 
 	public CardDeck shuffleDeck(CardDeck deck) throws IOException, InterruptedException {
 		String uri = String.format("https://deckofcardsapi.com/api/deck/%s/shuffle/", deck.getDeck_id());
+		
 		// build get request and get deck id
-
 		HttpRequest request = HttpRequest.newBuilder()
 			.GET()
 			.uri(URI.create(uri))

@@ -4,6 +4,8 @@ import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.entity.PlayerJoinMessage;
+import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.CardDeckRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.CardRepository;
@@ -23,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Game Service
@@ -43,6 +46,7 @@ public class GameService {
     private final PlayerRepository playerRepository;
     private final CardDeckRepository cardDeckRepository;
     private final CardRepository cardRepository;
+    private final GameLogicService gameLogicService = new GameLogicService();
 
 
 
@@ -180,11 +184,24 @@ public class GameService {
     public Game setStartingPlayer(Game game) {
 
         // TODO: write a proper method to set the starting player
-        game.setStartingPlayer(Role.HOST);
+        Random rnd = new Random();
+
+        if (rnd.nextBoolean()) {
+            game.setStartingPlayer(Role.HOST);
+        } else {
+            game.setStartingPlayer(Role.GUEST);
+        }
         
         // save to repo and flush
         game = gameRepository.save(game);
         gameRepository.flush();
+        return game;
+    }
+
+    public Game makeMove(long gameId, PlayerMoveMessage message) {
+        Game game = getGame(gameId);
+        Game updatedGame = gameLogicService.checkMove(game, message);
+
         return game;
     }
 
