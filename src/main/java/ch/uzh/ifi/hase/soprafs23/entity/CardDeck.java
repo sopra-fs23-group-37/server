@@ -15,11 +15,18 @@ public class CardDeck implements Serializable{
     @GeneratedValue
     private Long cardDeckId;
 
+
     private Boolean success;
     private String deck_id;
     private int remaining;
     private Boolean shuffled;
 
+    public Long getCardDeckId() {
+        return cardDeckId;
+    }
+    public void setCardDeckId(Long cardDeckId) {
+        this.cardDeckId = cardDeckId;
+    }
     public Boolean getSuccess() {
         return success;
     }

@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
+
 @SpringBootTest
 public class PlayerTest {
     private Player player;
@@ -35,7 +37,7 @@ public class PlayerTest {
         cards1.add(card1);
         cards2.add(card2);
         
-        player = new Player(mockUser);
+        player = new Player(mockUser, Role.GUEST);
     }
 
     @Test

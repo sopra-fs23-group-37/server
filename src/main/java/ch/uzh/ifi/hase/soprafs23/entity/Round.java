@@ -8,13 +8,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 
 @Entity
 public class Round implements Serializable {
 
-     private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
@@ -27,6 +28,18 @@ public class Round implements Serializable {
    
    @OneToMany(targetEntity = Player.class)
    private List<Player> players = new ArrayList<Player>();;
+
+   @OneToOne(targetEntity = CardDeck.class)
+   private CardDeck cardDeck;
+
+
+    public CardDeck getCardDeck() {
+    return cardDeck;
+}
+
+public void setCardDeck(CardDeck cardDeck) {
+    this.cardDeck = cardDeck;
+}
 
     public void addPlayer(Player player) {
         players.add(player);

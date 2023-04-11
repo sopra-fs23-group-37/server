@@ -5,11 +5,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.repository.CardDeckRepository;
-import ch.uzh.ifi.hase.soprafs23.repository.CardRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
-import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
-import ch.uzh.ifi.hase.soprafs23.repository.RoundRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,26 +35,16 @@ public class GameService {
 
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
-    private final RoundRepository roundRepository;
-    private final PlayerRepository playerRepository;
-    private final CardDeckRepository cardDeckRepository;
-    private final CardRepository cardRepository;
-
-
-
     private final RoundService roundService;
-       //private final UserService userService;
-
 
     @Autowired
-    public GameService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("gameRepository") GameRepository gameRepository, @Qualifier("roundRepository") RoundRepository roundRepository, @Qualifier("playerRepository") PlayerRepository playerRepository, @Qualifier("cardDeckRepository") CardDeckRepository cardDeckRepository, @Qualifier("cardRepository") CardRepository cardRepository) {
+    public GameService(
+        @Qualifier("userRepository") UserRepository userRepository, 
+        @Qualifier("gameRepository") GameRepository gameRepository,
+        RoundService roundService) {
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
-        this.roundRepository = roundRepository;
-        this.playerRepository = playerRepository;
-        this.cardDeckRepository = cardDeckRepository;
-        this.cardRepository = cardRepository;
-        this.roundService = new RoundService(roundRepository, playerRepository, cardDeckRepository, cardRepository, gameRepository);
+        this.roundService = roundService;
     }
 
     public List<Game> getPublicGames() {
@@ -165,14 +151,17 @@ public class GameService {
         // update the game status
         Game game = getGame(gameId);
         game = setStartingPlayer(game);
+        
+        // start the first round
+        game.setCurrentRound(roundService.newRound(game));
+        game.setTotalRounds(game.getTotalRounds()+1);
+
+        // update the game status 
         game.setGameStatus(GameStatus.ONGOING);
 
         // save to repo and flush
         game = gameRepository.save(game);
         gameRepository.flush();
-
-        // TODO: start the first round, i.e. fix this method...
-        game = roundService.newRound(gameId);
 
         return game;
     }    
@@ -186,6 +175,10 @@ public class GameService {
         game = gameRepository.save(game);
         gameRepository.flush();
         return game;
+    }
+
+    public RoundService getRoundService() {
+        return this.roundService;
     }
 
 

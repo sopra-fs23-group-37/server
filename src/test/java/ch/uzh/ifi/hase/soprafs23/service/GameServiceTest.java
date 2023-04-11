@@ -7,13 +7,18 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
+import static org.mockito.BDDMockito.given;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.repository.CardDeckRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,11 +33,20 @@ public class GameServiceTest {
     @Mock
     private GameRepository gameRepository;
 
+    @Mock
+    private CardDeckRepository cardDeckRepository;
+
     @InjectMocks
     private UserService userService;
 
     @InjectMocks
     private GameService gameService;
+
+    @Mock
+    private RoundService roundService;
+
+    @Mock
+    private CardDeckService cardDeckService;
 
 
     private User testHost;
@@ -42,6 +56,7 @@ public class GameServiceTest {
     @BeforeEach
     public void setup() {
         // initial setup so that test host, guest, and game are available to work with from the repositories
+
         MockitoAnnotations.openMocks(this);
 
         testHost = new User();
@@ -57,7 +72,6 @@ public class GameServiceTest {
         testGame.setGuest(testGuest);
         testGame.setGameId(3L);
 
-
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(testHost);
         
         Mockito.when(userRepository.findByUserId(1L)).thenReturn(testHost);
@@ -65,6 +79,7 @@ public class GameServiceTest {
         Mockito.when(gameRepository.findByGameId(3L)).thenReturn(testGame);
 
         Mockito.when(gameRepository.save(Mockito.any())).thenReturn(testGame);
+        
     }
 
 
@@ -121,12 +136,8 @@ public class GameServiceTest {
     @Test
     public void websocketjoin_validInputs_host_success() throws IOException, InterruptedException {
         // websocket join test host to test game
-        
-
         Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId());
 
-        
-        
         // check statuses
         assertEquals(PlayerStatus.CONNECTED, updatedGame.getHostStatus());
         assertEquals(GameStatus.WAITING, updatedGame.getGameStatus());
@@ -155,4 +166,29 @@ public class GameServiceTest {
         assertEquals(PlayerStatus.CONNECTED, updatedGame.getGuestStatus());
         assertEquals(GameStatus.CONNECTED, updatedGame.getGameStatus());
     }
+
+    @Test
+    public void startGame_success() throws IOException, InterruptedException {
+        Round testRound = new Round();
+        testRound.setRoundId(4L);
+        
+        given(roundService.newRound(Mockito.any())).willReturn(testRound);
+
+        // // start the game
+        Game updatedGame = gameService.startGame(testGame.getGameId());
+
+        // // check status
+        assertEquals(GameStatus.ONGOING, updatedGame.getGameStatus());
+    }
+
+    @Test
+    public void setStartingPlayer_success() {
+        // set the starting player
+        Game updatedGame = gameService.setStartingPlayer(testGame);
+
+        // check that it is the host
+        assertEquals(Role.HOST,  updatedGame.getStartingPlayer());
+    }
+
+
 }

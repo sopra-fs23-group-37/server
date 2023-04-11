@@ -32,16 +32,13 @@ public class Player implements Serializable{
 
     private Role role;
 
-    public Player(User player) {
+    public Player(User player, Role role) {
         this.player = player;
+        this.role = role;
     }
 
     public Role getRole() {
         return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public void addCardsToHand(List<Card> cards) {
