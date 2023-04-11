@@ -25,33 +25,35 @@ public interface GameDTOMapper {
     GameDTOMapper INSTANCE = Mappers.getMapper(GameDTOMapper.class);
 
     @Mapping(source = "gameId", target = "gameId")
-    @Mapping(source = "session", target = "session")
     @Mapping(source = "host", target = "host")
     @Mapping(source = "guest", target = "guest")
     @Mapping(source = "winner", target = "winner")
     @Mapping(source = "createdDate", target = "createdDate")
     @Mapping(source = "gameStatus", target = "gameStatus")
+    @Mapping(source = "hostStatus", target = "hostStatus")
+    @Mapping(source = "guestStatus", target = "guestStatus")
     GameGetDTO convertEntityToGameGetDTO(Game game);
 
     @Mapping(source = "gameId", target = "gameId")
-    @Mapping(source = "session", target = "session")
     @Mapping(source = "host", target = "host")
     @Mapping(source = "guest", target = "guest")
     @Mapping(source = "winner", target = "winner")
     @Mapping(source = "createdDate", target = "createdDate")
     @Mapping(source = "gameStatus", target = "gameStatus")
+    @Mapping(target = "hostStatus", ignore = true)
+    @Mapping(target = "guestStatus", ignore = true)
     Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
 
 
     @Mapping(source = "gameId", target = "gameId")
-    @Mapping(source = "session", target = "session")
     @Mapping(source = "host", target = "host")
     @Mapping(source = "guest", target = "guest")
     @Mapping(source = "winner", target = "winner")
     @Mapping(source = "createdDate", target = "createdDate")
     @Mapping(source = "gameStatus", target = "gameStatus")
+    @Mapping(target = "hostStatus", ignore = true)
+    @Mapping(target = "guestStatus", ignore = true)
     Game convertGamePutDTOtoEntity(GamePutDTO gamePutDTO);
 
-
-
 }
+

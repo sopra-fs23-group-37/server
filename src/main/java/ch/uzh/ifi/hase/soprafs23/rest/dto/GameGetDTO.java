@@ -1,17 +1,14 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
-import ch.uzh.ifi.hase.soprafs23.entity.Session;
+import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 
-import javax.persistence.*;
 import java.util.Date;
 
 public class GameGetDTO {
 
     private Long gameId;
-
-    private Session session;
 
     private User host;
 
@@ -23,20 +20,36 @@ public class GameGetDTO {
 
     private GameStatus gameStatus;
 
+    private PlayerStatus hostStatus;
+
+    private PlayerStatus guestStatus;
+
+
+
+    // getters & setters 
+    
+    public PlayerStatus getHostStatus() {
+        return hostStatus;
+    }
+
+    public void setHostStatus(PlayerStatus hostStatus) {
+        this.hostStatus = hostStatus;
+    }
+
+    public PlayerStatus getGuestStatus() {
+        return guestStatus;
+    }
+
+    public void setGuestStatus(PlayerStatus guestStatus) {
+        this.guestStatus = guestStatus;
+    }
+
     public Long getGameId() {
         return gameId;
     }
 
     public void setGameId(Long gameId) {
         this.gameId = gameId;
-    }
-
-    public Session getSession() {
-        return session;
-    }
-
-    public void setSession(Session session) {
-        this.session = session;
     }
 
     public User getHost() {

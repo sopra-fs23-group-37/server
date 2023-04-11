@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
-import ch.uzh.ifi.hase.soprafs23.entity.Session;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 
 import java.util.Date;
@@ -9,8 +8,6 @@ import java.util.Date;
 public class GamePutDTO {
 
     private Long gameId;
-
-    private Session session;
 
     private User host;
 
@@ -28,14 +25,6 @@ public class GamePutDTO {
 
     public void setGameId(Long gameId) {
         this.gameId = gameId;
-    }
-
-    public Session getSession() {
-        return session;
-    }
-
-    public void setSession(Session session) {
-        this.session = session;
     }
 
     public User getHost() {

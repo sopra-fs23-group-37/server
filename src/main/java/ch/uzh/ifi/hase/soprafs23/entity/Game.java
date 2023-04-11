@@ -1,14 +1,12 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
 
-import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
-import ch.uzh.ifi.hase.soprafs23.constant.SessionStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+
 
 @Entity
 @Table(name = "GAME")
@@ -20,9 +18,6 @@ public class Game implements Serializable {
     @GeneratedValue
     private Long gameId;
 
-    @ManyToOne
-    @JoinColumn(name = "sessionId")
-    private Session session;
 
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "hostId")
@@ -31,6 +26,12 @@ public class Game implements Serializable {
     @ManyToOne
     @JoinColumn(name = "guestId")
     private User guest;
+
+    @Enumerated(EnumType.STRING)
+    private PlayerStatus hostStatus;
+
+    @Enumerated(EnumType.STRING)
+    private PlayerStatus guestStatus;
 
     @ManyToOne
     @JoinColumn(name = "winnerId")
@@ -48,14 +49,6 @@ public class Game implements Serializable {
 
     public void setGameId(Long gameId) {
         this.gameId = gameId;
-    }
-
-    public Session getSession() {
-        return session;
-    }
-
-    public void setSession(Session session) {
-        this.session = session;
     }
 
     public User getHost() {
@@ -96,5 +89,21 @@ public class Game implements Serializable {
 
     public void setGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
+    }
+
+        public PlayerStatus getHostStatus() {
+        return hostStatus;
+    }
+
+    public void setHostStatus(PlayerStatus hostStatus) {
+        this.hostStatus = hostStatus;
+    }
+
+    public PlayerStatus getGuestStatus() {
+        return guestStatus;
+    }
+
+    public void setGuestStatus(PlayerStatus guestStatus) {
+        this.guestStatus = guestStatus;
     }
 }

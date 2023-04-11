@@ -48,17 +48,31 @@ dependencies {
     }
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.webjars:webjars-locator-core'
+	implementation 'org.webjars:sockjs-client:1.0.2'
+	implementation 'org.webjars:stomp-websocket:2.3.3'
+	implementation 'org.webjars:bootstrap:3.3.7'
+	implementation 'org.webjars:jquery:3.1.1-1'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 bootJar {
     archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
 }
 
-sonarqube {
+sonar {
   properties {
     property "sonar.projectKey", "sopra-fs23-group-37_server"
     property "sonar.organization", "sopra-fs23-group-37"
     property "sonar.host.url", "https://sonarcloud.io"
+
+    // added to fix test coverage
+    // property "sonar.sources", ["src/test", "src/main/java"]
+    // property "sonar.tests", "src/test"
+    // property "sonar.sourceEncoding", "UTF-8"
+    // property "sonar.test.inclusions", ["src/test/java"]
   }
 }
 
