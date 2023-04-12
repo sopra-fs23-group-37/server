@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.constant.RoundStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.Card;
 import ch.uzh.ifi.hase.soprafs23.entity.CardDeck;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
@@ -20,57 +21,82 @@ import java.util.List;
 @Service
 @Transactional
 public class RoundService {
-    
+
     private final RoundRepository roundRepository;
     private final PlayerRepository playerRepository;
 
-        
     private final CardDeckService cardDeckService;
 
     @Autowired
     RoundService(
-        @Qualifier("roundRepository") RoundRepository roundRepository, 
-        @Qualifier("playerRepository") PlayerRepository playerRepository, 
-        CardDeckService cardDeckService) {
+            @Qualifier("roundRepository") RoundRepository roundRepository,
+            @Qualifier("playerRepository") PlayerRepository playerRepository,
+            CardDeckService cardDeckService) {
         this.roundRepository = roundRepository;
         this.playerRepository = playerRepository;
         this.cardDeckService = cardDeckService;
     }
 
-
     public Round newRound(Game game) throws IOException, InterruptedException {
 
         // create the new round
-        Round round =  new Round();
+        Round round = new Round();
+        round.setRoundStatus(RoundStatus.ONGOING);
 
         // add a shuffled deck to the round
         CardDeck deck = cardDeckService.createShuffledDeck();
         round.setCardDeck(deck);
-        
+
         // create player hands, deal 8 cards to each
         Player host = new Player(game.getHost(), Role.HOST);
         dealEightCards(host, deck);
-        
+
         Player guest = new Player(game.getGuest(), Role.GUEST);
         dealEightCards(guest, deck);
 
         // add players to round and set starting turn
-        round.addPlayer(host);
-        round.addPlayer(guest);
+        round.setHost(host);
+        round.setGuest(guest);
         round.setCurrentTurnPlayer(determineStartTurn(game));
 
-        // add 4 cards to table, save 
+        // add 4 cards to table, save
         dealFourCardsTable(round, deck);
-        round = roundRepository.save(round);        
+        round = roundRepository.save(round);
         roundRepository.flush();
 
         // return the new round
         return round;
     };
 
+    public boolean postMoveChecks(Round round) throws IOException, InterruptedException {
+
+        // check if both player hands are empty
+        if (round.getHost().getCardsInHand().size() == 0
+                && round.getGuest().getCardsInHand().size() == 0) {
+
+            // check if deck is empty
+            if (round.getCardDeck().getRemaining() == 0) {
+
+                // end the round
+                round = endRound(round);
+
+                // return end of round = true
+                return true;
+            } else {
+                // deal new cards to players
+                dealEightCards(round.getHost(), round.getCardDeck());
+                dealEightCards(round.getGuest(), round.getCardDeck());
+            }
+        }
+
+        round = roundRepository.save(round);
+        roundRepository.flush();
+        // return end of round = false
+        return false;
+    }
 
     public Role determineStartTurn(Game game) {
-        // 
+        //
         if (game.getTotalRounds() % 2 == 0) {
             return game.getStartingPlayer();
         } else if (game.getStartingPlayer() == Role.HOST) {
@@ -92,4 +118,20 @@ public class RoundService {
         round.addCardsToTable(tableCards);
     }
 
+    public Round endRound(Round round) {
+
+        // give any remaining table cards to the player who last grabbed some cards
+        Player recipient = round.getLastCardGrab() == Role.HOST ? round.getHost() : round.getGuest();
+        recipient.addCardsToDiscard(round.getTableCards());
+
+        // count points of the hands
+        round.setHostPoints(round.getHost().countDiscard());
+        round.setGuestPoints(round.getGuest().countDiscard());
+
+        // set Round status
+        round.setRoundStatus(RoundStatus.FINISHED);
+
+        // return the Round
+        return round;
+    }
 }
