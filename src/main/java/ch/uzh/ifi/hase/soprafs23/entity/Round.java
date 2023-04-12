@@ -11,6 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.constant.RoundStatus;
 
 @Entity
 public class Round implements Serializable {
@@ -21,56 +22,89 @@ public class Round implements Serializable {
     @GeneratedValue
     private Long roundId;
 
-   private Role currentTurnPlayer;
+    private Role currentTurnPlayer;
 
-   @OneToMany(targetEntity = Card.class)
-   private List<Card> cardsOnTable = new ArrayList<Card>();
-   
-   @OneToMany(targetEntity = Player.class)
-   private List<Player> players = new ArrayList<Player>();;
+    @OneToMany(targetEntity = Card.class)
+    private List<Card> cardsOnTable = new ArrayList<Card>();
 
-   @OneToOne(targetEntity = CardDeck.class)
-   private CardDeck cardDeck;
+    @OneToOne(targetEntity = Player.class)
+    private Player host;
 
+    @OneToOne(targetEntity = Player.class)
+    private Player guest;
 
-    public CardDeck getCardDeck() {
-    return cardDeck;
-}
+    @OneToOne(targetEntity = CardDeck.class)
+    private CardDeck cardDeck;
 
-public void setCardDeck(CardDeck cardDeck) {
-    this.cardDeck = cardDeck;
-}
+    private RoundStatus roundStatus;
 
-    public void addPlayer(Player player) {
-        players.add(player);
+    private int hostPoints;
+
+    private int guestPoints;
+
+    private Role lastCardGrab;
+
+    public Role getLastCardGrab() {
+        return lastCardGrab;
     }
 
-   public List<Player> getPlayers() {
-    return players;
-}
+    public void setLastCardGrab(Role lastCardGrab) {
+        this.lastCardGrab = lastCardGrab;
+    }
 
-public Role getCurrentTurnPlayer() {
-    return currentTurnPlayer;
-}
+    public int getHostPoints() {
+        return hostPoints;
+    }
 
-public void setCurrentTurnPlayer(Role currentTurnPlayer) {
-    this.currentTurnPlayer = currentTurnPlayer;
-}
+    public void setHostPoints(int hostPoints) {
+        this.hostPoints = hostPoints;
+    }
 
+    public int getGuestPoints() {
+        return guestPoints;
+    }
 
-public List<Card> getTableCards() {
-    return cardsOnTable;
-}
+    public void setGuestPoints(int guestPoints) {
+        this.guestPoints = guestPoints;
+    }
 
-public void addCardsToTable(List<Card> cards) {
+    public RoundStatus getRoundStatus() {
+        return roundStatus;
+    }
+
+    public void setRoundStatus(RoundStatus roundStatus) {
+        this.roundStatus = roundStatus;
+    }
+
+    public CardDeck getCardDeck() {
+        return cardDeck;
+    }
+
+    public void setCardDeck(CardDeck cardDeck) {
+        this.cardDeck = cardDeck;
+    }
+
+    public Role getCurrentTurnPlayer() {
+        return currentTurnPlayer;
+    }
+
+    public void setCurrentTurnPlayer(Role currentTurnPlayer) {
+        this.currentTurnPlayer = currentTurnPlayer;
+    }
+
+    public List<Card> getTableCards() {
+        return cardsOnTable;
+    }
+
+    public void addCardsToTable(List<Card> cards) {
         cardsOnTable.addAll(cards);
     }
 
-public void removeCardFromTable(Card card) {
+    public void removeCardFromTable(Card card) {
         cardsOnTable.removeIf(n -> (n.getCode().equals(card.getCode())));
     }
-   
-       public Long getRoundId() {
+
+    public Long getRoundId() {
         return roundId;
     }
 
@@ -78,5 +112,20 @@ public void removeCardFromTable(Card card) {
         this.roundId = roundId;
     }
 
-    
+    public Player getHost() {
+        return host;
+    }
+
+    public void setHost(Player host) {
+        this.host = host;
+    }
+
+    public Player getGuest() {
+        return guest;
+    }
+
+    public void setGuest(Player guest) {
+        this.guest = guest;
+    }
+
 }

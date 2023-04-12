@@ -39,9 +39,9 @@ public class GameService {
 
     @Autowired
     public GameService(
-        @Qualifier("userRepository") UserRepository userRepository, 
-        @Qualifier("gameRepository") GameRepository gameRepository,
-        RoundService roundService) {
+            @Qualifier("userRepository") UserRepository userRepository,
+            @Qualifier("gameRepository") GameRepository gameRepository,
+            RoundService roundService) {
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
         this.roundService = roundService;
@@ -62,8 +62,8 @@ public class GameService {
         Long hostId = newGame.getHost().getUserId();
 
         User host = userRepository.findByUserId(hostId);
-        if(host == null) {
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage,hostId));
+        if (host == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, hostId));
         }
 
         // set host to user
@@ -86,15 +86,15 @@ public class GameService {
     }
 
     public Game joinGame(Long guestId) {
-        
-        // find the player who wants to join a game 
+
+        // find the player who wants to join a game
         User guest = userRepository.findByUserId(guestId);
-        
+
         // throw error if guest is not a valid user
         String playerErrorMessage = "Player with id %x was not found";
-        if(guest == null) {
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, 
-            String.format(playerErrorMessage, guestId));
+        if (guest == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    String.format(playerErrorMessage, guestId));
         }
 
         // get open games and pick oldest one
@@ -104,8 +104,8 @@ public class GameService {
         // throw errror if no waiting games
         String gameErrorMessage = "There is no open game to join. Try creating your own game.";
         if (nextGame == null) {
-            throw  new ResponseStatusException(HttpStatus.NOT_FOUND, 
-            String.format(gameErrorMessage));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    String.format(gameErrorMessage));
         }
 
         // add guest to game
@@ -120,22 +120,24 @@ public class GameService {
     }
 
     public Game websocketJoin(Long gameId, Long playerId) throws IOException, InterruptedException {
-		// get the correct game
+        // get the correct game
         Game game = getGame(gameId);
 
         // update the host/guest status in the game
-        if(playerId == game.getHost().getUserId()) {
+        if (playerId == game.getHost().getUserId()) {
             game.setHostStatus(PlayerStatus.CONNECTED);
-        } else if(playerId == game.getGuest().getUserId()) {
+        } else if (playerId == game.getGuest().getUserId()) {
             game.setGuestStatus(PlayerStatus.CONNECTED);
-        } 
+        }
 
         // update the game status
-        if(game.getHostStatus() == PlayerStatus.CONNECTED && game.getGuestStatus() == PlayerStatus.CONNECTED) {
+        if (game.getHostStatus().equals(PlayerStatus.CONNECTED)
+                && game.getGuestStatus().equals(PlayerStatus.CONNECTED)) {
             game.setGameStatus(GameStatus.CONNECTED);
-            //startGame(game);
-        } else if(game.getHostStatus() == PlayerStatus.CONNECTED || game.getGuestStatus() == PlayerStatus.CONNECTED) {
-            game.setGameStatus(GameStatus.WAITING);	
+            // startGame(game);
+        } else if (game.getHostStatus().equals(
+                PlayerStatus.CONNECTED) || game.getGuestStatus().equals(PlayerStatus.CONNECTED)) {
+            game.setGameStatus(GameStatus.WAITING);
         }
 
         // save to repo and flush
@@ -144,19 +146,19 @@ public class GameService {
 
         // return the updated game
         return game;
-        }
-        
+    }
+
     public Game startGame(Long gameId) throws IOException, InterruptedException {
-        
+
         // update the game status
         Game game = getGame(gameId);
         game = setStartingPlayer(game);
-        
+
         // start the first round
         game.setCurrentRound(roundService.newRound(game));
-        game.setTotalRounds(game.getTotalRounds()+1);
+        game.setTotalRounds(game.getTotalRounds() + 1);
 
-        // update the game status 
+        // update the game status
         game.setGameStatus(GameStatus.ONGOING);
 
         // save to repo and flush
@@ -164,13 +166,13 @@ public class GameService {
         gameRepository.flush();
 
         return game;
-    }    
+    }
 
     public Game setStartingPlayer(Game game) {
 
         // TODO: write a proper method to set the starting player
         game.setStartingPlayer(Role.HOST);
-        
+
         // save to repo and flush
         game = gameRepository.save(game);
         gameRepository.flush();
@@ -180,7 +182,5 @@ public class GameService {
     public RoundService getRoundService() {
         return this.roundService;
     }
-
-
 
 }

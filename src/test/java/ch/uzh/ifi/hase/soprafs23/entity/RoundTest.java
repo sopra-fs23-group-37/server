@@ -49,17 +49,17 @@ public class RoundTest {
     public void getValues_success() {
         // add cards and players to the round
         mockRound.addCardsToTable(cardsOnTable);
-        mockRound.addPlayer(host);
-        mockRound.addPlayer(guest);
-        
+        mockRound.setHost(host);
+        mockRound.setGuest(guest);
+
         // check that they have been added correctly and can be accessed
         assertEquals(mockRound.getTableCards().get(0).getCode(), cardsOnTable.get(0).getCode());
         assertEquals(mockRound.getCurrentTurnPlayer(), Role.HOST);
-        assertEquals(mockRound.getPlayers().get(0), host);
-        assertEquals(mockRound.getPlayers().get(1), guest);
+        assertEquals(mockRound.getHost(), host);
+        assertEquals(mockRound.getGuest(), guest);
     }
 
-    @Test 
+    @Test
     public void removeCardFromTable_success() {
         mockRound.addCardsToTable(cards1);
         mockRound.addCardsToTable(cards2);
