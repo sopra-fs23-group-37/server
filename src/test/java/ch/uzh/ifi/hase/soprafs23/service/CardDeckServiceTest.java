@@ -89,7 +89,7 @@ public class CardDeckServiceTest {
 
     @Test
     public void shuffleDeck_success() throws IOException, InterruptedException {
-        CardDeck newCardDeck = cardDeckService.createDeck();
+        CardDeck newCardDeck = cardDeckService.shuffleDeck(mockCardDeck);
 
         assertEquals(mockCardDeck.getDeck_id(), newCardDeck.getDeck_id());
         assertEquals(mockCardDeck.getRemaining(), newCardDeck.getRemaining());

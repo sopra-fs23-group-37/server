@@ -46,7 +46,7 @@ public class GameService {
     private final PlayerRepository playerRepository;
     private final CardDeckRepository cardDeckRepository;
     private final CardRepository cardRepository;
-    private final GameLogicService gameLogicService = new GameLogicService();
+    private final MoveLogicService moveLogicService = new MoveLogicService();
 
 
 
@@ -200,8 +200,8 @@ public class GameService {
 
     public Game makeMove(long gameId, PlayerMoveMessage message) {
         Game game = getGame(gameId);
-        Game updatedGame = gameLogicService.checkMove(game, message);
-
+        Game updatedGame = moveLogicService.checkMove(game, message);
+        
         return game;
     }
 
