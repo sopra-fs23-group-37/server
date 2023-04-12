@@ -93,15 +93,15 @@ public class Player implements Serializable {
         int clubs = 0;
         for (Card card : this.cardsInDiscard) {
             // count total number of clubs
-            if (card.getSuit() == "CLUBS") {
+            if (card.getSuit().equals("CLUBS")) {
                 clubs++;
 
                 // check if player has the 2 of Clubs
-                if (card.getCode() == "2C") {
+                if (card.getCode().equals("2C")) {
                     this.twoOfClubs = 1;
                 }
                 // check if player has the 10 of Diamonds
-            } else if (card.getCode() == "10D") {
+            } else if (card.getCode().equals("10D")) {
                 this.tenOfDiamonds = 1;
             }
         }

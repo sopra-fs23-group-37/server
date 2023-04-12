@@ -73,12 +73,14 @@ public class PlayerTest {
         for (int i = 0; i < 26; i++) {
             winningCards.add(new Card());
             winningCards.get(i).setSuit("CLUBS");
+            winningCards.get(i).setCode("XC");
         }
         // add the two special points cards to the list
         Card twoOfClubs = new Card();
         twoOfClubs.setSuit("CLUBS");
         twoOfClubs.setCode("2C");
         Card tenOfDiamonds = new Card();
+        tenOfDiamonds.setSuit("DIAMONDS");
         tenOfDiamonds.setCode("10D");
 
         winningCards.add(twoOfClubs);
