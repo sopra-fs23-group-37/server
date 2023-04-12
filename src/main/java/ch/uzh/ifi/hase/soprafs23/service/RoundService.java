@@ -71,8 +71,8 @@ public class RoundService {
     public boolean postMoveChecks(Round round) throws IOException, InterruptedException {
 
         // check if both player hands are empty
-        if (round.getHost().getCardsInHand().size() == 0
-                && round.getGuest().getCardsInHand().size() == 0) {
+        if (round.getHost().getCardsInHand().isEmpty()
+                && round.getGuest().getCardsInHand().isEmpty()) {
 
             // check if deck is empty
             if (round.getCardDeck().getRemaining() == 0) {
