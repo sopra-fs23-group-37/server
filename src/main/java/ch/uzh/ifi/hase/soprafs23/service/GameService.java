@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -33,11 +35,16 @@ public class GameService {
 
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
+    private final RoundService roundService;
 
     @Autowired
-    public GameService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("gameRepository") GameRepository gameRepository) {
+    public GameService(
+        @Qualifier("userRepository") UserRepository userRepository, 
+        @Qualifier("gameRepository") GameRepository gameRepository,
+        RoundService roundService) {
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
+        this.roundService = roundService;
     }
 
     public List<Game> getPublicGames() {
@@ -64,6 +71,7 @@ public class GameService {
         newGame.setCreatedDate(new Date());
         newGame.setHostStatus(PlayerStatus.WAITING);
         newGame.setGuestStatus(PlayerStatus.WAITING);
+        newGame.setTotalRounds(0);
 
         // save to repo and flush
         newGame = gameRepository.save(newGame);
@@ -76,29 +84,6 @@ public class GameService {
     public Game getGame(Long gameId) {
         return this.gameRepository.findByGameId(gameId);
     }
-
-    public Game websocketJoin(Long gameId, Long playerId) {
-		// get the correct game
-        Game game = getGame(gameId);
-
-        // update the host/guest status in the game
-        if(playerId == game.getHost().getUserId()) {
-            game.setHostStatus(PlayerStatus.CONNECTED);
-        } else if(playerId == game.getGuest().getUserId()) {
-            game.setGuestStatus(PlayerStatus.CONNECTED);
-        } 
-
-        // update the game status
-        if(game.getHostStatus() == PlayerStatus.CONNECTED && game.getGuestStatus() == PlayerStatus.CONNECTED) {
-            game.setGameStatus(GameStatus.CONNECTED);
-        } else if(game.getHostStatus() == PlayerStatus.CONNECTED || game.getGuestStatus() == PlayerStatus.CONNECTED) {
-            game.setGameStatus(GameStatus.WAITING);	
-        }
-
-        // return the updated game
-        return game;
-
-        }
 
     public Game joinGame(Long guestId) {
         
@@ -127,12 +112,74 @@ public class GameService {
         nextGame.setGuest(guest);
         nextGame.setGameStatus(GameStatus.GUEST_SET);
 
+        // save to repo and flush
+        nextGame = gameRepository.save(nextGame);
+        gameRepository.flush();
+
         return nextGame;
     }
-        
-        
 
+    public Game websocketJoin(Long gameId, Long playerId) throws IOException, InterruptedException {
+		// get the correct game
+        Game game = getGame(gameId);
+
+        // update the host/guest status in the game
+        if(playerId == game.getHost().getUserId()) {
+            game.setHostStatus(PlayerStatus.CONNECTED);
+        } else if(playerId == game.getGuest().getUserId()) {
+            game.setGuestStatus(PlayerStatus.CONNECTED);
+        } 
+
+        // update the game status
+        if(game.getHostStatus() == PlayerStatus.CONNECTED && game.getGuestStatus() == PlayerStatus.CONNECTED) {
+            game.setGameStatus(GameStatus.CONNECTED);
+            //startGame(game);
+        } else if(game.getHostStatus() == PlayerStatus.CONNECTED || game.getGuestStatus() == PlayerStatus.CONNECTED) {
+            game.setGameStatus(GameStatus.WAITING);	
+        }
+
+        // save to repo and flush
+        game = gameRepository.save(game);
+        gameRepository.flush();
+
+        // return the updated game
+        return game;
+        }
         
+    public Game startGame(Long gameId) throws IOException, InterruptedException {
+        
+        // update the game status
+        Game game = getGame(gameId);
+        game = setStartingPlayer(game);
+        
+        // start the first round
+        game.setCurrentRound(roundService.newRound(game));
+        game.setTotalRounds(game.getTotalRounds()+1);
+
+        // update the game status 
+        game.setGameStatus(GameStatus.ONGOING);
+
+        // save to repo and flush
+        game = gameRepository.save(game);
+        gameRepository.flush();
+
+        return game;
+    }    
+
+    public Game setStartingPlayer(Game game) {
+
+        // TODO: write a proper method to set the starting player
+        game.setStartingPlayer(Role.HOST);
+        
+        // save to repo and flush
+        game = gameRepository.save(game);
+        gameRepository.flush();
+        return game;
+    }
+
+    public RoundService getRoundService() {
+        return this.roundService;
+    }
 
 
 
