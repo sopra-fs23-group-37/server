@@ -19,12 +19,16 @@ import ch.uzh.ifi.hase.soprafs23.repository.CardDeckRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 
-
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+
+import java.io.IOException;
+
 
 public class GameServiceTest {
     @Mock
@@ -82,6 +86,64 @@ public class GameServiceTest {
         
     }
 
+
+    @Test
+    void testGetPublicGames() {
+        List<Game> allGames = new ArrayList<>();
+        allGames.add(testGame);
+
+        when(gameRepository.findAll()).thenReturn(allGames);
+
+        List<Game> result = gameService.getPublicGames();
+
+        assertEquals(1, result.size());
+        assertEquals(testGame, result.get(0));
+
+        verify(gameRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testCreateGame() {
+        when(userRepository.findByUserId(testHost.getUserId())).thenReturn(testHost);
+        when(gameRepository.save(any(Game.class))).thenReturn(testGame);
+
+        Game result = gameService.createGame(testGame);
+
+        assertNotNull(result.getGameId());
+        assertEquals(GameStatus.CREATED, result.getGameStatus());
+        assertEquals(testHost, result.getHost());
+        assertEquals(PlayerStatus.WAITING, result.getHostStatus());
+        assertEquals(PlayerStatus.WAITING, result.getGuestStatus());
+        assertEquals(0, result.getTotalRounds());
+
+        verify(gameRepository, times(1)).save(any(Game.class));
+    }
+
+    @Test
+    void testCreateGameWithInvalidHost() {
+        when(userRepository.findByUserId(any(Long.class))).thenReturn(null);
+
+        assertThrows(ResponseStatusException.class, () -> {
+            gameService.createGame(testGame);
+        });
+
+        verify(gameRepository, never()).save(any(Game.class));
+    }
+
+    @Test
+    void testGetGame() {
+        // Mock the repository method call
+        when(gameRepository.findByGameId(testGame.getGameId())).thenReturn(testGame);
+
+        // Call the service method
+        Game result = gameService.getGame(testGame.getGameId());
+
+        // Assert the returned value
+        assertEquals(testGame, result);
+
+        // Verify the repository method call was made once
+        verify(gameRepository, times(1)).findByGameId(testGame.getGameId());
+    }
 
     // test that a valid guest joining the game updates the game as expected
     @Test
@@ -190,5 +252,45 @@ public class GameServiceTest {
         assertEquals(Role.HOST,  updatedGame.getStartingPlayer());
     }
 
+
+    // test that starting a game with less than two players throws an exception
+    @Test
+    public void startGame_lessThanTwoPlayers_throwsException() {
+
+        // make sure the game has only one player
+        testGame.setGameStatus(GameStatus.GUEST_SET);
+        testGame.setGuestStatus(PlayerStatus.CONNECTED);
+        testGame.setHostStatus(PlayerStatus.DISCONNECTED);
+        given(gameRepository.findByGameId(testGame.getGameId())).willReturn(testGame);
+
+        // assert exception
+        assertThrows(ResponseStatusException.class, () -> gameService.startGame(testGame.getGameId()));
+    }
+
+
+    // test that joining a game that has already started throws an exception
+    @Test
+    public void joinGame_gameAlreadyStarted_throwsException() {
+
+        // make sure the game has already started
+        testGame.setGameStatus(GameStatus.ONGOING);
+        given(gameRepository.findByGameStatus(GameStatus.WAITING)).willReturn(new ArrayList<>());
+        given(gameRepository.findByGameId(testGame.getGameId())).willReturn(testGame);
+
+        // assert exception
+        assertThrows(ResponseStatusException.class, () -> gameService.joinGame(testGuest.getUserId()));
+    }
+
+    // test that joining a game with the same user as the host throws an exception
+    @Test
+    public void joinGame_sameUserAsHost_throwsException() {
+
+        // make sure the user id is the same as the host's
+        given(gameRepository.findByGameStatus(GameStatus.WAITING)).willReturn(new ArrayList<>());
+        given(gameRepository.findByGameId(testGame.getGameId())).willReturn(testGame);
+
+        // assert exception
+        assertThrows(ResponseStatusException.class, () -> gameService.joinGame(testHost.getUserId()));
+    }
 
 }

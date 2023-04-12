@@ -1,8 +1,8 @@
+/*
 package ch.uzh.ifi.hase.soprafs23.service;
 
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-
-/* 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Login;
@@ -25,13 +25,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import static org.mockito.Mockito.when;
-*/
 
-
+ TODO Implement Database and then use tests
 @SpringBootTest
 public class LoginServiceTest {
-    /*TODO: Implement Database, then these test will work*/
-/*
+
     @Mock
     private UserRepository userRepository;
 
@@ -41,26 +39,45 @@ public class LoginServiceTest {
     @InjectMocks
     private LoginService loginService;
 
+    @InjectMocks
+    private UserService userService;
+
+
+    private User testUser;
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+
+        testUser = new User();
+        testUser.setPassword("testPassword");
+        testUser.setUsername("testUsername");
+        testUser.setUserId(1L);
+        testUser.setToken("1");
+        testUser.setUserStatus(UserStatus.ONLINE);
+        testUser.setCreation_date(new Date());
+
+        Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
     }
 
     @Test
     public void testCreateLogin() {
+
+        User createdUser = userService.createUser(testUser);
+
         // create a new login
         Login newLogin = new Login();
-        newLogin.setUsername("testuser");
-        newLogin.setPassword("testpassword");
+        newLogin.setUsername("testUsername");
+        newLogin.setPassword("testPassword");
 
         // mock the userRepository's findByUsername() method to return a user
         User foundUser = new User();
-        foundUser.setUsername("testuser");
-        foundUser.setPassword("testpassword");
+        foundUser.setUsername("testUsername");
+        foundUser.setPassword("testPassword");
         foundUser.setUserId(1L);
         foundUser.setUserStatus(UserStatus.OFFLINE);
-        foundUser.setToken("testtoken");
-        when(userRepository.findByUsername("testuser")).thenReturn(foundUser);
+        foundUser.setToken("testToken");
+        when(userRepository.findByUsername("testUsername")).thenReturn(foundUser);
 
         // mock the loginRepository's save() method to return the same login object
         when(loginRepository.save(newLogin)).thenReturn(newLogin);
@@ -124,5 +141,6 @@ public class LoginServiceTest {
         // verify that the login was not created
         assertEquals(0, loginRepository.count());
     }
-    */
 }
+
+ */

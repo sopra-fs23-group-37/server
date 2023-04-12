@@ -147,7 +147,18 @@ public class GameService {
         }
         
     public Game startGame(Long gameId) throws IOException, InterruptedException {
-        
+
+        Game foundGame = gameRepository.findByGameId(gameId);
+        if (foundGame == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The game with the gameId " + gameId + " does not exist!");
+        }
+        if (foundGame.getHostStatus() == PlayerStatus.DISCONNECTED) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The host was not found!");
+        }
+        if (foundGame.getGuestStatus() == PlayerStatus.DISCONNECTED) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The guest was not found!");
+        }
+
         // update the game status
         Game game = getGame(gameId);
         game = setStartingPlayer(game);
