@@ -52,14 +52,14 @@ public class GameServiceTest {
     @Mock
     private CardDeckService cardDeckService;
 
-
     private User testHost;
     private User testGuest;
     private Game testGame;
 
     @BeforeEach
     public void setup() {
-        // initial setup so that test host, guest, and game are available to work with from the repositories
+        // initial setup so that test host, guest, and game are available to work with
+        // from the repositories
 
         MockitoAnnotations.openMocks(this);
 
@@ -77,15 +77,14 @@ public class GameServiceTest {
         testGame.setGameId(3L);
 
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(testHost);
-        
+
         Mockito.when(userRepository.findByUserId(1L)).thenReturn(testHost);
         Mockito.when(userRepository.findByUserId(2L)).thenReturn(testGuest);
         Mockito.when(gameRepository.findByGameId(3L)).thenReturn(testGame);
 
         Mockito.when(gameRepository.save(Mockito.any())).thenReturn(testGame);
-        
-    }
 
+    }
 
     @Test
     void testGetPublicGames() {
@@ -148,7 +147,7 @@ public class GameServiceTest {
     // test that a valid guest joining the game updates the game as expected
     @Test
     public void joinGame_validInputs_success() {
-        
+
         // make sure the game is in the right status
         testGame.setGameStatus(GameStatus.WAITING);
         List<Game> waitingGames = new ArrayList<>();
@@ -158,16 +157,16 @@ public class GameServiceTest {
         // join the game with valid guest id
         Game updatedGame = gameService.joinGame(testGuest.getUserId());
 
-        // assert that the guest has been added to the game and the game status is correct
+        // assert that the guest has been added to the game and the game status is
+        // correct
         assertEquals(testGuest, updatedGame.getGuest());
         assertEquals(GameStatus.GUEST_SET, updatedGame.getGameStatus());
     }
 
-
     // test exceptions - no games
     @Test
     public void joinGame_noGames_throwsException() {
-        
+
         // simulate no games returned from the Repo
         List<Game> waitingGames = new ArrayList<>();
         Mockito.when(gameRepository.findByGameStatus(GameStatus.WAITING)).thenReturn(waitingGames);
@@ -175,11 +174,11 @@ public class GameServiceTest {
         // assert exception
         assertThrows(ResponseStatusException.class, () -> gameService.joinGame(testGuest.getUserId()));
     }
-    
+
     // test exceptions - invalid user id
     @Test
     public void joinGame_invalidGuest_throwsException() {
-        
+
         // make sure the game is in the right status
         testGame.setGameStatus(GameStatus.WAITING);
         List<Game> waitingGames = new ArrayList<>();
@@ -192,11 +191,10 @@ public class GameServiceTest {
         assertThrows(ResponseStatusException.class, () -> gameService.joinGame(invalidId));
     }
 
-
-
     // test that the host joining the game updates statuses as expected
     @Test
     public void websocketjoin_validInputs_host_success() throws IOException, InterruptedException {
+        testGame.setGuestStatus(PlayerStatus.WAITING);
         // websocket join test host to test game
         Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId());
 
@@ -208,6 +206,7 @@ public class GameServiceTest {
     // test that the guest joining the game updates statuses as expected
     @Test
     public void websocketjoin_validInputs_guest_success() throws IOException, InterruptedException {
+        testGame.setHostStatus(PlayerStatus.WAITING);
         // websocket join test guest to test game
         Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testGuest.getUserId());
 
@@ -216,13 +215,17 @@ public class GameServiceTest {
         assertEquals(GameStatus.WAITING, updatedGame.getGameStatus());
     }
 
-    // test that both the host and the guest joining the game updates statuses as expected
+    // test that both the host and the guest joining the game updates statuses as
+    // expected
     @Test
     public void websocketjoin_validInputs_guest_host_success() throws IOException, InterruptedException {
+        testGame.setHostStatus(PlayerStatus.WAITING);
+        testGame.setGuestStatus(PlayerStatus.WAITING);
 
         // websocket join test host and guest to test game
-        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId());updatedGame = gameService.websocketJoin(updatedGame.getGameId(), testGuest.getUserId());
-        
+        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId());
+        updatedGame = gameService.websocketJoin(updatedGame.getGameId(), testGuest.getUserId());
+
         // check statuses
         assertEquals(PlayerStatus.CONNECTED, updatedGame.getHostStatus());
         assertEquals(PlayerStatus.CONNECTED, updatedGame.getGuestStatus());
@@ -233,7 +236,7 @@ public class GameServiceTest {
     public void startGame_success() throws IOException, InterruptedException {
         Round testRound = new Round();
         testRound.setRoundId(4L);
-        
+
         given(roundService.newRound(Mockito.any())).willReturn(testRound);
 
         // // start the game
@@ -249,9 +252,8 @@ public class GameServiceTest {
         Game updatedGame = gameService.setStartingPlayer(testGame);
 
         // check that it is the host
-        assertEquals(Role.HOST,  updatedGame.getStartingPlayer());
+        assertEquals(Role.HOST, updatedGame.getStartingPlayer());
     }
-
 
     // test that starting a game with less than two players throws an exception
     @Test
