@@ -26,13 +26,13 @@ public class GameController {
     @GetMapping("/games")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<GameGetDTO> getPublicGames() {
+    public List<GameGetDTO> getOpenGames() {
         // fetch all games in the internal representation
-        List<Game> publicGames = gameService.getPublicGames();
+        List<Game> openGames = gameService.getOpenGames();
         List<GameGetDTO> gameGetDTOs = new ArrayList<>();
 
         // convert each game to the API representation
-        for (Game game : publicGames) {
+        for (Game game : openGames) {
             gameGetDTOs.add(GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
         }
         return gameGetDTOs;

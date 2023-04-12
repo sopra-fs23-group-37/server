@@ -47,9 +47,9 @@ public class GameService {
         this.roundService = roundService;
     }
 
-    public List<Game> getPublicGames() {
-        List<Game> allGames = this.gameRepository.findAll();
-        return allGames;
+    public List<Game> getOpenGames() {
+        List<Game> openGames = this.gameRepository.findByGameStatus(GameStatus.WAITING);
+        return openGames;
     }
 
     public Game createGame(Game newGame) {
