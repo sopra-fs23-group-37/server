@@ -26,10 +26,10 @@ public class PlayerMoveMessage {
     public void setCardFromHand(Card cardFromHand) {
         this.cardFromHand = cardFromHand;
     }
-    public List<Card> getCardFromField() {
+    public List<Card> getCardsFromField() {
         return cardsFromField;
     }
-    public void setCardFromField(List<Card> cardFromField) {
+    public void setCardsFromField(List<Card> cardFromField) {
         this.cardsFromField = cardFromField;
     }
 }
