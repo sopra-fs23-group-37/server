@@ -1,9 +1,11 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
+import java.util.List;
+
 public class CardDrawResponse {
     private Boolean success;
     private String deck_id;
-    private Card[] cards;
+    private List<Card> cards;
     private int remaining;
 
     public Boolean getSuccess() {
@@ -18,10 +20,10 @@ public class CardDrawResponse {
     public void setDeck_id(String deck_id) {
         this.deck_id = deck_id;
     }
-    public Card[] getCards() {
+    public List<Card> getCards() {
         return cards;
     }
-    public void setCards(Card[] cards) {
+    public void setCards(List<Card> cards) {
         this.cards = cards;
     }
     public int getRemaining() {

@@ -54,7 +54,7 @@ public class CardDeckService {
 
 		CardDrawResponse cardDrawResponse = objectMapper.readValue(response.body(), CardDrawResponse.class);
 		
-		cards = Arrays.asList(cardDrawResponse.getCards());
+		cards = cardDrawResponse.getCards();
 
         return cards;
     }

@@ -25,7 +25,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.CardDrawResponse;
 public class CardDeckServiceTest {
 
     private CardDeck mockCardDeck;
-    private Card[] mockCards;
+    private List<Card> mockCards;
     private Card mockCard1;
     private Card mockCard2;
     private CardDrawResponse mockCardDrawResponse;
@@ -48,13 +48,14 @@ public class CardDeckServiceTest {
         mockCardDeck.setShuffled(true);
         mockCardDeck.setSuccess(true);
 
-        mockCards = new Card[2];
+        mockCards = new ArrayList<Card>();
+
         mockCard1 = new Card();
         mockCard1.setCode("6H");
         mockCard2 = new Card();
         mockCard2.setCode("8S");
-        mockCards[0] = mockCard1;
-        mockCards[1] = mockCard2;
+        mockCards.add(mockCard1);
+        mockCards.add(mockCard2);
 
         mockCardDrawResponse = new CardDrawResponse();
         mockCardDrawResponse.setCards(mockCards);
@@ -83,8 +84,8 @@ public class CardDeckServiceTest {
         List<Card> newCards = new ArrayList<>();
         newCards = cardDeckService.drawCards(mockCardDeck, 2);
 
-        assertEquals(newCards.get(0), mockCards[0]);
-        assertEquals(newCards.get(1), mockCards[1]);
+        assertEquals(newCards.get(0), mockCards.get(0));
+        assertEquals(newCards.get(1), mockCards.get(1));
     }
 
     @Test

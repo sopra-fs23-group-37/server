@@ -4,7 +4,7 @@ import java.util.List;
 
 public class PlayerMoveMessage {
     private long playerId;
-    private String moveType;
+    private int moveType;
     private Card cardFromHand;
     private List<Card> cardsFromField;
     
@@ -14,10 +14,10 @@ public class PlayerMoveMessage {
     public void setPlayerId(long playerId) {
         this.playerId = playerId;
     }
-    public String getMoveType() {
+    public int getMoveType() {
         return moveType;
     }
-    public void setMoveType(String moveType) {
+    public void setMoveType(int moveType) {
         this.moveType = moveType;
     }
     public Card getCardFromHand() {
