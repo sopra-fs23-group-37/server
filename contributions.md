@@ -10,10 +10,10 @@
 
 ## Niels
 
-1. Implemented carddeck api call to create a deck
+1. Implemented carddeck api call to create a deck (https://github.com/sopra-fs23-group-37/server/issues/36)
 2. Implemented carddeck api call to draw cards
 3. Implemented carddeck api call to shuffle the deck
-4. Created the player class
+4. Created the player class (https://github.com/sopra-fs23-group-37/server/issues/61)
 5. Added unit tests for 1-4
 
 ## Sinthu
