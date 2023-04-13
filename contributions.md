@@ -38,3 +38,20 @@
 4. Implemented new design for general application & homescreen
 5. Add feature to trigger buttons with Enter
 6. Fixed logout functionalities
+
+
+# Week 2 Contributions
+
+## Carol
+
+1. Created game join REST endpoint
+2. Updated Home screen with the correct methods to create/join games via REST & websocket
+3. Created game start websocket endpoint
+4. Created RoundService, related entitites, and new round methods
+5. Created method in round service to deal cards
+6. Updated Server to consistently use Repositories and better split class responsibilities
+7. Created method in roundservice to check whether players still have cards after move
+8. Created method in roundservice to end round, new method in player to count points
+9. Wrote test for all of the above
+
+
