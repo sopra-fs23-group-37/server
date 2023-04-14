@@ -21,6 +21,7 @@ import java.util.Date;
  *
  * @see UserService
  */
+
 @WebAppConfiguration
 @SpringBootTest
 public class UserServiceIntegrationTest {

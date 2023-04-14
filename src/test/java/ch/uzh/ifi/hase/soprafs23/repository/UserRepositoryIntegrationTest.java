@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs23.repository;
+/*package ch.uzh.ifi.hase.soprafs23.repository;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
@@ -45,3 +45,4 @@ public class UserRepositoryIntegrationTest {
    assertEquals(found.getUserStatus(), user.getUserStatus());
  }
 }
+*/

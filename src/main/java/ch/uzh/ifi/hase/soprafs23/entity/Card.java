@@ -2,9 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Card implements Serializable{
@@ -17,6 +15,8 @@ public class Card implements Serializable{
 
     private String code;
     private String image;
+    @ManyToOne
+    @JoinColumn(name = "images_image_id")
     private Images images;
     private String value;
     private String suit;
