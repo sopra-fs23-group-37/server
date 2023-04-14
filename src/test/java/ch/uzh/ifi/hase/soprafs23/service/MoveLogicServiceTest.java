@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,5 +140,15 @@ public class MoveLogicServiceTest {
         mockPlayerMoveMessage.setMoveType(3);
 
         assertEquals(false, moveLogicService.checkMove3(mockPlayerMoveMessage));
+    }
+
+    @Test 
+    public void checkMove4_success() {
+        mockPlayerMoveMessage.setCardFromHand(mockCard2H);
+        mockCards.add(mockCard6H);
+        mockPlayerMoveMessage.setCardsFromField(mockCards);
+        mockPlayerMoveMessage.setMoveType(4);
+
+        assertEquals(true, moveLogicService.checkMove4(mockPlayerMoveMessage));
     }
 }

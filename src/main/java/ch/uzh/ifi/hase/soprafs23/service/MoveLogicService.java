@@ -79,4 +79,9 @@ public class MoveLogicService {
 
         return false;
     }
+
+    // to field
+    public boolean checkMove4(PlayerMoveMessage message) {
+        return true;
+    }
 }
