@@ -101,7 +101,7 @@ public class RoundServiceTest {
 
         Mockito.when(playerRepository.save(guestPlayer)).thenReturn(guestPlayer);
         Mockito.when(playerRepository.save(hostPlayer)).thenReturn(hostPlayer);
-        Mockito.when(cardDeckService.createShuffledDeck()).thenReturn(testDeck);
+        Mockito.when(cardDeckService.createDeck()).thenReturn(testDeck);
         Mockito.when(cardDeckService.drawCards(testDeck, 8)).thenReturn(cards8);
         Mockito.when(cardDeckService.drawCards(testDeck, 4)).thenReturn(cards4);
 

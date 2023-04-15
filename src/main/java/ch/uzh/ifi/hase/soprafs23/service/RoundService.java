@@ -45,7 +45,7 @@ public class RoundService {
         round.setRoundStatus(RoundStatus.ONGOING);
 
         // add a shuffled deck to the round
-        CardDeck deck = cardDeckService.createShuffledDeck();
+        CardDeck deck = cardDeckService.createDeck();
         round.setCardDeck(deck);
 
         // create player hands, deal 8 cards to each

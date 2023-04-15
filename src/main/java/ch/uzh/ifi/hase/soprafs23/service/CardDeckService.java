@@ -30,7 +30,6 @@ public class CardDeckService {
 	private final CardDeckRepository cardDeckRepository;
 	private final CardRepository cardRepository;
 
-	@Autowired
 	CardDeckService(
 		@Qualifier("cardDeckRepository") CardDeckRepository cardDeckRepository,
 		@Qualifier("cardRepository") CardRepository cardRepository) {
@@ -72,7 +71,7 @@ public class CardDeckService {
 
 		CardDrawResponse cardDrawResponse = objectMapper.readValue(response.body(), CardDrawResponse.class);
 		
-		cards = Arrays.asList(cardDrawResponse.getCards());
+		cards = cardDrawResponse.getCards();
 
 		cards = cardRepository.saveAll(cards);
 		cardRepository.flush();
@@ -93,18 +92,9 @@ public class CardDeckService {
 
 		CardDeck deckResponse = objectMapper.readValue(response.body(), CardDeck.class);
 		
-		deck = cardDeckRepository.save(deck);
+		deck = cardDeckRepository.save(deckResponse);
 		cardDeckRepository.flush();
 
         return deckResponse;
 	}
-
-	public CardDeck createShuffledDeck() throws IOException, InterruptedException {
-
-		// create a new deck and shuffle it
-		CardDeck deck = createDeck();
-        shuffleDeck(deck);
-		return deck;
-	}
-
 }

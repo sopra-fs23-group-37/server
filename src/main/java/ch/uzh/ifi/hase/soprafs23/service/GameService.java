@@ -39,6 +39,7 @@ public class GameService {
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
     private final RoundService roundService;
+    private final MoveLogicService moveLogicService = new MoveLogicService();
 
     @Autowired
     public GameService(
@@ -191,6 +192,7 @@ public class GameService {
     public RoundService getRoundService() {
         return this.roundService;
     }
+
     public Game makeMove(long gameId, PlayerMoveMessage message) {
         Game game = getGame(gameId);
         Game updatedGame = moveLogicService.checkMove(game, message);
