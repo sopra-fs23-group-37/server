@@ -56,8 +56,6 @@ public class Player implements Serializable{
         cardsInHand.removeIf(n -> (n.getCode().equals(card.getCode())));
     }
 
-
-
     public int getHandSize() {
         return cardsInHand.size();
     }

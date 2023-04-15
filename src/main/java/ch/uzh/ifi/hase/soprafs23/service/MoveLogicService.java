@@ -14,18 +14,19 @@ import ch.uzh.ifi.hase.soprafs23.entity.Round;
 
 // decide to work with booleans or error
 public class MoveLogicService {
+    // booleans or make gamestate class?
     public Game checkMove(Game game, PlayerMoveMessage message) {
         Round currentRound = game.getCurrentRound();
 
         switch (message.getMoveType()) {
             case 1:
-                break;
+                checkMove1(message);
             case 2:
-                break;
+                checkMove2(message);
             case 3:
-                break;
+                checkMove3(message);
             case 4: 
-                break;
+                checkMove4(message);
         }
         return game;
     }

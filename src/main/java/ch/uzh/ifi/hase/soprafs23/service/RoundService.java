@@ -11,6 +11,7 @@ import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.RoundRepository;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
+import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,5 +105,15 @@ public class RoundService {
         } else {
             return Role.HOST;
         }
+    }
+
+    private Round executeMove(Round round, PlayerMoveMessage message) {
+        // remove card from hand
+
+        // remove cards from field
+
+        // add card to field if move type correct
+
+        return round;
     }
 }
