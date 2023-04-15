@@ -136,7 +136,7 @@ public class RoundService {
         return round;
     }
 
-    private Round executeMove(Round round, PlayerMoveMessage message) {
+    public Round executeMove(Round round, PlayerMoveMessage message) {
         // remove card from hand
 
         // remove cards from field
