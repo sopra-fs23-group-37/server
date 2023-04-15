@@ -61,11 +61,6 @@ public class WSGameControllerTest {
 
     given(gameService.websocketJoin(Mockito.any(), Mockito.any())).willReturn(game);
 
-    }
-
-@Test
-void verifyGameIsReceived() throws Exception {
-
     webSocketStompClient = new WebSocketStompClient(new SockJsClient(
     List.of(new WebSocketTransport(new StandardWebSocketClient()))));
 
@@ -86,6 +81,11 @@ void verifyGameIsReceived() throws Exception {
       completableFuture.complete((Game) o);
     }
   });
+
+    }
+
+@Test
+void verifyGameIsReceived() throws Exception {
  
   given(gameService.websocketJoin(Mockito.any(), Mockito.any())).willReturn(game);
 
@@ -101,5 +101,16 @@ void verifyGameIsReceived() throws Exception {
   
 }
 
+@Test
+void verifyStartGameIsReceived() throws Exception {
+
+  given(gameService.startGame(Mockito.any())).willReturn(game);
+
+  session.send("/game/start/3",null);
+
+  Game receivedGame = completableFuture.get(60, TimeUnit.SECONDS);
+
+  assertNotNull(receivedGame);
+}
 
 }

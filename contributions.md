@@ -22,3 +22,19 @@
 2. Implemented/edited registration functionality
 3. Implemented new design for registration-page
 4. Tested user-registration manually
+
+## Timon
+
+1. Implemented login functionality
+2. Implemented logout functionality
+3. Implemented registration functionality
+4. Did tests for all of that and additional tests
+5. Created ground functionalities for game and session creation and GET, POST and PUT DTOs and methods
+
+## Beni
+
+1. Fixed login functionality
+2. Tested user login & logout functionalities
+4. Implemented new design for general application & homescreen
+5. Add feature to trigger buttons with Enter
+6. Fixed logout functionalities

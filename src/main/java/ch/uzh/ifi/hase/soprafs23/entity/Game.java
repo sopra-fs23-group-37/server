@@ -1,12 +1,10 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
-
 import ch.uzh.ifi.hase.soprafs23.constant.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-
 
 @Entity
 @Table(name = "GAME")
@@ -50,6 +48,26 @@ public class Game implements Serializable {
 
     private int totalRounds;
 
+    private int hostPoints;
+
+    private int guestPoints;
+
+    public int getHostPoints() {
+        return hostPoints;
+    }
+
+    public void setHostPoints(int hostPoints) {
+        this.hostPoints = hostPoints;
+    }
+
+    public int getGuestPoints() {
+        return guestPoints;
+    }
+
+    public void setGuestPoints(int guestPoints) {
+        this.guestPoints = guestPoints;
+    }
+
     public Role getStartingPlayer() {
         return startingPlayer;
     }
@@ -57,6 +75,7 @@ public class Game implements Serializable {
     public void setStartingPlayer(Role startingPlayer) {
         this.startingPlayer = startingPlayer;
     }
+
     public Round getCurrentRound() {
         return currentRound;
     }
@@ -121,7 +140,7 @@ public class Game implements Serializable {
         this.gameStatus = gameStatus;
     }
 
-        public PlayerStatus getHostStatus() {
+    public PlayerStatus getHostStatus() {
         return hostStatus;
     }
 

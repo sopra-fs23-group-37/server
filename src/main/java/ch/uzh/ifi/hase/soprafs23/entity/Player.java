@@ -14,14 +14,14 @@ import javax.persistence.ManyToOne;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 
 @Entity
-public class Player implements Serializable{
+public class Player implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue
     private Long playerId;
-    
+
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
     private User player;
 
@@ -32,16 +32,23 @@ public class Player implements Serializable{
 
     private Role role;
 
-    public Player(User player) {
+    private int pointsTotalCards = 0;
+
+    private int pointClubs = 0;
+
+    private int twoOfClubs = 0;
+
+    private int tenOfDiamonds = 0;
+
+    private int totalPoints = 0;
+
+    public Player(User player, Role role) {
         this.player = player;
+        this.role = role;
     }
 
     public Role getRole() {
         return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public void addCardsToHand(List<Card> cards) {
@@ -74,6 +81,37 @@ public class Player implements Serializable{
 
     public ArrayList<Card> getCardsInHand() {
         return cardsInHand;
+    }
+
+    // count the cards in the discard
+    public int countDiscard() {
+
+        // award points if more than half the total cards
+        this.pointsTotalCards = this.cardsInDiscard.size() > 26 ? 2 : 0;
+
+        // count clubs and detect special cards
+        int clubs = 0;
+        for (Card card : this.cardsInDiscard) {
+            // count total number of clubs
+            if (card.getSuit().equals("CLUBS")) {
+                clubs++;
+
+                // check if player has the 2 of Clubs
+                if (card.getCode().equals("2C")) {
+                    this.twoOfClubs = 1;
+                }
+                // check if player has the 10 of Diamonds
+            } else if (card.getCode().equals("10D")) {
+                this.tenOfDiamonds = 1;
+            }
+        }
+        // award points if more than half the clubs cards
+        this.pointClubs = clubs >= 7 ? 1 : 0;
+
+        // sum up the total points
+        this.totalPoints = this.pointsTotalCards + this.pointClubs + this.twoOfClubs + this.tenOfDiamonds;
+
+        return this.totalPoints;
     }
 
 }
