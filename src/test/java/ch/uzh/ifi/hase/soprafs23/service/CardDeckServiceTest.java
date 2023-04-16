@@ -1,5 +1,5 @@
 package ch.uzh.ifi.hase.soprafs23.service;
-/* 
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -40,13 +41,13 @@ public class CardDeckServiceTest {
     @Mock 
     private ObjectMapper objectMapper;
 
-    @Mock
-    private CardDeckRepository cardDeckRepository;
-
     @Mock 
     private HttpResponse<String> httpResponse;
 
-    @Mock 
+    @MockBean
+    private CardDeckRepository cardDeckRepository;
+
+    @MockBean
     private CardRepository cardRepository;
 
     @InjectMocks
@@ -54,6 +55,8 @@ public class CardDeckServiceTest {
 
     @BeforeEach
     public void setup() throws IOException, InterruptedException {
+        MockitoAnnotations.openMocks(this);
+        
         mockCardDeck = new CardDeck();
         mockCardDeck.setCardDeckId(1L);
         mockCardDeck.setDeck_id("testDeck_id");
@@ -76,14 +79,13 @@ public class CardDeckServiceTest {
         Mockito.when(httpResponse.statusCode()).thenReturn(200);
         Mockito.when(httpResponse.body()).thenReturn("Hello");
 
-        // this line does not work anymore (doesnt match the input, so request is sent to the api for real)
-        Mockito.when(httpClient.send(Mockito.any(HttpRequest.class), HttpResponse.BodyHandlers.ofString())).thenReturn(httpResponse);
+        Mockito.when(httpClient.send(Mockito.any(HttpRequest.class), Mockito.eq(HttpResponse.BodyHandlers.ofString()))).thenReturn(httpResponse);
 
         Mockito.when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(CardDeck.class))).thenReturn(mockCardDeck);
         Mockito.when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(CardDrawResponse.class))).thenReturn(mockCardDrawResponse);
 
-        Mockito.when(cardDeckRepository.save(Mockito.any())).thenReturn(mockCardDeck);
-        Mockito.when(cardRepository.save(Mockito.any())).thenReturn(mockCards);
+        Mockito.when(cardDeckRepository.save(Mockito.any(CardDeck.class))).thenReturn(mockCardDeck);
+        Mockito.when(cardRepository.saveAll(Mockito.any())).thenReturn(mockCards);
     }
 
     @Test
@@ -115,4 +117,4 @@ public class CardDeckServiceTest {
         assertEquals(mockCardDeck.getShuffled(), newCardDeck.getShuffled());
         assertEquals(mockCardDeck.getSuccess(), newCardDeck.getSuccess());
     }
-} */
+} 

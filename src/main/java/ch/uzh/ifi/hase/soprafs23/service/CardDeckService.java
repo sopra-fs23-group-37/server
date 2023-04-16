@@ -24,17 +24,19 @@ import ch.uzh.ifi.hase.soprafs23.repository.CardRepository;
 @Service
 @Transactional
 public class CardDeckService {
-	HttpClient httpClient = HttpClient.newHttpClient();
-	ObjectMapper objectMapper = new ObjectMapper();
+	private HttpClient httpClient; ;
+	private ObjectMapper objectMapper;
 
-	private final CardDeckRepository cardDeckRepository;
-	private final CardRepository cardRepository;
+	private CardDeckRepository cardDeckRepository;
+	private CardRepository cardRepository;
 
 	CardDeckService(
 		@Qualifier("cardDeckRepository") CardDeckRepository cardDeckRepository,
 		@Qualifier("cardRepository") CardRepository cardRepository) {
 		this.cardDeckRepository = cardDeckRepository;
 		this.cardRepository = cardRepository;
+		this.httpClient = HttpClient.newHttpClient();
+		this.objectMapper = new ObjectMapper();
 	}
 
     public CardDeck createDeck() throws IOException, InterruptedException {
@@ -72,7 +74,7 @@ public class CardDeckService {
 		CardDrawResponse cardDrawResponse = objectMapper.readValue(response.body(), CardDrawResponse.class);
 		
 		cards = cardDrawResponse.getCards();
-
+		
 		cards = cardRepository.saveAll(cards);
 		cardRepository.flush();
 
@@ -92,7 +94,7 @@ public class CardDeckService {
 
 		CardDeck deckResponse = objectMapper.readValue(response.body(), CardDeck.class);
 		
-		deck = cardDeckRepository.save(deckResponse);
+		deckResponse = cardDeckRepository.save(deckResponse);
 		cardDeckRepository.flush();
 
         return deckResponse;
