@@ -54,5 +54,6 @@
 7. Created method in roundservice to check whether players still have cards after move (https://github.com/sopra-fs23-group-37/server/issues/43)
 8. Created method in roundservice to end round, new method in player to count points (https://github.com/sopra-fs23-group-37/server/issues/46
 9. Wrote test for all of the above
+10. Fixed Sonarqube issues
 
 
