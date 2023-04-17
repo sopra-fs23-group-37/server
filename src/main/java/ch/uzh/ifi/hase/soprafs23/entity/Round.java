@@ -100,6 +100,10 @@ public class Round implements Serializable {
         cardsOnTable.addAll(cards);
     }
 
+    public void addCardToTable(Card card) {
+        cardsOnTable.add(card);
+    }
+
     public void removeCardFromTable(Card card) {
         cardsOnTable.removeIf(n -> (n.getCode().equals(card.getCode())));
     }

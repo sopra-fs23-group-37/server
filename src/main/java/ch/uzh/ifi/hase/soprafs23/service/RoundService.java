@@ -137,12 +137,28 @@ public class RoundService {
     }
 
     public Round executeMove(Round round, PlayerMoveMessage message) {
-        // remove card from hand
+        // check if move is made by correct player 
+        Player player = round.getCurrentTurnPlayer() == Role.HOST ? round.getHost() : round.getGuest();
 
-        // remove cards from field
+        // we need a structure to tell if a move was successful or not
+        if (player.getPlayer().getUserId() != message.getPlayerId()) {
+            return round;
+        }
 
-        // add card to field if move type correct
+        if (message.getMoveType() != 4) {
+            // remove card from hand
+            player.removeCardFromHand(message.getCardFromHand());
 
+            // remove cards from field and add it to that players discard
+            for (Card c : message.getCardsFromField()) {
+                round.removeCardFromTable(c);
+            }
+            player.addCardsToDiscard(message.getCardsFromField());
+
+        } else {
+            // add card to field if move type correct
+            round.addCardToTable(message.getCardFromHand());
+        }
         return round;
     }
 }
