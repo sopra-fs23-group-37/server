@@ -34,11 +34,11 @@
 
 ## Beni
 
-1. Fixed login functionality
-2. Tested user login & logout functionalities
-4. Implemented new design for general application & homescreen
-5. Add feature to trigger buttons with Enter
-6. Fixed logout functionalities
+1. Fixed login functionalities (https://github.com/sopra-fs23-group-37/client/issues/27)
+2. Tested user login & logout functionalities (https://github.com/sopra-fs23-group-37/client/issues/27)
+4. Implemented new design for general application & homescreen (https://github.com/sopra-fs23-group-37/client/issues/3, https://github.com/sopra-fs23-group-37/client/issues/24)
+5. Add feature to trigger buttons with Enter (https://github.com/sopra-fs23-group-37/client/issues/25)
+6. Fixed logout functionalities & Guarding + Routing (https://github.com/sopra-fs23-group-37/client/issues/27)
 
 
 # Week 2 Contributions
@@ -56,4 +56,5 @@
 9. Wrote test for all of the above
 10. Fixed Sonarqube issues
 
-
+## Beni
+1. Implement Login Page Design according to FIGMA (https://github.com/sopra-fs23-group-37/client/issues/1)
