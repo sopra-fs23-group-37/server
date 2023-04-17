@@ -175,7 +175,6 @@ public class GameService {
 
     public Game setStartingPlayer(Game game) {
 
-        // TODO: write a proper method to set the starting player
         Random rnd = new Random();
 
         if (rnd.nextBoolean()) {
