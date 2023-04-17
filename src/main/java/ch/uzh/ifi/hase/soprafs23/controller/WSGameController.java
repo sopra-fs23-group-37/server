@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerJoinMessage;
+import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 
 
@@ -34,6 +35,13 @@ public class WSGameController {
     @SendTo("/topic/game/{gameId}")
     public Game start(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId) throws IOException, InterruptedException {
         Game game = this.gameService.startGame(gameId);
+        return game;
+    }
+
+    @MessageMapping("/move/{gameId}")
+    @SendTo("/topic/game/{gameId}")
+    public Game move(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId, PlayerMoveMessage message) throws IOException, InterruptedException {
+        Game game = this.gameService.makeMove(gameId, message);
         return game;
     }
 

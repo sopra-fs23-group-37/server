@@ -9,6 +9,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.RoundRepository;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
+import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,7 +45,7 @@ public class RoundService {
         round.setRoundStatus(RoundStatus.ONGOING);
 
         // add a shuffled deck to the round
-        CardDeck deck = cardDeckService.createShuffledDeck();
+        CardDeck deck = cardDeckService.createDeck();
         round.setCardDeck(deck);
 
         // create player hands, deal 8 cards to each
@@ -132,6 +133,32 @@ public class RoundService {
         round.setRoundStatus(RoundStatus.FINISHED);
 
         // return the Round
+        return round;
+    }
+
+    public Round executeMove(Round round, PlayerMoveMessage message) {
+        // check if move is made by correct player 
+        Player player = round.getCurrentTurnPlayer() == Role.HOST ? round.getHost() : round.getGuest();
+
+        // we need a structure to tell if a move was successful or not
+        if (player.getPlayer().getUserId() != message.getPlayerId()) {
+            return round;
+        }
+
+        if (message.getMoveType() != 4) {
+            // remove card from hand
+            player.removeCardFromHand(message.getCardFromHand());
+
+            // remove cards from field and add it to that players discard
+            for (Card c : message.getCardsFromField()) {
+                round.removeCardFromTable(c);
+            }
+            player.addCardsToDiscard(message.getCardsFromField());
+
+        } else {
+            // add card to field if move type correct
+            round.addCardToTable(message.getCardFromHand());
+        }
         return round;
     }
 }
