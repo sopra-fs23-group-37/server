@@ -13,6 +13,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.CardDeckRepository;
@@ -47,9 +48,14 @@ public class GameServiceTest {
     @Mock
     private CardDeckService cardDeckService;
 
+    @Mock
+    private MoveLogicService moveLogicService;
+
     private User testHost;
     private User testGuest;
     private Game testGame;
+    private Round testRound;
+    private PlayerMoveMessage mockPlayerMoveMessage;
 
     @BeforeEach
     public void setup() {
@@ -57,6 +63,8 @@ public class GameServiceTest {
         // from the repositories
 
         MockitoAnnotations.openMocks(this);
+
+        testRound = new Round();
 
         testHost = new User();
         testHost.setUsername("testUsername");
@@ -70,6 +78,9 @@ public class GameServiceTest {
         testGame.setHost(testHost);
         testGame.setGuest(testGuest);
         testGame.setGameId(3L);
+        testGame.setCurrentRound(testRound);
+
+        mockPlayerMoveMessage = new PlayerMoveMessage();
 
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(testHost);
 
@@ -79,6 +90,16 @@ public class GameServiceTest {
 
         Mockito.when(gameRepository.save(Mockito.any())).thenReturn(testGame);
 
+    }
+
+    @Test
+    public void makeMove_success() {
+        Mockito.when(gameService.getGame(Mockito.any())).thenReturn(testGame);
+        Mockito.when(moveLogicService.checkMove(mockPlayerMoveMessage)).thenReturn(true);
+        Mockito.when(roundService.executeMove(Mockito.any(), Mockito.any())).thenReturn(testRound);
+        testGame = gameService.makeMove(3L, mockPlayerMoveMessage);
+
+        assertEquals(testRound, testGame.getCurrentRound());
     }
 
     // test that a valid guest joining the game updates the game as expected

@@ -37,6 +37,8 @@ public class GameService {
 
     private final Logger log = LoggerFactory.getLogger(LoginService.class);
 
+    private static final Random rnd = new Random();
+
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
     private final RoundService roundService;
@@ -174,8 +176,6 @@ public class GameService {
     }
 
     public Game setStartingPlayer(Game game) {
-
-        Random rnd = new Random();
 
         if (rnd.nextBoolean()) {
             game.setStartingPlayer(Role.HOST);
