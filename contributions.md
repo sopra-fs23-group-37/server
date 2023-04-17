@@ -2,11 +2,12 @@
 
 ## Carol
 
-1. Created Websocket Controller for the Game
-2. Added websocketjoin method to GameService to update player and game status when websocket is connected
-3. Created Websocket Configuration and updated necessary files
-4. Created CreateGame page in the client with create Game button that calls REST API
-5. Created Lobby page in the client that connects to the websocket of a specific game by id and checks whether players are connected
+1. Created Websocket Controller for the Game - (https://github.com/sopra-fs23-group-37/server/issues/57)
+2. Added websocketjoin method to GameService to update player and game status when websocket is connected (https://github.com/sopra-fs23-group-37/server/issues/57)
+3. Created Websocket Configuration and updated necessary files (https://github.com/sopra-fs23-group-37/server/issues/57)
+4. Created CreateGame page in the client with create Game button that calls REST API (https://github.com/sopra-fs23-group-37/server/issues/4)
+5. Created Lobby page in the client that connects to the websocket of a specific game by id and checks whether players are connected (https://github.com/sopra-fs23-group-37/server/issues/20)
+6. Wrote tests for all of the above
 
 ## Niels
 
@@ -44,14 +45,14 @@
 
 ## Carol
 
-1. Created game join REST endpoint
-2. Updated Home screen with the correct methods to create/join games via REST & websocket
-3. Created game start websocket endpoint
-4. Created RoundService, related entitites, and new round methods
-5. Created method in round service to deal cards
-6. Updated Server to consistently use Repositories and better split class responsibilities
-7. Created method in roundservice to check whether players still have cards after move
-8. Created method in roundservice to end round, new method in player to count points
+1. Created game join REST endpoint (https://github.com/sopra-fs23-group-37/server/issues/29)
+2. Updated Home screen with the correct methods to create/join games via REST & websocket 
+3. Created game start websocket endpoint (https://github.com/sopra-fs23-group-37/server/issues/34)
+4. Created RoundService, related entitites, and new round methods (https://github.com/sopra-fs23-group-37/server/issues/34)
+5. Created method in round service to deal cards (https://github.com/sopra-fs23-group-37/server/issues/34)
+6. Updated Server to consistently use Repositories and better split class responsibilities 
+7. Created method in roundservice to check whether players still have cards after move (https://github.com/sopra-fs23-group-37/server/issues/43)
+8. Created method in roundservice to end round, new method in player to count points (https://github.com/sopra-fs23-group-37/server/issues/46
 9. Wrote test for all of the above
 
 
