@@ -58,3 +58,11 @@
 
 ## Beni
 1. Implement Login Page Design according to FIGMA (https://github.com/sopra-fs23-group-37/client/issues/1)
+
+## Niels
+1. Implemented game logic for move validation (https://github.com/sopra-fs23-group-37/server/issues/41)
+2. Better option to determine starting player (https://github.com/sopra-fs23-group-37/server/issues/35)
+3. Implemented endpoint for move (https://github.com/sopra-fs23-group-37/server/issues/40)
+4. Update game and round after each move (https://github.com/sopra-fs23-group-37/server/issues/60)
+5. Testing for everything
+6. Updated ui in frontend according to figma
