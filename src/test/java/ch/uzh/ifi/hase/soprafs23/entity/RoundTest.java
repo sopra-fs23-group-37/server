@@ -1,4 +1,4 @@
-/*package ch.uzh.ifi.hase.soprafs23.entity;
+package ch.uzh.ifi.hase.soprafs23.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -68,4 +68,3 @@ public class RoundTest {
         assertEquals(mockRound.getTableCards().get(0).getCode(), card2.getCode());
     }
 }
-*/

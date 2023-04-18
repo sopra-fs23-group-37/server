@@ -1,4 +1,4 @@
-/*package ch.uzh.ifi.hase.soprafs23.entity;
+package ch.uzh.ifi.hase.soprafs23.entity;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,4 +36,3 @@ public class CardDrawResponseTest {
     assertEquals(cardDrawResponse.getCards(), cards);
   }
 }
-*/

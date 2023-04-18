@@ -1,4 +1,4 @@
-/*package ch.uzh.ifi.hase.soprafs23.entity;
+package ch.uzh.ifi.hase.soprafs23.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -106,4 +106,3 @@ public class PlayerTest {
     }
 
 }
-*/
