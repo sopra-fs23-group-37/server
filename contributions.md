@@ -66,3 +66,11 @@
 4. Update game and round after each move (https://github.com/sopra-fs23-group-37/server/issues/60)
 5. Testing for everything
 6. Updated ui in frontend according to figma
+
+## Timon
+
+1. Implemented the Google Cloud MySQL Database (https://github.com/sopra-fs23-group-37/server/issues/68)
+2. Add filter to get games to only return open lobbys (https://github.com/sopra-fs23-group-37/server/issues/65)
+3. Testing for everything + added a lot of tests
+
+
