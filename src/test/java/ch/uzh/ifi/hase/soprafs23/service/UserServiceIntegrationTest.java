@@ -124,6 +124,32 @@ public class UserServiceIntegrationTest {
         assertEquals("User with id 2 was not found", e.getReason());
     }
 
+    //new test to check update of user
+    @Test
+    public void updateUser_validId_success() {
+        assertNull(userRepository.findByUsername("testUsername"));
+
+        User testUser = new User();
+        testUser.setUsername("testUsername");
+        testUser.setPassword("password");
+        testUser.setCreation_date(new Date());
+        userService.createUser(testUser);
+
+        User createdUser = userRepository.findByUsername("testUsername");
+        Long id = createdUser.getUserId();
+
+        User updatedUser = new User();
+        updatedUser.setUsername("updatedUsername");
+        updatedUser.setBirthday(new Date(552218400000L));
+
+        userService.updateUser(id, updatedUser);
+
+        User finalUser = userService.getUserById(id);
+
+        assertEquals(updatedUser.getUsername(), finalUser.getUsername());
+        assertEquals(updatedUser.getBirthday(), finalUser.getBirthday());
+    }
+
     // new test to check update user with invalid id
     @Test
     public void updateUser_invalidId_throwsException() {

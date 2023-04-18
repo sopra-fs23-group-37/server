@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,10 +31,9 @@ public class LoginServiceTest {
     @InjectMocks
     private LoginService loginService;
 
-    @InjectMocks
-    private UserService userService;
-
     private User testUser;
+
+    private User newUser;
 
     private Login testLogin;
 
@@ -49,44 +49,68 @@ public class LoginServiceTest {
         testUser.setToken("testToken");
         testUser.setUserStatus(UserStatus.OFFLINE);
 
+        newUser = new User();
+        newUser.setUsername("johndoe");
+        newUser.setPassword("password123");
+        newUser.setUserStatus(UserStatus.OFFLINE);
+
         testLogin = new Login();
         testLogin.setUsername("testUsername");
         testLogin.setPassword("testPassword");
+
+        Mockito.when(userRepository.save(testUser)).thenReturn(testUser);
+        Mockito.when(userRepository.save(newUser)).thenReturn(newUser);
+        Mockito.when(loginRepository.save(testLogin)).thenReturn(testLogin);
+
+        // save the users in the database
+        testUser = userRepository.save(testUser);
+        newUser = userRepository.save(newUser);
     }
 
+
+    @Test
     public void createLogin_validInput_loginCreated() {
-        // create a new user
-        User newUser = new User();
-        newUser.setUsername("testuser");
-        newUser.setPassword("password");
+        // given
+        when(userRepository.findByUsername(testUser.getUsername())).thenReturn(testUser);
+        Login createdLogin = null;
 
-        // save the user to the repository
-        User createdUser = userService.createUser(newUser);
+        try {
+            // when
+            createdLogin = loginService.createLogin(testLogin);
 
-        // create a new login
-        Login newLogin = new Login();
-        newLogin.setUsername(createdUser.getUsername());
-        newLogin.setPassword(createdUser.getPassword());
+        } catch (ResponseStatusException ex) {
+            // then
+            fail("Exception thrown: " + ex.getMessage());
+        }
 
-        // create the login
-        Login createdLogin = loginService.createLogin(newLogin);
-
-        // check that the login was created successfully
-        assertNotNull(createdLogin, "Login was not created successfully");
+        // then
+        assertNotNull(createdLogin);
+        assertEquals(testUser.getUsername(), createdLogin.getUsername());
+        assertEquals(testUser.getPassword(), createdLogin.getPassword());
     }
 
     @Test
-    public void createLogin_userNotFound_throwException() {
+    void createLogin_userNotFound_throwException() {
         // given
-        when(userRepository.findByUsername(any())).thenReturn(null);
+        String username = "nonExistingUser";
+        String password = "password123";
 
-        // when and then
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> loginService.createLogin(testLogin));
+        // when
+        when(userRepository.findByUsername(username)).thenReturn(null);
+
+        // then
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            Login newLogin = new Login();
+            newLogin.setUsername(username);
+            newLogin.setPassword(password);
+            loginService.createLogin(newLogin);
+        });
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
         assertEquals("The username does not exist!", exception.getReason());
-        verify(loginRepository, never()).save(any());
-        verify(userRepository, never()).save(any());
+        verify(userRepository, times(1)).findByUsername(username);
+        verifyNoInteractions(loginRepository);
     }
+
 
     @Test
     public void checkPassword_validInput_passwordMatches() {
@@ -112,5 +136,36 @@ public class LoginServiceTest {
         assertEquals("The username does not exist!", exception.getReason());
         verify(userRepository, times(1)).findByUsername(any());
     }
+
+    @Test
+    void testCreateLoginWithIncorrectPassword() {
+        // given
+        String username = "testUsername";
+        String password = "wrongPassword";
+
+        User existingUser = new User();
+        existingUser.setUsername(username);
+        existingUser.setPassword("testPassword");
+
+        when(userRepository.findByUsername(username)).thenReturn(existingUser);
+
+        // when
+        Login newLogin = new Login();
+        newLogin.setUsername(username);
+        newLogin.setPassword(password);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            loginService.createLogin(newLogin);
+        });
+
+        // then
+        assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus());
+        assertEquals("The password is incorrect!", exception.getReason());
+        verify(userRepository, times(1)).findByUsername(username);
+        verifyNoInteractions(loginRepository);
+    }
+
+
+
 }
 
