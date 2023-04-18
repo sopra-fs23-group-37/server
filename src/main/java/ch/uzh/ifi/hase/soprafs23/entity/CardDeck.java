@@ -14,8 +14,7 @@ public class CardDeck implements Serializable{
     @Id
     @GeneratedValue
     private Long cardDeckId;
-
-
+    
     private Boolean success;
     private String deck_id;
     private int remaining;

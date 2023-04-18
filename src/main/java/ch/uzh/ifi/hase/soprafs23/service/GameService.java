@@ -4,6 +4,9 @@ import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.entity.PlayerJoinMessage;
+import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
+import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
@@ -19,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Game Service
@@ -33,9 +37,12 @@ public class GameService {
 
     private final Logger log = LoggerFactory.getLogger(LoginService.class);
 
+    private static final Random rnd = new Random();
+
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
     private final RoundService roundService;
+    private final MoveLogicService moveLogicService = new MoveLogicService();
 
     @Autowired
     public GameService(
@@ -170,9 +177,12 @@ public class GameService {
 
     public Game setStartingPlayer(Game game) {
 
-        // TODO: write a proper method to set the starting player
-        game.setStartingPlayer(Role.HOST);
-
+        if (rnd.nextBoolean()) {
+            game.setStartingPlayer(Role.HOST);
+        } else {
+            game.setStartingPlayer(Role.GUEST);
+        }
+        
         // save to repo and flush
         game = gameRepository.save(game);
         gameRepository.flush();
@@ -182,5 +192,21 @@ public class GameService {
     public RoundService getRoundService() {
         return this.roundService;
     }
+
+    public Game makeMove(long gameId, PlayerMoveMessage message) {
+        Game game = getGame(gameId);
+        
+        // check needed to see if cards are even in hand / field?
+        if (moveLogicService.checkMove(message)) {
+            Round updatedRound = roundService.executeMove(game.getCurrentRound(), message);
+            game.setCurrentRound(updatedRound);
+        }
+        
+        game = gameRepository.save(game);
+        gameRepository.flush();
+        return game;
+    }
+
+
 
 }

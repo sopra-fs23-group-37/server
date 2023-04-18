@@ -13,6 +13,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.CardDeckRepository;
@@ -53,16 +54,25 @@ public class GameServiceTest {
     @Mock
     private CardDeckService cardDeckService;
 
+<<<<<<< HEAD
+=======
+    @Mock
+    private MoveLogicService moveLogicService;
+>>>>>>> d6994003c554cbd649a117611cf7c0fc8f9e061f
 
     private User testHost;
     private User testGuest;
     private Game testGame;
+    private Round testRound;
+    private PlayerMoveMessage mockPlayerMoveMessage;
 
     @BeforeEach
     public void setup() {
         // initial setup so that test host, guest, and game are available to work with from the repositories
 
         MockitoAnnotations.openMocks(this);
+
+        testRound = new Round();
 
         testHost = new User();
         testHost.setUsername("testUsername");
@@ -76,7 +86,13 @@ public class GameServiceTest {
         testGame.setHost(testHost);
         testGame.setGuest(testGuest);
         testGame.setGameId(3L);
+<<<<<<< HEAD
         testGame.setGameStatus(GameStatus.WAITING);
+=======
+        testGame.setCurrentRound(testRound);
+
+        mockPlayerMoveMessage = new PlayerMoveMessage();
+>>>>>>> d6994003c554cbd649a117611cf7c0fc8f9e061f
 
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(testHost);
 
@@ -89,6 +105,7 @@ public class GameServiceTest {
     }
 
     @Test
+<<<<<<< HEAD
     void testCreateGame() {
         when(userRepository.findByUserId(testHost.getUserId())).thenReturn(testHost);
         when(gameRepository.save(any(Game.class))).thenReturn(testGame);
@@ -163,6 +180,17 @@ public class GameServiceTest {
         // Verify the repository method call was made once
         verify(gameRepository, times(1)).findByGameId(testGame.getGameId());
     }
+=======
+    public void makeMove_success() {
+        Mockito.when(gameService.getGame(Mockito.any())).thenReturn(testGame);
+        Mockito.when(moveLogicService.checkMove(mockPlayerMoveMessage)).thenReturn(true);
+        Mockito.when(roundService.executeMove(Mockito.any(), Mockito.any())).thenReturn(testRound);
+        testGame = gameService.makeMove(3L, mockPlayerMoveMessage);
+
+        assertEquals(testRound, testGame.getCurrentRound());
+    }
+
+>>>>>>> d6994003c554cbd649a117611cf7c0fc8f9e061f
     // test that a valid guest joining the game updates the game as expected
     @Test
     public void joinGame_validInputs_success() {
@@ -265,13 +293,9 @@ public class GameServiceTest {
         assertEquals(GameStatus.ONGOING, updatedGame.getGameStatus());
     }
 
+    // update with mock random or something
     @Test
     public void setStartingPlayer_success() {
-        // set the starting player
-        Game updatedGame = gameService.setStartingPlayer(testGame);
 
-        // check that it is the host
-        assertEquals(Role.HOST, updatedGame.getStartingPlayer());
     }
-
 }
