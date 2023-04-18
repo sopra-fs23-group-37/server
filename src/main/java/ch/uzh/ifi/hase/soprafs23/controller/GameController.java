@@ -16,23 +16,21 @@ import java.util.List;
 public class GameController {
 
     private final GameService gameService;
-    //private final UserService userService;
 
-    GameController(GameService gameService, UserService userService) {
+    GameController(GameService gameService) {
         this.gameService = gameService;
-        //this.userService = userService;
     }
 
     @GetMapping("/games")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<GameGetDTO> getPublicGames() {
+    public List<GameGetDTO> getOpenGames() {
         // fetch all games in the internal representation
-        List<Game> publicGames = gameService.getPublicGames();
+        List<Game> openGames = gameService.getOpenGames();
         List<GameGetDTO> gameGetDTOs = new ArrayList<>();
 
         // convert each game to the API representation
-        for (Game game : publicGames) {
+        for (Game game : openGames) {
             gameGetDTOs.add(GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
         }
         return gameGetDTOs;
