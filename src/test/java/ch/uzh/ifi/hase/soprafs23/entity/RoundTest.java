@@ -54,7 +54,7 @@ public class RoundTest {
 
         // check that they have been added correctly and can be accessed
         assertEquals(mockRound.getTableCards().get(0).getCode(), cardsOnTable.get(0).getCode());
-        assertEquals(mockRound.getCurrentTurnPlayer(), Role.HOST);
+        assertEquals(Role.HOST, mockRound.getCurrentTurnPlayer());
         assertEquals(mockRound.getHost(), host);
         assertEquals(mockRound.getGuest(), guest);
     }

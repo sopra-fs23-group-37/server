@@ -16,11 +16,9 @@ import java.util.List;
 public class GameController {
 
     private final GameService gameService;
-    //private final UserService userService;
 
-    GameController(GameService gameService, UserService userService) {
+    GameController(GameService gameService) {
         this.gameService = gameService;
-        //this.userService = userService;
     }
 
     @GetMapping("/games")

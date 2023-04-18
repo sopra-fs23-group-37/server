@@ -1,5 +1,13 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
+import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
+import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
+import ch.uzh.ifi.hase.soprafs23.entity.Round;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -7,29 +15,17 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
-import static org.mockito.BDDMockito.given;
 
-import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
-import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
-import ch.uzh.ifi.hase.soprafs23.constant.Role;
-import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
-import ch.uzh.ifi.hase.soprafs23.entity.Round;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.repository.CardDeckRepository;
-import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
-import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-
-
-import java.io.IOException;
 
 
 public class GameServiceTest {
@@ -39,11 +35,6 @@ public class GameServiceTest {
     @Mock
     private GameRepository gameRepository;
 
-    @Mock
-    private CardDeckRepository cardDeckRepository;
-
-    @InjectMocks
-    private UserService userService;
 
     @InjectMocks
     private GameService gameService;
@@ -54,11 +45,8 @@ public class GameServiceTest {
     @Mock
     private CardDeckService cardDeckService;
 
-<<<<<<< HEAD
-=======
     @Mock
     private MoveLogicService moveLogicService;
->>>>>>> d6994003c554cbd649a117611cf7c0fc8f9e061f
 
     private User testHost;
     private User testGuest;
@@ -86,13 +74,10 @@ public class GameServiceTest {
         testGame.setHost(testHost);
         testGame.setGuest(testGuest);
         testGame.setGameId(3L);
-<<<<<<< HEAD
         testGame.setGameStatus(GameStatus.WAITING);
-=======
         testGame.setCurrentRound(testRound);
 
         mockPlayerMoveMessage = new PlayerMoveMessage();
->>>>>>> d6994003c554cbd649a117611cf7c0fc8f9e061f
 
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(testHost);
 
@@ -105,7 +90,6 @@ public class GameServiceTest {
     }
 
     @Test
-<<<<<<< HEAD
     void testCreateGame() {
         when(userRepository.findByUserId(testHost.getUserId())).thenReturn(testHost);
         when(gameRepository.save(any(Game.class))).thenReturn(testGame);
@@ -180,7 +164,6 @@ public class GameServiceTest {
         // Verify the repository method call was made once
         verify(gameRepository, times(1)).findByGameId(testGame.getGameId());
     }
-=======
     public void makeMove_success() {
         Mockito.when(gameService.getGame(Mockito.any())).thenReturn(testGame);
         Mockito.when(moveLogicService.checkMove(mockPlayerMoveMessage)).thenReturn(true);
@@ -190,7 +173,6 @@ public class GameServiceTest {
         assertEquals(testRound, testGame.getCurrentRound());
     }
 
->>>>>>> d6994003c554cbd649a117611cf7c0fc8f9e061f
     // test that a valid guest joining the game updates the game as expected
     @Test
     public void joinGame_validInputs_success() {
@@ -293,9 +275,4 @@ public class GameServiceTest {
         assertEquals(GameStatus.ONGOING, updatedGame.getGameStatus());
     }
 
-    // update with mock random or something
-    @Test
-    public void setStartingPlayer_success() {
-
-    }
 }
