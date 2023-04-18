@@ -19,11 +19,17 @@ import ch.uzh.ifi.hase.soprafs23.repository.CardDeckRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
 
 public class GameServiceTest {
     @Mock
@@ -47,14 +53,14 @@ public class GameServiceTest {
     @Mock
     private CardDeckService cardDeckService;
 
+
     private User testHost;
     private User testGuest;
     private Game testGame;
 
     @BeforeEach
     public void setup() {
-        // initial setup so that test host, guest, and game are available to work with
-        // from the repositories
+        // initial setup so that test host, guest, and game are available to work with from the repositories
 
         MockitoAnnotations.openMocks(this);
 
@@ -70,6 +76,7 @@ public class GameServiceTest {
         testGame.setHost(testHost);
         testGame.setGuest(testGuest);
         testGame.setGameId(3L);
+        testGame.setGameStatus(GameStatus.WAITING);
 
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(testHost);
 
@@ -81,6 +88,81 @@ public class GameServiceTest {
 
     }
 
+    @Test
+    void testCreateGame() {
+        when(userRepository.findByUserId(testHost.getUserId())).thenReturn(testHost);
+        when(gameRepository.save(any(Game.class))).thenReturn(testGame);
+
+        Game result = gameService.createGame(testGame);
+
+        assertNotNull(result.getGameId());
+        assertEquals(GameStatus.CREATED, result.getGameStatus());
+        assertEquals(testHost, result.getHost());
+        assertEquals(PlayerStatus.WAITING, result.getHostStatus());
+        assertEquals(PlayerStatus.WAITING, result.getGuestStatus());
+        assertEquals(0, result.getTotalRounds());
+
+        verify(gameRepository, times(1)).save(any(Game.class));
+    }
+
+    @Test
+    void testGetOpenGames() {
+        // create test data
+        Game openGame1 = new Game();
+        openGame1.setGameStatus(GameStatus.WAITING);
+
+        Game openGame2 = new Game();
+        openGame2.setGameStatus(GameStatus.WAITING);
+
+        Game inProgressGame = new Game();
+        inProgressGame.setGameStatus(GameStatus.WAITING);
+
+        List<Game> allGames = new ArrayList<>();
+        allGames.add(openGame1);
+        allGames.add(openGame2);
+        allGames.add(inProgressGame);
+
+        // set up mock repository
+        when(gameRepository.findByGameStatus(GameStatus.WAITING)).thenReturn(Arrays.asList(openGame1, openGame2));
+
+        // call method under test
+        List<Game> result = gameService.getOpenGames();
+
+        // assert results
+        assertEquals(2, result.size());
+        assertTrue(result.contains(openGame1));
+        assertTrue(result.contains(openGame2));
+        assertFalse(result.contains(inProgressGame));
+
+        // verify mock repository interaction
+        verify(gameRepository, times(1)).findByGameStatus(GameStatus.WAITING);
+    }
+
+    @Test
+    void testCreateGameWithInvalidHost() {
+        when(userRepository.findByUserId(any(Long.class))).thenReturn(null);
+
+        assertThrows(ResponseStatusException.class, () -> {
+            gameService.createGame(testGame);
+        });
+
+        verify(gameRepository, never()).save(any(Game.class));
+    }
+
+    @Test
+    void testGetGame() {
+        // Mock the repository method call
+        when(gameRepository.findByGameId(testGame.getGameId())).thenReturn(testGame);
+
+        // Call the service method
+        Game result = gameService.getGame(testGame.getGameId());
+
+        // Assert the returned value
+        assertEquals(testGame, result);
+
+        // Verify the repository method call was made once
+        verify(gameRepository, times(1)).findByGameId(testGame.getGameId());
+    }
     // test that a valid guest joining the game updates the game as expected
     @Test
     public void joinGame_validInputs_success() {
