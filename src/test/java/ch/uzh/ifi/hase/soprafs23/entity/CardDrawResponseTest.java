@@ -7,20 +7,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SpringBootTest
 public class CardDrawResponseTest {
   private CardDrawResponse cardDrawResponse = new CardDrawResponse();
-  private Card[] cards = new Card[2];
+  private List<Card> cards;
 
   @BeforeEach
   public void setup() {
     MockitoAnnotations.openMocks(this);
 
+    cards = new ArrayList<Card>();
+
     Card card1 = new Card();
     Card card2 = new Card();
 
-    cards[0] = card1;
-    cards[1] = card2;
+    cards.add(card1);
+    cards.add(card2);
 
     cardDrawResponse.setCards(cards);
     cardDrawResponse.setDeck_id("testDeck_id");

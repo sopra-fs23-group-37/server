@@ -6,7 +6,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,22 +24,24 @@ import ch.uzh.ifi.hase.soprafs23.repository.CardRepository;
 @Service
 @Transactional
 public class CardDeckService {
-	HttpClient httpClient = HttpClient.newHttpClient();
-	ObjectMapper objectMapper = new ObjectMapper();
+	private HttpClient httpClient; ;
+	private ObjectMapper objectMapper;
 
-	private final CardDeckRepository cardDeckRepository;
-	private final CardRepository cardRepository;
+	private CardDeckRepository cardDeckRepository;
+	private CardRepository cardRepository;
 
-	@Autowired
 	CardDeckService(
 		@Qualifier("cardDeckRepository") CardDeckRepository cardDeckRepository,
 		@Qualifier("cardRepository") CardRepository cardRepository) {
 		this.cardDeckRepository = cardDeckRepository;
 		this.cardRepository = cardRepository;
+		this.httpClient = HttpClient.newHttpClient();
+		this.objectMapper = new ObjectMapper();
 	}
 
     public CardDeck createDeck() throws IOException, InterruptedException {
         String uri = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1";
+
 		// build get request and get deck id
 		
 		HttpRequest request = HttpRequest.newBuilder()
@@ -61,8 +62,8 @@ public class CardDeckService {
     public List<Card> drawCards(CardDeck deck, int number) throws IOException, InterruptedException {
         List<Card> cards = new ArrayList<>();
 		String uri = String.format("https://deckofcardsapi.com/api/deck/%s/draw/?count=%s", deck.getDeck_id(), number);
-		// build get request and get deck id
 
+		// build get request and get deck id
 		HttpRequest request = HttpRequest.newBuilder()
 			.GET()
 			.uri(URI.create(uri))
@@ -72,8 +73,8 @@ public class CardDeckService {
 
 		CardDrawResponse cardDrawResponse = objectMapper.readValue(response.body(), CardDrawResponse.class);
 		
-		cards = Arrays.asList(cardDrawResponse.getCards());
-
+		cards = cardDrawResponse.getCards();
+		
 		cards = cardRepository.saveAll(cards);
 		cardRepository.flush();
 
@@ -82,6 +83,7 @@ public class CardDeckService {
 
 	public CardDeck shuffleDeck(CardDeck deck) throws IOException, InterruptedException {
 		String uri = String.format("https://deckofcardsapi.com/api/deck/%s/shuffle/", deck.getDeck_id());
+		
 		// build get request and get deck id
 		HttpRequest request = HttpRequest.newBuilder()
 			.GET()
@@ -92,18 +94,9 @@ public class CardDeckService {
 
 		CardDeck deckResponse = objectMapper.readValue(response.body(), CardDeck.class);
 		
-		deck = cardDeckRepository.save(deck);
+		deckResponse = cardDeckRepository.save(deckResponse);
 		cardDeckRepository.flush();
 
         return deckResponse;
 	}
-
-	public CardDeck createShuffledDeck() throws IOException, InterruptedException {
-
-		// create a new deck and shuffle it
-		CardDeck deck = createDeck();
-        shuffleDeck(deck);
-		return deck;
-	}
-
 }
