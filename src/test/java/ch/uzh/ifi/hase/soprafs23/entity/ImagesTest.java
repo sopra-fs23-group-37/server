@@ -9,19 +9,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class ImagesTest {
-  private Images images = new Images();
+    private Images images = new Images();
 
-  @BeforeEach
-  public void setup() {
-    MockitoAnnotations.openMocks(this);
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
 
-    images.setPng("testPng");
-    images.setSvg("testSvg");
-  }
+        images.setPng("testPng");
+        images.setSvg("testSvg");
+    }
 
-  @Test
-  public void createImages_validInputs() {
-    assertEquals(images.getPng(), "testPng");
-    assertEquals(images.getSvg(), "testSvg");
-  }
+    @Test
+    public void createImages_validInputs() {
+        assertEquals("testPng", images.getPng());
+        assertEquals("testSvg", images.getSvg());
+    }
 }

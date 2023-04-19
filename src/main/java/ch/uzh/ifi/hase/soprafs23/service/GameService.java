@@ -52,8 +52,8 @@ public class GameService {
     }
 
     public List<Game> getPublicGames() {
-        List<Game> allGames = this.gameRepository.findAll();
-        return allGames;
+        List<Game> openGames = this.gameRepository.findByGameStatus(GameStatus.WAITING);
+        return openGames;
     }
 
     public Game createGame(Game newGame) {

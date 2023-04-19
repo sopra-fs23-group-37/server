@@ -21,94 +21,70 @@ import java.util.Date;
  *
  * @see UserService
  */
+
 @WebAppConfiguration
 @SpringBootTest
 public class UserServiceIntegrationTest {
 
-  @Qualifier("userRepository")
-  @Autowired
-  private UserRepository userRepository;
+    @Qualifier("userRepository")
+    @Autowired
+    private UserRepository userRepository;
 
-  @Autowired
-  private UserService userService;
+    @Autowired
+    private UserService userService;
 
-  @BeforeEach
-  public void setup() {
-    userRepository.deleteAll();
-  }
+    @BeforeEach
+    public void setup() {
+        userRepository.deleteAll();
+    }
 
-  // updated test from template
-  @Test
-  public void createUser_validInputs_success() {
-    // given
-    assertNull(userRepository.findByUsername("testUsername"));
+    // updated test from template
+    @Test
+    public void createUser_validInputs_success() {
+        // given
+        assertNull(userRepository.findByUsername("testUsername"));
 
-    User testUser = new User();
-    //testUser.setName("testName");
-    testUser.setUsername("testUsername");
-    testUser.setUsername("testUsername");
-    testUser.setPassword("password");
-    testUser.setCreation_date(new Date());
+        User testUser = new User();
+        //testUser.setName("testName");
+        testUser.setUsername("testUsername");
+        testUser.setUsername("testUsername");
+        testUser.setPassword("password");
+        testUser.setCreation_date(new Date());
 
-    // when
-    User createdUser = userService.createUser(testUser);
+        // when
+        User createdUser = userService.createUser(testUser);
 
-    // then
-    assertEquals(testUser.getUserId(), createdUser.getUserId());
-    //assertEquals(testUser.getName(), createdUser.getName());
-    assertEquals(testUser.getUsername(), createdUser.getUsername());
-    assertNotNull(createdUser.getToken());
-    assertEquals(UserStatus.ONLINE, createdUser.getUserStatus());
-  }
+        // then
+        assertEquals(testUser.getUserId(), createdUser.getUserId());
+        //assertEquals(testUser.getName(), createdUser.getName());
+        assertEquals(testUser.getUsername(), createdUser.getUsername());
+        assertNotNull(createdUser.getToken());
+        assertEquals(UserStatus.ONLINE, createdUser.getUserStatus());
+    }
 
-  // updated test from template
-  @Test
-  public void createUser_duplicateUsername_throwsException() {
-    assertNull(userRepository.findByUsername("testUsername"));
+    // updated test from template
+    @Test
+    public void createUser_duplicateUsername_throwsException() {
+        assertNull(userRepository.findByUsername("testUsername"));
 
-    User testUser = new User();
-    //testUser.setName("testName");
-    testUser.setUsername("testUsername");
-    testUser.setPassword("password");
-    testUser.setCreation_date(new Date());
+        User testUser = new User();
+        //testUser.setName("testName");
+        testUser.setUsername("testUsername");
+        testUser.setPassword("password");
+        testUser.setCreation_date(new Date());
 
-    userService.createUser(testUser);
+        userService.createUser(testUser);
 
-    // attempt to create second user with same username
-    User testUser2 = new User();
-    testUser2.setUsername("testUsername");
+        // attempt to create second user with same username
+        User testUser2 = new User();
+        testUser2.setUsername("testUsername");
 
-    // check that an error is thrown
-    assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser2));
-  }
+        // check that an error is thrown
+        assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser2));
+    }
 
-  //new test to check update of user
-  @Test
-  public void updateUser_validId_success() {
-      assertNull(userRepository.findByUsername("testUsername"));
 
-      User testUser = new User();
-      testUser.setUsername("testUsername");
-      testUser.setPassword("password");
-      testUser.setCreation_date(new Date());
-      userService.createUser(testUser);
-
-      User createdUser = userRepository.findByUsername("testUsername");
-      Long id = createdUser.getUserId();
-
-      User updatedUser = new User();
-      updatedUser.setUsername("updatedUsername");
-      updatedUser.setBirthday(new Date(552218400000L));
-
-      userService.updateUser(id, updatedUser);
-
-      User finalUser = userService.getUserById(id);
-
-      assertEquals(updatedUser.getUsername(), finalUser.getUsername());
-      assertEquals(updatedUser.getBirthday(), finalUser.getBirthday());
-  }
-
-  // new test to check get user by id
+    // new test to check get user by id
     @Test
     public void getUser_validId_success() {
         assertNull(userRepository.findByUsername("testUsername"));
@@ -146,6 +122,32 @@ public class UserServiceIntegrationTest {
                 assertThrows(ResponseStatusException.class, () -> userService.getUserById(2L));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
         assertEquals("User with id 2 was not found", e.getReason());
+    }
+
+    //new test to check update of user
+    @Test
+    public void updateUser_validId_success() {
+        assertNull(userRepository.findByUsername("testUsername"));
+
+        User testUser = new User();
+        testUser.setUsername("testUsername");
+        testUser.setPassword("password");
+        testUser.setCreation_date(new Date());
+        userService.createUser(testUser);
+
+        User createdUser = userRepository.findByUsername("testUsername");
+        Long id = createdUser.getUserId();
+
+        User updatedUser = new User();
+        updatedUser.setUsername("updatedUsername");
+        updatedUser.setBirthday(new Date(552218400000L));
+
+        userService.updateUser(id, updatedUser);
+
+        User finalUser = userService.getUserById(id);
+
+        assertEquals(updatedUser.getUsername(), finalUser.getUsername());
+        assertEquals(updatedUser.getBirthday(), finalUser.getBirthday());
     }
 
     // new test to check update user with invalid id

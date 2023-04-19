@@ -133,14 +133,16 @@ public class RoundServiceTest {
     public void executeMove_successT4() {
         mockPlayerMoveMessage.setMoveType(4);
         mockPlayerMoveMessage.setCardFromHand(card1);
+        testRound.setLastCardGrab(Role.GUEST);
 
         roundService.executeMove(testRound, mockPlayerMoveMessage);
 
         assertEquals(testRound.getTableCards().size(), 1);
         assertEquals(testRound.getTableCards().get(0), card1);
+        assertEquals(Role.GUEST, testRound.getLastCardGrab());
     }
 
-    @Test 
+    @Test
     public void executeMovesuccesT1() {
         mockPlayerMoveMessage.setMoveType(1);
         mockPlayerMoveMessage.setCardFromHand(card8);
@@ -156,9 +158,10 @@ public class RoundServiceTest {
         assertEquals(card5, hostPlayer.getCardsInHand().get(0));
         assertEquals(1, hostPlayer.getCardsInDiscard().size());
         assertEquals(card2, hostPlayer.getCardsInDiscard().get(0));
+        assertEquals(Role.HOST, testRound.getLastCardGrab());
     }
 
-    @Test 
+    @Test
     public void executeMovesuccesT2() {
         mockPlayerMoveMessage.setMoveType(2);
         mockPlayerMoveMessage.setCardFromHand(card7);
@@ -173,9 +176,10 @@ public class RoundServiceTest {
         assertEquals(1, hostPlayer.getCardsInHand().size());
         assertEquals(card5, hostPlayer.getCardsInHand().get(0));
         assertEquals(2, hostPlayer.getCardsInDiscard().size());
+        assertEquals(Role.HOST, testRound.getLastCardGrab());
     }
 
-    @Test 
+    @Test
     public void executeMovesuccesT3() {
         mockPlayerMoveMessage.setMoveType(3);
         mockPlayerMoveMessage.setCardFromHand(card6);
@@ -191,6 +195,7 @@ public class RoundServiceTest {
         assertEquals(card5, hostPlayer.getCardsInHand().get(0));
         assertEquals(4, hostPlayer.getCardsInDiscard().size());
         assertEquals(cards4, hostPlayer.getCardsInDiscard());
+        assertEquals(Role.HOST, testRound.getLastCardGrab());
     }
 
     @Test
