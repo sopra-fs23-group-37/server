@@ -14,8 +14,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Date;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -67,7 +65,6 @@ public class LoginServiceTest {
         newUser = userRepository.save(newUser);
     }
 
-
     @Test
     public void createLogin_validInput_loginCreated() {
         // given
@@ -110,7 +107,6 @@ public class LoginServiceTest {
         verify(userRepository, times(1)).findByUsername(username);
         verifyNoInteractions(loginRepository);
     }
-
 
     @Test
     public void checkPassword_validInput_passwordMatches() {
@@ -164,7 +160,5 @@ public class LoginServiceTest {
         verify(userRepository, times(1)).findByUsername(username);
         verifyNoInteractions(loginRepository);
     }
-
-
 
 }

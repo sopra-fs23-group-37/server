@@ -17,7 +17,7 @@ import java.util.Date;
  * the primary key
  */
 @Entity
-@Table(name = "user")
+@Table(name = "USER")
 public class User implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -44,7 +44,6 @@ public class User implements Serializable {
   @Column(nullable = true)
   private Date birthday;
 
-
   public Long getUserId() {
     return userId;
   }
@@ -64,7 +63,7 @@ public class User implements Serializable {
   public String getPassword() {
     return password;
   }
-  
+
   public void setPassword(String password) {
     this.password = password;
   }
@@ -85,7 +84,7 @@ public class User implements Serializable {
     this.userStatus = userStatus;
   }
 
-    public Date getCreation_date() {
+  public Date getCreation_date() {
     return creation_date;
   }
 
