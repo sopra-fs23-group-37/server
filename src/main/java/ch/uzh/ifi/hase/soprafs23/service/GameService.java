@@ -128,9 +128,9 @@ public class GameService {
         Game game = getGame(gameId);
 
         // update the host/guest status in the game
-        if (playerId == game.getHost().getUserId()) {
+        if (playerId.equals(game.getHost().getUserId())) {
             game.setHostStatus(PlayerStatus.CONNECTED);
-        } else if (playerId == game.getGuest().getUserId()) {
+        } else if (playerId.equals(game.getGuest().getUserId())) {
             game.setGuestStatus(PlayerStatus.CONNECTED);
         }
 
