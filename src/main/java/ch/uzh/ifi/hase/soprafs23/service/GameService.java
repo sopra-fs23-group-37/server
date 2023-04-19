@@ -184,10 +184,6 @@ public class GameService {
         return game;
     }
 
-    public RoundService getRoundService() {
-        return this.roundService;
-    }
-
     public Game makeMove(long gameId, PlayerMoveMessage message) throws IOException, InterruptedException {
         Game game = getGame(gameId);
 

@@ -92,13 +92,37 @@ public class GameServiceTest {
     }
 
     @Test
-    public void makeMove_success() throws IOException, InterruptedException {
+    public void makeMove_roundContinues_success() throws IOException, InterruptedException {
+        // given
         Mockito.when(gameService.getGame(Mockito.any())).thenReturn(testGame);
         Mockito.when(moveLogicService.checkMove(mockPlayerMoveMessage)).thenReturn(true);
         Mockito.when(roundService.executeMove(Mockito.any(), Mockito.any())).thenReturn(testRound);
+        Mockito.when(roundService.postMoveChecks(testRound)).thenReturn(false);
+        testGame.setGameStatus(GameStatus.ONGOING);
+
+        // when
         testGame = gameService.makeMove(3L, mockPlayerMoveMessage);
 
+        // expected return
         assertEquals(testRound, testGame.getCurrentRound());
+        assertEquals(GameStatus.ONGOING, testGame.getGameStatus());
+    }
+
+    @Test
+    public void makeMove_roundEnds_success() throws IOException, InterruptedException {
+        // given
+        Mockito.when(gameService.getGame(Mockito.any())).thenReturn(testGame);
+        Mockito.when(moveLogicService.checkMove(mockPlayerMoveMessage)).thenReturn(true);
+        Mockito.when(roundService.executeMove(Mockito.any(), Mockito.any())).thenReturn(testRound);
+        Mockito.when(roundService.postMoveChecks(testRound)).thenReturn(true);
+        testGame.setGameStatus(GameStatus.ONGOING);
+
+        // when
+        testGame = gameService.makeMove(3L, mockPlayerMoveMessage);
+
+        // expected return
+        assertEquals(testRound, testGame.getCurrentRound());
+        assertEquals(GameStatus.ONGOING, testGame.getGameStatus());
     }
 
     // test that a valid guest joining the game updates the game as expected
@@ -258,7 +282,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void checkWinner_noWinner() throws IOException, InterruptedException {
+    public void checkWinner_11reached_noWinner() throws IOException, InterruptedException {
         // given guest has 11 points and host 10
         testGame.setHostPoints(10);
         testGame.setGuestPoints(11);
@@ -276,6 +300,26 @@ public class GameServiceTest {
         assertEquals(GameStatus.ONGOING, testGame.getGameStatus());
         assertNull(testGame.getWinner());
         assertEquals(secondRound, testGame.getCurrentRound());
+    }
 
+    @Test
+    public void checkWinner_11NotReached_noWinner() throws IOException, InterruptedException {
+        // given guest has 11 points and host 10
+        testGame.setHostPoints(9);
+        testGame.setGuestPoints(5);
+        testGame.setGameStatus(GameStatus.ONGOING);
+
+        Round secondRound = new Round();
+        secondRound.setRoundId(99L);
+
+        given(roundService.newRound(Mockito.any())).willReturn(secondRound);
+
+        // check the winner
+        gameService.checkWinner(testGame);
+
+        // assert that there is no winner and the new round has been set up
+        assertEquals(GameStatus.ONGOING, testGame.getGameStatus());
+        assertNull(testGame.getWinner());
+        assertEquals(secondRound, testGame.getCurrentRound());
     }
 }
