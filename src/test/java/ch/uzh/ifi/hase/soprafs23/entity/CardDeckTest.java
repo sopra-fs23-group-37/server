@@ -23,9 +23,9 @@ public class CardDeckTest {
 
   @Test
   public void createImages_validInputs() {
-    assertEquals("testDeck_id", cardDeck.getDeck_id());
-    assertEquals(52, cardDeck.getRemaining());
-    assertEquals(true, cardDeck.getShuffled());
-    assertEquals(true, cardDeck.getSuccess());
+    assertEquals(cardDeck.getDeck_id(), "testDeck_id");
+    assertEquals(cardDeck.getRemaining(), 52);
+    assertEquals(cardDeck.getShuffled(), true);
+    assertEquals(cardDeck.getSuccess(), true);
   }
 }

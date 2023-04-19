@@ -117,17 +117,4 @@ public class CardDeckServiceTest {
         assertEquals(mockCardDeck.getShuffled(), newCardDeck.getShuffled());
         assertEquals(mockCardDeck.getSuccess(), newCardDeck.getSuccess());
     }
-
-    // TODO: figure out why this test does not work
-    // @Test
-    // public void createShuffledDeck_success() throws IOException, InterruptedException {
-    //     CardDeck newCardDeck = cardDeckService.createShuffledDeck();
-
-    //     assertEquals(mockCardDeck.getDeck_id(), newCardDeck.getDeck_id());
-    //     assertEquals(mockCardDeck.getRemaining(), newCardDeck.getRemaining());
-    //     assertEquals(mockCardDeck.getShuffled(), newCardDeck.getShuffled());
-    //     assertEquals(mockCardDeck.getSuccess(), newCardDeck.getSuccess());
-    // }
-}
-
-
+} 
