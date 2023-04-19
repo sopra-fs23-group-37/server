@@ -34,14 +34,14 @@ public class CardDeckServiceTest {
     private Card mockCard1;
     private Card mockCard2;
     private CardDrawResponse mockCardDrawResponse;
-    
+
     @Mock
     private HttpClient httpClient;
 
-    @Mock 
+    @Mock
     private ObjectMapper objectMapper;
 
-    @Mock 
+    @Mock
     private HttpResponse<String> httpResponse;
 
     @MockBean
@@ -56,7 +56,7 @@ public class CardDeckServiceTest {
     @BeforeEach
     public void setup() throws IOException, InterruptedException {
         MockitoAnnotations.openMocks(this);
-        
+
         mockCardDeck = new CardDeck();
         mockCardDeck.setCardDeckId(1L);
         mockCardDeck.setDeck_id("testDeck_id");
@@ -79,10 +79,12 @@ public class CardDeckServiceTest {
         Mockito.when(httpResponse.statusCode()).thenReturn(200);
         Mockito.when(httpResponse.body()).thenReturn("Hello");
 
-        Mockito.when(httpClient.send(Mockito.any(HttpRequest.class), Mockito.eq(HttpResponse.BodyHandlers.ofString()))).thenReturn(httpResponse);
+        Mockito.when(httpClient.send(Mockito.any(HttpRequest.class), Mockito.eq(HttpResponse.BodyHandlers.ofString())))
+                .thenReturn(httpResponse);
 
         Mockito.when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(CardDeck.class))).thenReturn(mockCardDeck);
-        Mockito.when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(CardDrawResponse.class))).thenReturn(mockCardDrawResponse);
+        Mockito.when(objectMapper.readValue(Mockito.anyString(), Mockito.eq(CardDrawResponse.class)))
+                .thenReturn(mockCardDrawResponse);
 
         Mockito.when(cardDeckRepository.save(Mockito.any(CardDeck.class))).thenReturn(mockCardDeck);
         Mockito.when(cardRepository.saveAll(Mockito.any())).thenReturn(mockCards);
@@ -118,16 +120,4 @@ public class CardDeckServiceTest {
         assertEquals(mockCardDeck.getSuccess(), newCardDeck.getSuccess());
     }
 
-    // TODO: figure out why this test does not work
-    // @Test
-    // public void createShuffledDeck_success() throws IOException, InterruptedException {
-    //     CardDeck newCardDeck = cardDeckService.createShuffledDeck();
-
-    //     assertEquals(mockCardDeck.getDeck_id(), newCardDeck.getDeck_id());
-    //     assertEquals(mockCardDeck.getRemaining(), newCardDeck.getRemaining());
-    //     assertEquals(mockCardDeck.getShuffled(), newCardDeck.getShuffled());
-    //     assertEquals(mockCardDeck.getSuccess(), newCardDeck.getSuccess());
-    // }
 }
-
-
