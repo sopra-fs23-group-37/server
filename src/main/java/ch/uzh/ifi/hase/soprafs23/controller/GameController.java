@@ -28,7 +28,7 @@ public class GameController {
     @ResponseBody
     public List<GameGetDTO> getPublicGames() {
         // fetch all games in the internal representation
-        List<Game> publicGames = gameService.getPublicGames();
+        List<Game> publicGames = gameService.getOpenGames();
         List<GameGetDTO> gameGetDTOs = new ArrayList<>();
 
         // convert each game to the API representation
