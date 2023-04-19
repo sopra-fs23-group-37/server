@@ -9,26 +9,26 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class CardTest {
-  private Card card = new Card();
-  private Images images = new Images();
+    private Card card = new Card();
+    private Images images = new Images();
 
-  @BeforeEach
-  public void setup() {
-    MockitoAnnotations.openMocks(this);
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
 
-    card.setCode("testCode");
-    card.setImage("testImage");
-    card.setImages(images);
-    card.setSuit("testSuit");
-    card.setValue("testValue");
-  }
+        card.setCode("testCode");
+        card.setImage("testImage");
+        card.setImages(images);
+        card.setSuit("testSuit");
+        card.setValue("testValue");
+    }
 
-  @Test
-  public void createCard_validInputs() {
-    assertEquals(card.getCode(), "testCode");
-    assertEquals(card.getImage(), "testImage");
-    assertEquals(card.getImages(), images);
-    assertEquals(card.getSuit(), "testSuit");
-    assertEquals(card.getValue(), "testValue");
-  }
+    @Test
+    public void createCard_validInputs() {
+        assertEquals("testCode", card.getCode());
+        assertEquals("testImage", card.getImage());
+        assertEquals(card.getImages(), images);
+        assertEquals("testSuit", card.getSuit());
+        assertEquals("testValue", card.getValue());
+    }
 }
