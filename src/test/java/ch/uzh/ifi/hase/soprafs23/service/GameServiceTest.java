@@ -114,7 +114,7 @@ public class GameServiceTest {
         Mockito.when(gameService.getGame(Mockito.any())).thenReturn(testGame);
         Mockito.when(moveLogicService.checkMove(mockPlayerMoveMessage)).thenReturn(true);
         Mockito.when(roundService.executeMove(Mockito.any(), Mockito.any())).thenReturn(testRound);
-        Mockito.when(roundService.postMoveChecks(testRound)).thenReturn(true);
+        Mockito.when(roundService.postMoveChecks(Mockito.any())).thenReturn(true);
         testGame.setGameStatus(GameStatus.ONGOING);
 
         // when
