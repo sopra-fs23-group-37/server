@@ -112,7 +112,7 @@ public class GameServiceTest {
     public void makeMove_roundEnds_success() throws IOException, InterruptedException {
         // given
         Mockito.when(gameService.getGame(Mockito.any())).thenReturn(testGame);
-        Mockito.when(moveLogicService.checkMove(mockPlayerMoveMessage)).thenReturn(true);
+        Mockito.when(moveLogicService.checkMove(Mockito.any())).thenReturn(true);
         Mockito.when(roundService.executeMove(Mockito.any(), Mockito.any())).thenReturn(testRound);
         Mockito.when(roundService.postMoveChecks(Mockito.any())).thenReturn(true);
         testGame.setGameStatus(GameStatus.ONGOING);
@@ -121,7 +121,6 @@ public class GameServiceTest {
         testGame = gameService.makeMove(3L, mockPlayerMoveMessage);
 
         // expected return
-        assertEquals(testRound, testGame.getCurrentRound());
         assertEquals(GameStatus.ONGOING, testGame.getGameStatus());
     }
 

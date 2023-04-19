@@ -40,13 +40,15 @@ public class GameService {
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
     private final RoundService roundService;
-    private final MoveLogicService moveLogicService = new MoveLogicService();
+    private final MoveLogicService moveLogicService;
 
     public GameService(@Qualifier("userRepository") UserRepository userRepository,
-            @Qualifier("gameRepository") GameRepository gameRepository, RoundService roundService) {
+            @Qualifier("gameRepository") GameRepository gameRepository, RoundService roundService,
+            MoveLogicService moveLogicService) {
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
         this.roundService = roundService;
+        this.moveLogicService = moveLogicService;
     }
 
     public List<Game> getPublicGames() {
@@ -188,20 +190,23 @@ public class GameService {
         Game game = getGame(gameId);
 
         // check needed to see if cards are even in hand / field?
-        if (moveLogicService.checkMove(message)) {
+        Boolean validMove = moveLogicService.checkMove(message);
+        if (!validMove) {
+            // handle the issue if the move is not valid and return
+            return game;
+        }
 
-            // execute the move and update the round
-            Round updatedRound = roundService.executeMove(game.getCurrentRound(), message);
-            game.setCurrentRound(updatedRound);
+        // execute the move and update the round
+        Round updatedRound = roundService.executeMove(game.getCurrentRound(), message);
+        game.setCurrentRound(updatedRound);
 
-            // do post move checks and determine if the round was finished
-            Boolean endOfRound = roundService.postMoveChecks(updatedRound);
+        // do post move checks and determine if the round was finished
+        Boolean endOfRound = roundService.postMoveChecks(updatedRound);
 
-            // if the round was finished, updates the points and check if there is a winner
-            if (endOfRound) {
-                updatePoints(game);
-                checkWinner(game);
-            }
+        // if the round was finished, updates the points and check if there is a winner
+        if (endOfRound) {
+            updatePoints(game);
+            checkWinner(game);
         }
 
         // update the game in the repository and return it

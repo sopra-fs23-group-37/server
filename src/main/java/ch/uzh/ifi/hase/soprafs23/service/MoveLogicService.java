@@ -2,6 +2,8 @@ package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Card;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 // we assume a move has player, cards from hand + cards from field
 // maybe needs a field to define type of move (joker, normal, double, put down)
@@ -10,6 +12,8 @@ import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
 // 1: 1-1, 2: x-1, 3: JACK, 4: to field
 
 // decide to work with booleans or error
+@Service
+@Transactional
 public class MoveLogicService {
     // booleans or make gamestate class?
     public boolean checkMove(PlayerMoveMessage message) {
