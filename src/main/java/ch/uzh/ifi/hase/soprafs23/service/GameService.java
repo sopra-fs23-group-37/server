@@ -188,18 +188,58 @@ public class GameService {
         return this.roundService;
     }
 
-    public Game makeMove(long gameId, PlayerMoveMessage message) {
+    public Game makeMove(long gameId, PlayerMoveMessage message) throws IOException, InterruptedException {
         Game game = getGame(gameId);
 
         // check needed to see if cards are even in hand / field?
         if (moveLogicService.checkMove(message)) {
+
+            // execute the move and update the round
             Round updatedRound = roundService.executeMove(game.getCurrentRound(), message);
             game.setCurrentRound(updatedRound);
+
+            // do post move checks and determine if the round was finished
+            Boolean endOfRound = roundService.postMoveChecks(updatedRound);
+
+            // if the round was finished, updates the points and check if there is a winner
+            if (endOfRound) {
+                updatePoints(game);
+                checkWinner(game);
+            }
         }
 
+        // update the game in the repository and return it
         game = gameRepository.save(game);
         gameRepository.flush();
         return game;
     }
 
+    public void updatePoints(Game game) {
+        // add points from the finished round (still set as current) to the total points
+        // on the game
+        game.setGuestPoints(game.getGuestPoints() + game.getCurrentRound().getGuestPoints());
+        game.setHostPoints(game.getHostPoints() + game.getCurrentRound().getHostPoints());
+    }
+
+    public void checkWinner(Game game) throws IOException, InterruptedException {
+        // check if there is a winner, i.e. if one of the players has at least 11 points
+        // and 2 more than the other player
+        if ((game.getGuestPoints() >= 11 || game.getHostPoints() >= 11)
+                && java.lang.Math.abs(game.getGuestPoints() - game.getHostPoints()) >= 2) {
+
+            // check if it is the guest or the host who won and set them as the winnre
+            if (game.getGuestPoints() > game.getHostPoints()) {
+                game.setWinner(game.getGuest());
+            } else {
+                game.setWinner(game.getHost());
+            }
+
+            // update the game status
+            game.setGameStatus(GameStatus.FINISHED);
+        }
+        // if there was no winner yet, set up a new round for the game
+        else {
+            game.setCurrentRound(roundService.newRound(game));
+        }
+    }
 }
