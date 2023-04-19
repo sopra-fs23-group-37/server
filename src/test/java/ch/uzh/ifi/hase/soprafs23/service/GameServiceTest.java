@@ -26,14 +26,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-
 public class GameServiceTest {
     @Mock
     private UserRepository userRepository;
 
     @Mock
     private GameRepository gameRepository;
-
 
     @InjectMocks
     private GameService gameService;
@@ -55,7 +53,8 @@ public class GameServiceTest {
 
     @BeforeEach
     public void setup() {
-        // initial setup so that test host, guest, and game are available to work with from the repositories
+        // initial setup so that test host, guest, and game are available to work with
+        // from the repositories
 
         MockitoAnnotations.openMocks(this);
 
@@ -163,7 +162,7 @@ public class GameServiceTest {
         // Verify the repository method call was made once
         verify(gameRepository, times(1)).findByGameId(testGame.getGameId());
     }
-    
+
     @Test
     public void makeMove_roundContinues_success() throws IOException, InterruptedException {
         // given
@@ -195,6 +194,20 @@ public class GameServiceTest {
 
         // expected return
         assertEquals(GameStatus.ONGOING, testGame.getGameStatus());
+    }
+
+    // placeholder test for invalid move, needs updating when we know how that goes
+    @Test
+    public void makeMove_invalid() throws IOException, InterruptedException {
+        // given
+        Mockito.when(gameService.getGame(Mockito.any())).thenReturn(testGame);
+        Mockito.when(moveLogicService.checkMove(Mockito.any())).thenReturn(false);
+
+        // when
+        Game updatedGame = gameService.makeMove(3L, mockPlayerMoveMessage);
+
+        // expected return
+        assertEquals(testGame, updatedGame);
     }
 
     // test that a valid guest joining the game updates the game as expected
