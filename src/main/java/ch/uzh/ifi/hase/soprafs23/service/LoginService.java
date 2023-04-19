@@ -7,7 +7,6 @@ import ch.uzh.ifi.hase.soprafs23.repository.LoginRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -32,12 +31,11 @@ public class LoginService {
   private final UserRepository userRepository;
   private final LoginRepository loginRepository;
 
-  @Autowired
-  public LoginService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("loginRepository") LoginRepository loginRepository) {
+  public LoginService(@Qualifier("userRepository") UserRepository userRepository,
+      @Qualifier("loginRepository") LoginRepository loginRepository) {
     this.userRepository = userRepository;
     this.loginRepository = loginRepository;
   }
-
 
   public Login createLogin(Login newLogin) {
 
@@ -45,12 +43,12 @@ public class LoginService {
     newLogin.setSuccessful(checkPassword(newLogin));
     User foundUser = userRepository.findByUsername(newLogin.getUsername());
     if (foundUser == null) {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user with username " + newLogin.getUsername() + " does not exist!");
-     }
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+          "The user with username " + newLogin.getUsername() + " does not exist!");
+    }
     newLogin.setUserId(foundUser.getUserId());
     foundUser.setUserStatus(UserStatus.ONLINE);
     newLogin.setToken(foundUser.getToken());
-    
 
     // saves the given entity but data is only persisted in the database once
     // flush() is called
@@ -64,18 +62,18 @@ public class LoginService {
     return newLogin;
   }
 
-    public Boolean checkPassword(Login newLogin) {
-      User user = userRepository.findByUsername(newLogin.getUsername());
-      if (user == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The username does not exist!");
-        }
-      String correctPassword = user.getPassword();
-      String enteredPassword = newLogin.getPassword();
-      if (correctPassword.equals(enteredPassword)) {
-          return true;
-      } else throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "The password is incorrect!");
-
+  public Boolean checkPassword(Login newLogin) {
+    User user = userRepository.findByUsername(newLogin.getUsername());
+    if (user == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The username does not exist!");
     }
+    String correctPassword = user.getPassword();
+    String enteredPassword = newLogin.getPassword();
+    if (correctPassword.equals(enteredPassword)) {
+      return true;
+    } else
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "The password is incorrect!");
 
+  }
 
 }

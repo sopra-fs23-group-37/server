@@ -45,8 +45,9 @@ public interface GameDTOMapper {
     @Mapping(target = "startingPlayer", ignore = true)
     @Mapping(target = "currentRound", ignore = true)
     @Mapping(target = "totalRounds", ignore = true)
+    @Mapping(target = "hostPoints", ignore = true)
+    @Mapping(target = "guestPoints", ignore = true)
     Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
-
 
     @Mapping(source = "gameId", target = "gameId")
     @Mapping(source = "host", target = "host")
@@ -59,7 +60,8 @@ public interface GameDTOMapper {
     @Mapping(target = "startingPlayer", ignore = true)
     @Mapping(target = "currentRound", ignore = true)
     @Mapping(target = "totalRounds", ignore = true)
+    @Mapping(target = "hostPoints", ignore = true)
+    @Mapping(target = "guestPoints", ignore = true)
     Game convertGamePutDTOtoEntity(GamePutDTO gamePutDTO);
 
 }
-
