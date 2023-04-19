@@ -67,6 +67,10 @@
 5. Testing for everything
 6. Updated ui in frontend according to figma
 
+## Sinthu
+1. Implemented/edited registration functionality (https://github.com/sopra-fs23-group-37/client/issues/2)
+2. Created a design for rulebook and defined the rules for the game (https://github.com/sopra-fs23-group-37/client/issues/17)
+
 ## Timon
 
 1. Implemented the Google Cloud MySQL Database (https://github.com/sopra-fs23-group-37/server/issues/68)
