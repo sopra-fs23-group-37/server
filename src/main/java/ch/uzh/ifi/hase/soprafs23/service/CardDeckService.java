@@ -23,7 +23,7 @@ import ch.uzh.ifi.hase.soprafs23.repository.CardRepository;
 @Service
 @Transactional
 public class CardDeckService {
-	private HttpClient httpClient;;
+	private HttpClient httpClient;
 	private ObjectMapper objectMapper;
 
 	private CardDeckRepository cardDeckRepository;
