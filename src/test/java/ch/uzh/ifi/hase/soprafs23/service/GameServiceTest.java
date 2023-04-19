@@ -11,7 +11,6 @@ import static org.mockito.BDDMockito.given;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
-import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;

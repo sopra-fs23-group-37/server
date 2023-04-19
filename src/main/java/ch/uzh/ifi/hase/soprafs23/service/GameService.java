@@ -4,7 +4,6 @@ import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.PlayerJoinMessage;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
@@ -12,7 +11,6 @@ import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -44,11 +42,8 @@ public class GameService {
     private final RoundService roundService;
     private final MoveLogicService moveLogicService = new MoveLogicService();
 
-    @Autowired
-    public GameService(
-            @Qualifier("userRepository") UserRepository userRepository,
-            @Qualifier("gameRepository") GameRepository gameRepository,
-            RoundService roundService) {
+    public GameService(@Qualifier("userRepository") UserRepository userRepository,
+            @Qualifier("gameRepository") GameRepository gameRepository, RoundService roundService) {
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
         this.roundService = roundService;
@@ -182,7 +177,7 @@ public class GameService {
         } else {
             game.setStartingPlayer(Role.GUEST);
         }
-        
+
         // save to repo and flush
         game = gameRepository.save(game);
         gameRepository.flush();
@@ -195,18 +190,16 @@ public class GameService {
 
     public Game makeMove(long gameId, PlayerMoveMessage message) {
         Game game = getGame(gameId);
-        
+
         // check needed to see if cards are even in hand / field?
         if (moveLogicService.checkMove(message)) {
             Round updatedRound = roundService.executeMove(game.getCurrentRound(), message);
             game.setCurrentRound(updatedRound);
         }
-        
+
         game = gameRepository.save(game);
         gameRepository.flush();
         return game;
     }
-
-
 
 }

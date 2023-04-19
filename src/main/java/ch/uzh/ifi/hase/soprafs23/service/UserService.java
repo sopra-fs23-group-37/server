@@ -6,7 +6,6 @@ import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -33,7 +32,6 @@ public class UserService {
 
   private final UserRepository userRepository;
 
-  @Autowired
   public UserService(@Qualifier("userRepository") UserRepository userRepository) {
     this.userRepository = userRepository;
   }
@@ -76,86 +74,78 @@ public class UserService {
     String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
     if (userByUsername != null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
-    } 
+    }
   }
 
-
-    private void checkIfUserIsValid(User userToBeCreated) {
-        if(userToBeCreated.getUsername().isEmpty() && userToBeCreated.getPassword().isEmpty()){
-            String ErrorMessage = "Creating user failed because username and password are empty";
-            throw  new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
-        }
-
-        else if(userToBeCreated.getUsername().isEmpty()){
-            String ErrorMessage = "Creating a new user failed because username is empty";
-            throw  new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
-        }
-
-        else if(userToBeCreated.getPassword().isEmpty()){
-            String ErrorMessage = "Creating a new user failed because password is empty";
-            throw  new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
-        }
+  private void checkIfUserIsValid(User userToBeCreated) {
+    if (userToBeCreated.getUsername().isEmpty() && userToBeCreated.getPassword().isEmpty()) {
+      String ErrorMessage = "Creating user failed because username and password are empty";
+      throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
     }
 
-  public User getUserById(Long id) {
-      Optional<User> optionalUserFound = this.userRepository.findById(id);
-      
-      // handle errors if no user with that id exists
-      String baseErrorMessage = "User with id %x was not found";
-      User user = optionalUserFound.orElseThrow(() ->
-          new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage,id))
-      );
+    else if (userToBeCreated.getUsername().isEmpty()) {
+      String ErrorMessage = "Creating a new user failed because username is empty";
+      throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
+    }
 
-      return user;
+    else if (userToBeCreated.getPassword().isEmpty()) {
+      String ErrorMessage = "Creating a new user failed because password is empty";
+      throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
+    }
   }
 
+  public User getUserById(Long id) {
+    Optional<User> optionalUserFound = this.userRepository.findById(id);
+
+    // handle errors if no user with that id exists
+    String baseErrorMessage = "User with id %x was not found";
+    User user = optionalUserFound
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(baseErrorMessage, id)));
+
+    return user;
+  }
 
   public void updateUser(Long userId, User userInput) {
     User updateUser = getUserById(userId);
 
-      if(checkIfUsernameExistsWithoutMine(userId, userInput)){
-          String ErrorMessage = "Modifying the user failed because username already exists";
-          throw  new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
-      }
+    if (checkIfUsernameExistsWithoutMine(userId, userInput)) {
+      String ErrorMessage = "Modifying the user failed because username already exists";
+      throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
+    }
 
-      else if(updateUser.getUserStatus() == UserStatus.OFFLINE){
-          String ErrorMessage = "Modifying the user failed because user is offline";
-          throw  new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage);
-      }
-      else if(userInput.getUsername().isEmpty()) {
-          String ErrorMessage = "Modifying the user failed because username is empty";
-          throw  new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
-      }
+    else if (updateUser.getUserStatus() == UserStatus.OFFLINE) {
+      String ErrorMessage = "Modifying the user failed because user is offline";
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage);
+    } else if (userInput.getUsername().isEmpty()) {
+      String ErrorMessage = "Modifying the user failed because username is empty";
+      throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
+    }
 
-      else{
-          updateUser.setUsername(userInput.getUsername());
-          updateUser.setBirthday(userInput.getBirthday());
-          userRepository.save(updateUser);
-          userRepository.flush();
-      }
+    else {
+      updateUser.setUsername(userInput.getUsername());
+      updateUser.setBirthday(userInput.getBirthday());
+      userRepository.save(updateUser);
+      userRepository.flush();
+    }
   }
 
-    private boolean checkIfUsernameExistsWithoutMine(Long userId, User userToBeCreated) {
+  private boolean checkIfUsernameExistsWithoutMine(Long userId, User userToBeCreated) {
 
-        User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
-        if(userRepository.findByUserId(userId) == userByUsername) {
-            return false;
-        } else {
-            return (userByUsername != null);
-        }
+    User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
+    if (userRepository.findByUserId(userId) == userByUsername) {
+      return false;
+    } else {
+      return (userByUsername != null);
     }
+  }
 
-    public void deleteUser(Long userId) {
-        // check if user exists in repository
-        User userToDelete = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+  public void deleteUser(Long userId) {
+    // check if user exists in repository
+    User userToDelete = userRepository.findById(userId)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        // delete user
-        userRepository.deleteById(userToDelete.getUserId());
-    }
-
-
-
-
+    // delete user
+    userRepository.deleteById(userToDelete.getUserId());
+  }
 
 }

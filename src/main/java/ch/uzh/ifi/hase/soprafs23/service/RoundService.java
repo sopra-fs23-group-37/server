@@ -11,7 +11,6 @@ import ch.uzh.ifi.hase.soprafs23.repository.RoundRepository;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,6 @@ public class RoundService {
 
     private final CardDeckService cardDeckService;
 
-    @Autowired
     RoundService(
             @Qualifier("roundRepository") RoundRepository roundRepository,
             @Qualifier("playerRepository") PlayerRepository playerRepository,
@@ -137,7 +135,7 @@ public class RoundService {
     }
 
     public Round executeMove(Round round, PlayerMoveMessage message) {
-        // check if move is made by correct player 
+        // check if move is made by correct player
         Player player = round.getCurrentTurnPlayer() == Role.HOST ? round.getHost() : round.getGuest();
 
         // we need a structure to tell if a move was successful or not

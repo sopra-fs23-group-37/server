@@ -1,9 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Card;
-import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
-import ch.uzh.ifi.hase.soprafs23.entity.Round;
 
 // we assume a move has player, cards from hand + cards from field
 // maybe needs a field to define type of move (joker, normal, double, put down)
@@ -22,7 +20,7 @@ public class MoveLogicService {
                 return checkMove2(message);
             case 3:
                 return checkMove3(message);
-            case 4: 
+            case 4:
                 return checkMove4(message);
         }
         return false;
@@ -50,13 +48,13 @@ public class MoveLogicService {
         Card playerCard = message.getCardFromHand();
 
         if (message.getCardsFromField().size() <= 1) {
-            return false;    
+            return false;
         }
 
         // scuffed bc value is stored as string by api
         // needs a check if picture cards are used
-        int total = 0; 
-        for (Card c: message.getCardsFromField() ) {
+        int total = 0;
+        for (Card c : message.getCardsFromField()) {
             total += Integer.parseInt(c.getValue());
         }
 
