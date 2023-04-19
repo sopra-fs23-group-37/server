@@ -66,6 +66,7 @@
 4. Update game and round after each move (https://github.com/sopra-fs23-group-37/server/issues/60)
 5. Testing for everything
 6. Updated ui in frontend according to figma
+7. minor fixes everywhere
 
 ## Sinthu
 1. Implemented/edited registration functionality (https://github.com/sopra-fs23-group-37/client/issues/2)
