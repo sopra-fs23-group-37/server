@@ -2,6 +2,9 @@ package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.RoundRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,11 +33,26 @@ public class UserServiceIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Qualifier("gameRepository")
+    @Autowired
+    private GameRepository gameRepository;
+
+    @Qualifier("roundRepository")
+    @Autowired
+    private RoundRepository roundRepository;
+
+    @Qualifier("playerRepository")
+    @Autowired
+    private PlayerRepository playerRepository;
+
     @Autowired
     private UserService userService;
 
     @BeforeEach
     public void setup() {
+        gameRepository.deleteAll();
+        roundRepository.deleteAll();
+        playerRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -45,7 +63,7 @@ public class UserServiceIntegrationTest {
         assertNull(userRepository.findByUsername("testUsername"));
 
         User testUser = new User();
-        //testUser.setName("testName");
+        // testUser.setName("testName");
         testUser.setUsername("testUsername");
         testUser.setUsername("testUsername");
         testUser.setPassword("password");
@@ -56,7 +74,7 @@ public class UserServiceIntegrationTest {
 
         // then
         assertEquals(testUser.getUserId(), createdUser.getUserId());
-        //assertEquals(testUser.getName(), createdUser.getName());
+        // assertEquals(testUser.getName(), createdUser.getName());
         assertEquals(testUser.getUsername(), createdUser.getUsername());
         assertNotNull(createdUser.getToken());
         assertEquals(UserStatus.ONLINE, createdUser.getUserStatus());
@@ -68,7 +86,7 @@ public class UserServiceIntegrationTest {
         assertNull(userRepository.findByUsername("testUsername"));
 
         User testUser = new User();
-        //testUser.setName("testName");
+        // testUser.setName("testName");
         testUser.setUsername("testUsername");
         testUser.setPassword("password");
         testUser.setCreation_date(new Date());
@@ -82,7 +100,6 @@ public class UserServiceIntegrationTest {
         // check that an error is thrown
         assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser2));
     }
-
 
     // new test to check get user by id
     @Test
@@ -118,13 +135,12 @@ public class UserServiceIntegrationTest {
         testUser.setUserId(1L);
         userService.createUser(testUser);
 
-        ResponseStatusException e =
-                assertThrows(ResponseStatusException.class, () -> userService.getUserById(2L));
+        ResponseStatusException e = assertThrows(ResponseStatusException.class, () -> userService.getUserById(2L));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
         assertEquals("User with id 2 was not found", e.getReason());
     }
 
-    //new test to check update of user
+    // new test to check update of user
     @Test
     public void updateUser_validId_success() {
         assertNull(userRepository.findByUsername("testUsername"));
@@ -166,14 +182,10 @@ public class UserServiceIntegrationTest {
         updatedUser.setUsername("updatedUsername");
         updatedUser.setBirthday(new Date(552218400000L));
 
-
-        ResponseStatusException e =
-                assertThrows(ResponseStatusException.class, () -> userService.updateUser(2L, updatedUser));
+        ResponseStatusException e = assertThrows(ResponseStatusException.class,
+                () -> userService.updateUser(2L, updatedUser));
         assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
         assertEquals("User with id 2 was not found", e.getReason());
     }
-
-
-
 
 }
