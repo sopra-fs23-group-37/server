@@ -152,6 +152,7 @@ public class RoundService {
                 round.removeCardFromTable(c);
             }
             player.addCardsToDiscard(message.getCardsFromField());
+            round.setLastCardGrab(player.getRole());
 
         } else {
             // add card to field if move type correct
