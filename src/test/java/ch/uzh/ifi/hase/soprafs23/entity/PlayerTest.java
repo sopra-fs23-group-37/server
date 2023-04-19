@@ -48,8 +48,8 @@ public class PlayerTest {
         player.addCardsToDiscard(cards2);
 
         assertEquals(player.getPlayer(), mockUser);
-        assertEquals(1, player.getHandSize());
-        assertEquals(1, player.getDiscardPileSize());
+        assertEquals(player.getHandSize(), 1);
+        assertEquals(player.getDiscardPileSize(), 1);
         assertEquals(player.getCardsInHand().get(0).getCode(), cardsInHand.get(0).getCode());
         assertEquals(player.getCardsInDiscard().get(0).getCode(), cardsInDiscard.get(0).getCode());
     }
@@ -61,7 +61,7 @@ public class PlayerTest {
 
         player.removeCardFromHand(card1);
 
-        assertEquals(1, player.getHandSize());
+        assertEquals(player.getHandSize(), 1);
         assertEquals(player.getCardsInHand().get(0).getCode(), card2.getCode());
     }
 

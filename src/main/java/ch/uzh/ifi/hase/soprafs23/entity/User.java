@@ -13,11 +13,11 @@ import java.util.Date;
  * Every variable will be mapped into a database field with the @Column
  * annotation
  * - nullable = false -> this cannot be left empty
- * - unique = true -> this value must be unique across the database -> composes
+ * - unique = true -> this value must be unqiue across the database -> composes
  * the primary key
  */
 @Entity
-@Table(name = "user")
+@Table(name = "USER")
 public class User implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -85,7 +85,7 @@ public class User implements Serializable {
     this.userStatus = userStatus;
   }
 
-  public Date getCreation_date() {
+    public Date getCreation_date() {
     return creation_date;
   }
 

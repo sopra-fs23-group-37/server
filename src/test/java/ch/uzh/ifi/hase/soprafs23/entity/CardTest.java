@@ -25,10 +25,10 @@ public class CardTest {
 
   @Test
   public void createCard_validInputs() {
-    assertEquals("testCode", card.getCode());
-    assertEquals("testImage", card.getImage());
+    assertEquals(card.getCode(), "testCode");
+    assertEquals(card.getImage(), "testImage");
     assertEquals(card.getImages(), images);
-    assertEquals("testSuit", card.getSuit());
-    assertEquals("testValue", card.getValue());
+    assertEquals(card.getSuit(), "testSuit");
+    assertEquals(card.getValue(), "testValue");
   }
 }

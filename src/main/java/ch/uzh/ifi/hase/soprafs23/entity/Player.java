@@ -42,9 +42,6 @@ public class Player implements Serializable {
 
     private int totalPoints = 0;
 
-    public Player() {
-    }
-
     public Player(User player, Role role) {
         this.player = player;
         this.role = role;

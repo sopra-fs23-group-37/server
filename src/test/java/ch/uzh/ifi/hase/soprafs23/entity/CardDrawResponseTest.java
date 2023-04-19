@@ -35,9 +35,9 @@ public class CardDrawResponseTest {
 
   @Test
   public void createImages_validInputs() {
-    assertEquals("testDeck_id", cardDrawResponse.getDeck_id());
-    assertEquals(52, cardDrawResponse.getRemaining());
-    assertEquals(true, cardDrawResponse.getSuccess());
+    assertEquals(cardDrawResponse.getDeck_id(), "testDeck_id");
+    assertEquals(cardDrawResponse.getRemaining(), 52);
+    assertEquals(cardDrawResponse.getSuccess(), true);
     assertEquals(cardDrawResponse.getCards(), cards);
   }
 }

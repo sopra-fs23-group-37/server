@@ -21,7 +21,7 @@ public class ImagesTest {
 
   @Test
   public void createImages_validInputs() {
-    assertEquals("testPng", images.getPng());
-    assertEquals("testSvg", images.getSvg());
+    assertEquals(images.getPng(), "testPng");
+    assertEquals(images.getSvg(), "testSvg");
   }
 }

@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.LoginPutDTO;
 import ch.uzh.ifi.hase.soprafs23.entity.Login;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
@@ -28,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 /**
- * LoginControllerTest
+ * UserControllerTest
  * This is a WebMvcTest which allows to test the UserController i.e. GET/POST
  * request without actually sending them over the network.
  * This tests if the UserController works.
@@ -41,10 +40,6 @@ public class LoginControllerTest {
 
     @MockBean
     private LoginService loginService;
-
-    @MockBean
-    private UserRepository userRepository;
-
     private final LoginPutDTO loginPutDTO = new LoginPutDTO();
 
     @Test
@@ -58,7 +53,6 @@ public class LoginControllerTest {
         user.setUserId(1L);
         user.setToken("1");
         user.setCreation_date(new Date());
-        userRepository.save(user);
 
         Login login = new Login();
         login.setUserId(user.getUserId());
