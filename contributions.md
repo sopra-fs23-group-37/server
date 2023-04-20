@@ -52,9 +52,11 @@
 5. Created method in round service to deal cards (https://github.com/sopra-fs23-group-37/server/issues/34)
 6. Updated Server to consistently use Repositories and better split class responsibilities 
 7. Created method in roundservice to check whether players still have cards after move (https://github.com/sopra-fs23-group-37/server/issues/43)
-8. Created method in roundservice to end round, new method in player to count points (https://github.com/sopra-fs23-group-37/server/issues/46
-9. Wrote test for all of the above
-10. Fixed Sonarqube issues
+8. Created method in roundservice to end round, new method in player to count points (https://github.com/sopra-fs23-group-37/server/issues/46)
+9. Created methods in gameservice to add points from round to game (https://github.com/sopra-fs23-group-37/server/issues/47) determine if the game is over with a winner or set up a new round instead(https://github.com/sopra-fs23-group-37/server/issues/49)
+10. Changed the tab icon & text in the client (https://github.com/sopra-fs23-group-37/client/issues/44)
+11. Wrote test for all of the above
+12. Fixed Sonarqube issues
 
 ## Beni
 1. Implement Login Page Design according to FIGMA (https://github.com/sopra-fs23-group-37/client/issues/1)
