@@ -58,6 +58,7 @@
 
 ## Beni
 1. Implement Login Page Design according to FIGMA (https://github.com/sopra-fs23-group-37/client/issues/1)
+2. Implement and design the Game-Creation page according to FIGMA (https://github.com/sopra-fs23-group-37/client/issues/21)
 
 ## Niels
 1. Implemented game logic for move validation (https://github.com/sopra-fs23-group-37/server/issues/41)
