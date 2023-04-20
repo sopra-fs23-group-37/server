@@ -19,9 +19,9 @@
 
 ## Sinthu
 
-1. Implemented/edited login functionality
-2. Implemented/edited registration functionality
-3. Implemented new design for registration-page
+1. Implemented/edited login functionality (https://github.com/sopra-fs23-group-37/client/issues/1)
+2. Implemented/edited registration functionality (https://github.com/sopra-fs23-group-37/client/issues/2)
+3. Implemented new design for registration-page (https://github.com/sopra-fs23-group-37/client/issues/26)
 4. Tested user-registration manually
 
 ## Timon
