@@ -62,6 +62,8 @@
 1. Implement Login Page Design according to FIGMA (https://github.com/sopra-fs23-group-37/client/issues/1)
 2. Implement and design the Game-Creation page according to FIGMA (https://github.com/sopra-fs23-group-37/client/issues/21)
 3. Fix Guarding & Routing bug (https://github.com/sopra-fs23-group-37/client/issues/51)
+4. Fix header text ((https://github.com/sopra-fs23-group-37/client/issues/47)
+5. Fix token deletion when tab is closed (https://github.com/sopra-fs23-group-37/client/issues/43)
 
 ## Niels
 1. Implemented game logic for move validation (https://github.com/sopra-fs23-group-37/server/issues/41)
