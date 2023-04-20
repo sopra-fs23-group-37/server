@@ -72,6 +72,7 @@
 ## Sinthu
 1. Implemented/edited registration functionality (https://github.com/sopra-fs23-group-37/client/issues/2)
 2. Created a design for rulebook and defined the rules for the game (https://github.com/sopra-fs23-group-37/client/issues/17)
+3. Fixed Design Error in Rulebook (https://github.com/sopra-fs23-group-37/client/issues/49)
 
 ## Timon
 
