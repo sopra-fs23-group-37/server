@@ -26,11 +26,11 @@
 
 ## Timon
 
-1. Implemented login functionality
-2. Implemented logout functionality
-3. Implemented registration functionality
+1. Implemented login functionality (https://github.com/sopra-fs23-group-37/server/issues/21)
+2. Implemented logout functionality (https://github.com/sopra-fs23-group-37/server/issues/21)
+3. Implemented registration functionality + password checks (https://github.com/sopra-fs23-group-37/server/issues/22)
 4. Did tests for all of that and additional tests
-5. Created ground functionalities for game and session creation and GET, POST and PUT DTOs and methods
+5. Created ground functionalities for game and session creation and GET, POST and PUT DTOs and methods (https://github.com/sopra-fs23-group-37/server/issues/28)
 
 ## Beni
 
@@ -84,5 +84,9 @@
 1. Implemented the Google Cloud MySQL Database (https://github.com/sopra-fs23-group-37/server/issues/68)
 2. Add filter to get games to only return open lobbys (https://github.com/sopra-fs23-group-37/server/issues/65)
 3. Testing for everything + added a lot of tests
+4. Created Game Table for the client side (https://github.com/sopra-fs23-group-37/client/issues/8)
+5. Fixed tests failing (https://github.com/sopra-fs23-group-37/server/issues/77)
+6. Fixed tests and bugs (https://github.com/sopra-fs23-group-37/server/issues/79)
+7. Design fixed everywhere
 
 
