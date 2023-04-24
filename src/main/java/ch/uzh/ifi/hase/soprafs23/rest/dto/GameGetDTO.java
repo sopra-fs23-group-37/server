@@ -2,7 +2,9 @@ package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
+import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.constant.*;
 
 import java.util.Date;
 
@@ -24,10 +26,28 @@ public class GameGetDTO {
 
     private PlayerStatus guestStatus;
 
+    private Round currentRound;
 
+    public Round getCurrentRound() {
+        return currentRound;
+    }
 
-    // getters & setters 
-    
+    public void setCurrentRound(Round currentRound) {
+        this.currentRound = currentRound;
+    }
+
+    private Role startingPlayer;
+
+    // getters & setters
+
+    public Role getStartingPlayer() {
+        return startingPlayer;
+    }
+
+    public void setStartingPlayer(Role startingPlayer) {
+        this.startingPlayer = startingPlayer;
+    }
+
     public PlayerStatus getHostStatus() {
         return hostStatus;
     }

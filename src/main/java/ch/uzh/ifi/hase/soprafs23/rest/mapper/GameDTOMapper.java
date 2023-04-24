@@ -32,6 +32,8 @@ public interface GameDTOMapper {
     @Mapping(source = "gameStatus", target = "gameStatus")
     @Mapping(source = "hostStatus", target = "hostStatus")
     @Mapping(source = "guestStatus", target = "guestStatus")
+    @Mapping(source = "startingPlayer", target = "startingPlayer")
+    @Mapping(source = "currentRound", target = "currentRound")
     GameGetDTO convertEntityToGameGetDTO(Game game);
 
     @Mapping(source = "gameId", target = "gameId")

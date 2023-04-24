@@ -166,7 +166,7 @@ public class GameService {
         game.setGameStatus(GameStatus.ONGOING);
 
         // save to repo and flush
-        game = gameRepository.save(game);
+        gameRepository.save(game);
         gameRepository.flush();
 
         return game;
