@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs23.controller;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -34,27 +35,47 @@ import java.util.List;
 @WebMvcTest(GameController.class)
 public class GameControllerTest {
 
-        @Autowired
-        private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-        @MockBean
-        private UserService userService;
+    @MockBean
+    private UserService userService;
 
-        @MockBean
-        private GameService gameService;
+    @MockBean
+    private GameService gameService;
+    private User host;
+    private Game game1;
+    private Game game2;
 
-        @BeforeEach
-        public void setUp() {
-                MockitoAnnotations.openMocks(this);
-        }
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        // initialize host
+        host = new User();
+        host.setUserId(1L);
+        host.setUsername("testuser");
+        // initialize game1
+        game1 = new Game();
+        game1.setGameId(1L);
+        game1.setHost(host);
+        // initialize game2
+        game2 = new Game();
+        game2.setGameId(2L);
+        game2.setHost(host);
+        game2.setGameStatus(GameStatus.WAITING);
+
+        // mock behavior of gameService
+        given(gameService.getPublicGames()).willReturn(Arrays.asList(game1, game2));
+        given(gameService.createGame(any(Game.class))).willReturn(game2);
+        given(gameService.joinGame(any())).willReturn(game1);
+
+        // mock behavior of userService
+        given(userService.getUserById(anyLong())).willReturn(host);
+    }
 
         @Test
         public void givenGames_whenGetOpenGames_thenReturnJsonArray() throws Exception {
-                // given
-                Game game1 = new Game();
-                game1.setGameId(1L);
-                Game game2 = new Game();
-                game2.setGameId(2L);
+
                 List<Game> openGames = new ArrayList<>();
                 openGames.add(game1);
                 openGames.add(game2);
@@ -73,10 +94,6 @@ public class GameControllerTest {
         public void givenOpenGames_whenGetOpenGames_thenReturnJsonArray() throws Exception {
 
                 // given the open games are returned by the Service
-                Game game1 = new Game();
-                game1.setGameId(1L);
-                Game game2 = new Game();
-                game2.setGameId(2L);
                 given(gameService.getPublicGames()).willReturn(Arrays.asList(game1, game2));
 
                 // test return
@@ -108,35 +125,36 @@ public class GameControllerTest {
 
         }
 
-        @Test
-        public void givenNoGame_whenCreateGame_thenReturnJson() throws Exception {
+    @Test
+    public void givenNoGame_whenCreateGame_thenReturnJson() throws Exception {
 
-                // given the User is returned by the Service
-                User host = new User();
-                host.setUserId(1L);
-                host.setUsername("testuser");
+        // use Mockito to mock the behavior of userService to return the host User object when any Long is passed to getUserById()
+        given(userService.getUserById(anyLong())).willReturn(host);
 
-                given(userService.getUserById(any())).willReturn(host);
+        // given the Game is returned by the Service
+        Game game = new Game();
+        game.setGameId(999L);
+        game.setHost(host);
+        game.setGameStatus(GameStatus.WAITING);
 
-                // given the Game is returned by the Service
-                Game game = new Game();
-                game.setGameId(999L);
-                game.setHost(host);
-                game.setGameStatus(GameStatus.WAITING);
-                given(gameService.createGame(any())).willReturn(game);
+        // use Mockito to mock the behavior of gameService to return the game object when any Game object is passed to createGame()
+        given(gameService.createGame(any(Game.class))).willReturn(game);
 
-                // build post request
-                MockHttpServletRequestBuilder postRequest = post("/games")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{\"hostId\":\"1\",\"totalRounds\":\"10\"}");
+        // build post request with JSON content
+        MockHttpServletRequestBuilder postRequest = post("/games")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"hostId\":\"1\",\"totalRounds\":\"10\"}");
 
-                // test return
-                mockMvc.perform(postRequest).andExpect(status().isCreated())
-                                .andExpect(jsonPath("$.gameId", is(999)))
-                                .andExpect(jsonPath("$.host.userId", is(1)))
-                                .andExpect(jsonPath("$.host.username", is("testuser")))
-                                .andExpect(jsonPath("$.gameStatus", is("WAITING")));
-        }
+        // perform the POST request and expect a HTTP 201 Created status code
+        mockMvc.perform(postRequest)
+                .andExpect(status().isCreated())
+                // expect the returned JSON object to have the correct gameId, host userId, host username, and game status
+                .andExpect(jsonPath("$.gameId", is(999)))
+                .andExpect(jsonPath("$.host.userId", is(1)))
+                .andExpect(jsonPath("$.host.username", is("testuser")))
+                .andExpect(jsonPath("$.gameStatus", is("WAITING")));
+    }
+
 
         @Test
         public void givenGames_whenJoin_thenReturnJsonArray() throws Exception {

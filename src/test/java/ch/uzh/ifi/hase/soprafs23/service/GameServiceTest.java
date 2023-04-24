@@ -40,9 +40,6 @@ public class GameServiceTest {
     private RoundService roundService;
 
     @Mock
-    private CardDeckService cardDeckService;
-
-    @Mock
     private MoveLogicService moveLogicService;
 
     private User testHost;
@@ -89,20 +86,39 @@ public class GameServiceTest {
 
     @Test
     void testCreateGame() {
+        // given
         when(userRepository.findByUserId(testHost.getUserId())).thenReturn(testHost);
         when(gameRepository.save(any(Game.class))).thenReturn(testGame);
 
+        // when
         Game result = gameService.createGame(testGame);
 
+        // then
         assertNotNull(result.getGameId());
         assertEquals(GameStatus.CREATED, result.getGameStatus());
         assertEquals(testHost, result.getHost());
         assertEquals(PlayerStatus.WAITING, result.getHostStatus());
         assertEquals(PlayerStatus.WAITING, result.getGuestStatus());
         assertEquals(0, result.getTotalRounds());
+        assertNotNull(result.getCreatedDate()); // assert that the created date is set
 
+        // assert that the host was found in the repository
+        User foundHost = userRepository.findByUserId(testHost.getUserId());
+        assertNotNull(foundHost);
+
+        // assert that the host status was set to waiting
+        assertEquals(PlayerStatus.WAITING, result.getHostStatus());
+
+        // assert that the guest status was set to waiting
+        assertEquals(PlayerStatus.WAITING, result.getGuestStatus());
+
+        // assert that the total rounds was set to 0
+        assertEquals(0, result.getTotalRounds());
+
+        // assert that the game was saved to the repository
         verify(gameRepository, times(1)).save(any(Game.class));
     }
+
 
     @Test
     void testGetOpenGames() {
