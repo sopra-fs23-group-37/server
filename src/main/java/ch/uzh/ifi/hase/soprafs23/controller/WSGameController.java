@@ -13,7 +13,6 @@ import ch.uzh.ifi.hase.soprafs23.entity.PlayerJoinMessage;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 
-
 @Controller
 public class WSGameController {
 
@@ -25,23 +24,33 @@ public class WSGameController {
 
     @MessageMapping("/join/{gameId}")
     @SendTo("/topic/game/{gameId}")
-    public Game join(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId, PlayerJoinMessage message) throws IOException, InterruptedException {
+    public Game join(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId,
+            PlayerJoinMessage message) throws IOException, InterruptedException {
         Game game = this.gameService.websocketJoin(gameId, message.getPlayerId());
         return game;
     }
 
-
     @MessageMapping("/start/{gameId}")
     @SendTo("/topic/game/{gameId}")
-    public Game start(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId) throws IOException, InterruptedException {
+    public Game start(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId)
+            throws IOException, InterruptedException {
         Game game = this.gameService.startGame(gameId);
         return game;
     }
 
     @MessageMapping("/move/{gameId}")
     @SendTo("/topic/game/{gameId}")
-    public Game move(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId, PlayerMoveMessage message) throws IOException, InterruptedException {
+    public Game move(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId,
+            PlayerMoveMessage message) throws IOException, InterruptedException {
         Game game = this.gameService.makeMove(gameId, message);
+        return game;
+    }
+
+    @MessageMapping("/forceUpdate/{gameId}")
+    @SendTo("/topic/game/{gameId}")
+    public Game forceUpdate(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId)
+            throws IOException, InterruptedException {
+        Game game = this.gameService.getGame(gameId);
         return game;
     }
 
