@@ -26,11 +26,11 @@ public class WSRoundStatusDTO {
     private int oppTotalPoints;
 
     // cards
-    private ArrayList<Card> myCardsInHand = new ArrayList<Card>();
-    private ArrayList<Card> myCardsInDiscard = new ArrayList<Card>();
+    private List<Card> myCardsInHand = new ArrayList<>();
+    private List<Card> myCardsInDiscard = new ArrayList<>();
     private int oppCards;
-    private ArrayList<Card> oppCardsInDiscard = new ArrayList<Card>();
-    private List<Card> cardsOnTable = new ArrayList<Card>();
+    private List<Card> oppCardsInDiscard = new ArrayList<>();
+    private List<Card> cardsOnTable = new ArrayList<>();
     private Boolean deckCards;
 
     // turn
@@ -128,19 +128,19 @@ public class WSRoundStatusDTO {
         this.oppTotalPoints = oppTotalPoints;
     }
 
-    public ArrayList<Card> getMyCardsInHand() {
+    public List<Card> getMyCardsInHand() {
         return myCardsInHand;
     }
 
-    public void setMyCardsInHand(ArrayList<Card> myCardsInHand) {
+    public void setMyCardsInHand(List<Card> myCardsInHand) {
         this.myCardsInHand = myCardsInHand;
     }
 
-    public ArrayList<Card> getMyCardsInDiscard() {
+    public List<Card> getMyCardsInDiscard() {
         return myCardsInDiscard;
     }
 
-    public void setMyCardsInDiscard(ArrayList<Card> myCardsInDiscard) {
+    public void setMyCardsInDiscard(List<Card> myCardsInDiscard) {
         this.myCardsInDiscard = myCardsInDiscard;
     }
 
@@ -152,11 +152,11 @@ public class WSRoundStatusDTO {
         this.oppCards = oppCards;
     }
 
-    public ArrayList<Card> getOppCardsInDiscard() {
+    public List<Card> getOppCardsInDiscard() {
         return oppCardsInDiscard;
     }
 
-    public void setOppCardsInDiscard(ArrayList<Card> oppCardsInDiscard) {
+    public void setOppCardsInDiscard(List<Card> oppCardsInDiscard) {
         this.oppCardsInDiscard = oppCardsInDiscard;
     }
 

@@ -73,21 +73,21 @@ public class WebsocketService {
         sendRoundInfoToUser(game, round, game.getGuest().getUserId());
     }
 
-    public void sendRoundInfoToUser(Game game, Round round, Long UserId) {
-        WSRoundStatusDTO dto = createWSRoundStatusDTOforUser(game, round, UserId);
-        String destination = String.format("/queue/user/%d/round", UserId);
+    public void sendRoundInfoToUser(Game game, Round round, Long userId) {
+        WSRoundStatusDTO dto = createWSRoundStatusDTOforUser(game, round, userId);
+        String destination = String.format("/queue/user/%d/round", userId);
 
         this.simp.convertAndSend(destination, dto);
     }
 
-    public WSRoundStatusDTO createWSRoundStatusDTOforUser(Game game, Round round, Long UserId) {
+    public WSRoundStatusDTO createWSRoundStatusDTOforUser(Game game, Round round, Long userId) {
         WSRoundStatusDTO dto = new WSRoundStatusDTO();
 
         // set status
         dto.setRoundStatus(round.getRoundStatus());
 
         // determine current players Role
-        Role myRole = game.getHost().getUserId().equals(UserId) ? Role.HOST : Role.GUEST;
+        Role myRole = game.getHost().getUserId().equals(userId) ? Role.HOST : Role.GUEST;
 
         // determine which is current player and which is opponent player
         Player myPlayer = myRole.equals(Role.HOST) ? round.getHost() : round.getGuest();
