@@ -42,6 +42,9 @@ public class GameServiceTest {
     @Mock
     private MoveLogicService moveLogicService;
 
+    @Mock
+    private WebsocketService websocketService;
+
     private User testHost;
     private User testGuest;
     private Game testGame;
@@ -118,7 +121,6 @@ public class GameServiceTest {
         // assert that the game was saved to the repository
         verify(gameRepository, times(1)).save(any(Game.class));
     }
-
 
     @Test
     void testGetOpenGames() {

@@ -9,6 +9,8 @@ import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.WSDTOMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,14 +43,16 @@ public class GameService {
     private final GameRepository gameRepository;
     private final RoundService roundService;
     private final MoveLogicService moveLogicService;
+    private final WebsocketService websocketService;
 
     public GameService(@Qualifier("userRepository") UserRepository userRepository,
             @Qualifier("gameRepository") GameRepository gameRepository, RoundService roundService,
-            MoveLogicService moveLogicService) {
+            MoveLogicService moveLogicService, WebsocketService websocketService) {
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
         this.roundService = roundService;
         this.moveLogicService = moveLogicService;
+        this.websocketService = websocketService;
     }
 
     public List<Game> getPublicGames() {
@@ -148,7 +152,9 @@ public class GameService {
         game = gameRepository.save(game);
         gameRepository.flush();
 
-        // return the updated game
+        // send the game update as dto via the lobby channel
+        websocketService.sendToLobby(gameId, WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+
         return game;
     }
 

@@ -46,12 +46,4 @@ public class WSGameController {
         return game;
     }
 
-    @MessageMapping("/forceUpdate/{gameId}")
-    @SendTo("/topic/game/{gameId}")
-    public Game forceUpdate(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId)
-            throws IOException, InterruptedException {
-        Game game = this.gameService.getGame(gameId);
-        return game;
-    }
-
 }

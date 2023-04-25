@@ -23,7 +23,7 @@ public interface DTOMapper {
 
   DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
 
-  //@Mapping(source = "name", target = "name")
+  // @Mapping(source = "name", target = "name")
   @Mapping(target = "userId", ignore = true)
   @Mapping(source = "username", target = "username")
   @Mapping(source = "password", target = "password")
@@ -33,13 +33,13 @@ public interface DTOMapper {
   @Mapping(target = "userStatus", ignore = true)
   User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
-
-  //@Mapping(source = "name", target = "name")
+  // @Mapping(source = "name", target = "name")
   @Mapping(source = "userId", target = "userId")
   @Mapping(source = "username", target = "username")
   @Mapping(source = "userStatus", target = "userStatus")
   @Mapping(source = "creation_date", target = "creation_date")
   @Mapping(source = "birthday", target = "birthday")
+  @Mapping(source = "token", target = "token")
   UserGetDTO convertEntityToUserGetDTO(User user);
 
   @Mapping(source = "userId", target = "userId")
@@ -75,8 +75,5 @@ public interface DTOMapper {
   @Mapping(target = "token", ignore = true)
   @Mapping(target = "id", ignore = true)
   Login convertLoginPutDTOtoEntity(LoginPutDTO loginPutDTO);
-
-
-
 
 }

@@ -9,12 +9,20 @@ public class UserGetDTO {
   private Long userId;
   // private String name;
   private String username;
+  private String token;
   private String password;
   private UserStatus userStatus;
   private Date creation_date;
   private Date birthday;
 
- 
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
+  }
+
   public Long getUserId() {
     return userId;
   }
@@ -24,11 +32,11 @@ public class UserGetDTO {
   }
 
   // public String getName() {
-  //   return name;
+  // return name;
   // }
 
   // public void setName(String name) {
-  //   this.name = name;
+  // this.name = name;
   // }
 
   public String getUsername() {
@@ -70,7 +78,5 @@ public class UserGetDTO {
   public void setBirthday(Date birthday) {
     this.birthday = birthday;
   }
-
-
 
 }
