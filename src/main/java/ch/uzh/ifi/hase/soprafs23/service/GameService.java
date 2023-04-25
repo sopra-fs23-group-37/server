@@ -183,7 +183,7 @@ public class GameService {
         gameRepository.save(game);
         gameRepository.flush();
 
-        // send the game update as dto via the lobby channel
+        // send the game update as dto via the Game channel
         websocketService.sendToGame(gameId, WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
 
         return game;
@@ -237,6 +237,9 @@ public class GameService {
         // on the game
         game.setGuestPoints(game.getGuestPoints() + game.getCurrentRound().getGuestPoints());
         game.setHostPoints(game.getHostPoints() + game.getCurrentRound().getHostPoints());
+
+        // send the game update as dto via the Game channel
+        websocketService.sendToGame(game.getGameId(), WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
     }
 
     public void checkWinner(Game game) throws IOException, InterruptedException {
@@ -254,6 +257,10 @@ public class GameService {
 
             // update the game status
             game.setGameStatus(GameStatus.FINISHED);
+
+            // send the game update as dto via the Game channel
+            websocketService.sendToGame(game.getGameId(), WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+
         }
         // if there was no winner yet, set up a new round for the game
         else {
