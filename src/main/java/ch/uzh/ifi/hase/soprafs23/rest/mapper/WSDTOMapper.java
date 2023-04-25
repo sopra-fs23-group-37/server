@@ -34,6 +34,8 @@ public interface WSDTOMapper {
     @Mapping(source = "gameStatus", target = "gameStatus", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "hostStatus", target = "hostStatus", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "guestStatus", target = "guestStatus", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(source = "guestPoints", target = "guestPoints", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(source = "hostPoints", target = "hostPoints", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     WSGameStatusDTO convertEntityToWSGameStatusDTO(Game game);
 
 }

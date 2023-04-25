@@ -32,9 +32,10 @@ public class WSGameController {
 
     @MessageMapping("/start/{gameId}")
     @SendTo("/topic/game/{gameId}")
-    public Game start(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId)
+    public Game start(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId,
+            PlayerJoinMessage message)
             throws IOException, InterruptedException {
-        Game game = this.gameService.startGame(gameId);
+        Game game = this.gameService.startGame(gameId, message.getPlayerId());
         return game;
     }
 

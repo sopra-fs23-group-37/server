@@ -324,7 +324,7 @@ public class GameServiceTest {
         given(roundService.newRound(Mockito.any())).willReturn(testRound);
 
         // // start the game
-        Game updatedGame = gameService.startGame(testGame.getGameId());
+        Game updatedGame = gameService.startGame(testGame.getGameId(), testHost.getUserId());
 
         // // check status
         assertEquals(GameStatus.ONGOING, updatedGame.getGameStatus());

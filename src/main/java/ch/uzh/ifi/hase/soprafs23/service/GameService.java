@@ -158,10 +158,18 @@ public class GameService {
         return game;
     }
 
-    public Game startGame(Long gameId) throws IOException, InterruptedException {
+    public Game startGame(Long gameId, Long playerId) throws IOException, InterruptedException {
 
         // update the game status
         Game game = getGame(gameId);
+
+        // if the guest is trying to start the game, just return the game as is
+        if (game.getGuest().getUserId().equals(playerId)) {
+            return game;
+        }
+
+        game.setGuestPoints(0);
+        game.setHostPoints(0);
         game = setStartingPlayer(game);
 
         // start the first round
@@ -174,6 +182,9 @@ public class GameService {
         // save to repo and flush
         gameRepository.save(game);
         gameRepository.flush();
+
+        // send the game update as dto via the lobby channel
+        websocketService.sendToGame(gameId, WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
 
         return game;
     }

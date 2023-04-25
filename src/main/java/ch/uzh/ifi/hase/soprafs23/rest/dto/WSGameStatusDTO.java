@@ -5,16 +5,43 @@ import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 
 public class WSGameStatusDTO {
 
+    // id
     private Long gameId;
+
+    // participants
     private Long hostId;
     private String hostUsername;
     private Long guestId;
     private String guestUsername;
+
+    // status
     private GameStatus gameStatus;
     private PlayerStatus hostStatus;
     private PlayerStatus guestStatus;
+
+    // points and winner
+    private int guestPoints;
+    private int hostPoints;
     private Long winnerId;
     private String winnerUsername;
+
+
+
+    public int getGuestPoints() {
+        return guestPoints;
+    }
+
+    public void setGuestPoints(int guestPoints) {
+        this.guestPoints = guestPoints;
+    }
+
+    public int getHostPoints() {
+        return hostPoints;
+    }
+
+    public void setHostPoints(int hostPoints) {
+        this.hostPoints = hostPoints;
+    }
 
     public Long getGameId() {
         return gameId;

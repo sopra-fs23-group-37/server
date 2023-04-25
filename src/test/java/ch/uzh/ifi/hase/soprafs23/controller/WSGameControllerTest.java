@@ -120,9 +120,13 @@ public class WSGameControllerTest {
   @Test
   void verifyStartGameIsReceived() throws Exception {
 
-    given(gameService.startGame(Mockito.any())).willReturn(game);
+    given(gameService.startGame(Mockito.any(), Mockito.any())).willReturn(game);
 
-    session.send("/game/start/3", null);
+    // create a player join message for the host user
+    PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(1L);
+    MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+
+    session.send("/game/start/3", converter.toMessage(playerJoinMessage, null));
 
     Game receivedGame = completableFuture.get(60, TimeUnit.SECONDS);
 
