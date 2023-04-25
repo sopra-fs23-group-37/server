@@ -94,6 +94,12 @@ public class PlayerTest {
 
         // check that the player got all the points
         assertEquals(5, playerPoints);
+        assertEquals(5, player.getTotalPoints());
+        assertEquals(2, player.getPointsTotalCards());
+        assertEquals(1, player.getTwoOfClubs());
+        assertEquals(1, player.getTenOfDiamonds());
+        assertEquals(1, player.getPointClubs());
+
     }
 
     @Test

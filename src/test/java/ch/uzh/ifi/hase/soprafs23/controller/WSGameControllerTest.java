@@ -27,32 +27,29 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
-
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerJoinMessage;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
-
-
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class WSGameControllerTest {
 
   @MockBean
   private GameService gameService;
-  
-    @LocalServerPort
-    private Integer port;
-    private WebSocketStompClient webSocketStompClient;
-    private StompSession session;
-    private Game game;
-    private User host;
-    private User guest;
-    private CompletableFuture<Game> completableFuture;
 
-    @BeforeEach
-    public void setup() throws Exception {
-    
+  @LocalServerPort
+  private Integer port;
+  private WebSocketStompClient webSocketStompClient;
+  private StompSession session;
+  private Game game;
+  private User host;
+  private User guest;
+  private CompletableFuture<Game> completableFuture;
+
+  @BeforeEach
+  public void setup() throws Exception {
+
     completableFuture = new CompletableFuture<>();
 
     host = new User();
@@ -68,67 +65,72 @@ public class WSGameControllerTest {
     given(gameService.websocketJoin(Mockito.any(), Mockito.any())).willReturn(game);
 
     webSocketStompClient = new WebSocketStompClient(new SockJsClient(
-    List.of(new WebSocketTransport(new StandardWebSocketClient()))));
+        List.of(new WebSocketTransport(new StandardWebSocketClient()))));
 
     webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
 
     session = webSocketStompClient
-        .connect(String.format("ws://localhost:%d/websocket", port), new StompSessionHandlerAdapter() {}).get(20, TimeUnit.SECONDS); 
+        .connect(String.format("ws://localhost:%d/websocket", port), new StompSessionHandlerAdapter() {
+        }).get(20, TimeUnit.SECONDS);
 
     session.subscribe("/topic/game/3", new StompFrameHandler() {
- 
-    @Override
-    public java.lang.reflect.Type getPayloadType(StompHeaders headers) {
-      return Game.class;
-    }
- 
-    @Override
-    public void handleFrame(StompHeaders headers, Object o) {
-      completableFuture.complete((Game) o);
-    }
-  });
 
-    }
+      @Override
+      public java.lang.reflect.Type getPayloadType(StompHeaders headers) {
+        return Game.class;
+      }
 
-    @Test
-    void verifyGameIsReceived() throws Exception {
+      @Override
+      public void handleFrame(StompHeaders headers, Object o) {
+        completableFuture.complete((Game) o);
+      }
+    });
 
-        // mock the game service to return the game when a user joins
-        given(gameService.websocketJoin(Mockito.any(), Mockito.any())).willReturn(game);
+  }
 
-        // create a WebSocket message converter to convert the player join message to a message that can be sent over STOMP
-        MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
+  @Test
+  void verifyGameIsReceived() throws Exception {
 
-        // create a player join message for the host user
-        PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(1L);
+    // mock the game service to return the game when a user joins
+    given(gameService.websocketJoin(Mockito.any(), Mockito.any())).willReturn(game);
 
-        // send the player join message to the server over STOMP
-        session.send("/game/join/3", converter.toMessage(playerJoinMessage, null));
+    // create a WebSocket message converter to convert the player join message to a
+    // message that can be sent over STOMP
+    MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
 
-        // wait for the game to be received over STOMP
-        Game receivedGame = completableFuture.get(60, TimeUnit.SECONDS);
+    // create a player join message for the host user
+    PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(1L);
 
-        // assert that the received game is not null and matches the expected game
-        assertNotNull(receivedGame);
-        assertEquals(game.getGameId(), receivedGame.getGameId());
-        assertEquals(game.getHost().getUserId(), receivedGame.getHost().getUserId());
-        assertEquals(game.getGuest().getUserId(), receivedGame.getGuest().getUserId());
+    // send the player join message to the server over STOMP
+    session.send("/game/join/3", converter.toMessage(playerJoinMessage, null));
 
-        // verify that the game service was called once with the correct arguments
-        verify(gameService, times(1)).websocketJoin(eq(3L), eq(null));
-    }
+    // wait for the game to be received over STOMP
+    Game receivedGame = completableFuture.get(60, TimeUnit.SECONDS);
 
+    // assert that the received game is not null and matches the expected game
+    assertNotNull(receivedGame);
+    assertEquals(game.getGameId(), receivedGame.getGameId());
+    assertEquals(game.getHost().getUserId(), receivedGame.getHost().getUserId());
+    assertEquals(game.getGuest().getUserId(), receivedGame.getGuest().getUserId());
 
-@Test
-void verifyStartGameIsReceived() throws Exception {
+    // verify that the game service was called once with the correct arguments
+    verify(gameService, times(1)).websocketJoin(eq(3L), eq(null));
+  }
 
-  given(gameService.startGame(Mockito.any())).willReturn(game);
+  @Test
+  void verifyStartGameIsReceived() throws Exception {
 
-  session.send("/game/start/3",null);
+    given(gameService.startGame(Mockito.any(), Mockito.any())).willReturn(game);
 
-  Game receivedGame = completableFuture.get(60, TimeUnit.SECONDS);
+    // create a player join message for the host user
+    PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(1L);
+    MappingJackson2MessageConverter converter = new MappingJackson2MessageConverter();
 
-  assertNotNull(receivedGame);
-}
+    session.send("/game/start/3", converter.toMessage(playerJoinMessage, null));
+
+    Game receivedGame = completableFuture.get(60, TimeUnit.SECONDS);
+
+    assertNotNull(receivedGame);
+  }
 
 }

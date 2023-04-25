@@ -9,6 +9,8 @@ import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.WSDTOMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,14 +43,16 @@ public class GameService {
     private final GameRepository gameRepository;
     private final RoundService roundService;
     private final MoveLogicService moveLogicService;
+    private final WebsocketService websocketService;
 
     public GameService(@Qualifier("userRepository") UserRepository userRepository,
             @Qualifier("gameRepository") GameRepository gameRepository, RoundService roundService,
-            MoveLogicService moveLogicService) {
+            MoveLogicService moveLogicService, WebsocketService websocketService) {
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
         this.roundService = roundService;
         this.moveLogicService = moveLogicService;
+        this.websocketService = websocketService;
     }
 
     public List<Game> getPublicGames() {
@@ -148,14 +152,24 @@ public class GameService {
         game = gameRepository.save(game);
         gameRepository.flush();
 
-        // return the updated game
+        // send the game update as dto via the lobby channel
+        websocketService.sendToLobby(gameId, WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+
         return game;
     }
 
-    public Game startGame(Long gameId) throws IOException, InterruptedException {
+    public Game startGame(Long gameId, Long playerId) throws IOException, InterruptedException {
 
         // update the game status
         Game game = getGame(gameId);
+
+        // if the guest is trying to start the game, just return the game as is
+        if (game.getGuest().getUserId().equals(playerId)) {
+            return game;
+        }
+
+        game.setGuestPoints(0);
+        game.setHostPoints(0);
         game = setStartingPlayer(game);
 
         // start the first round
@@ -168,6 +182,10 @@ public class GameService {
         // save to repo and flush
         gameRepository.save(game);
         gameRepository.flush();
+
+        // send the game update as dto via the Game channel
+        websocketService.sendToGame(gameId, WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+        websocketService.sendRoundUpdate(game, game.getCurrentRound());
 
         return game;
     }
@@ -200,6 +218,9 @@ public class GameService {
         Round updatedRound = roundService.executeMove(game.getCurrentRound(), message);
         game.setCurrentRound(updatedRound);
 
+        // send the updated round to the players
+        websocketService.sendRoundUpdate(game, game.getCurrentRound());
+
         // do post move checks and determine if the round was finished
         Boolean endOfRound = roundService.postMoveChecks(updatedRound);
 
@@ -220,6 +241,9 @@ public class GameService {
         // on the game
         game.setGuestPoints(game.getGuestPoints() + game.getCurrentRound().getGuestPoints());
         game.setHostPoints(game.getHostPoints() + game.getCurrentRound().getHostPoints());
+
+        // send the game update as dto via the Game channel
+        websocketService.sendToGame(game.getGameId(), WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
     }
 
     public void checkWinner(Game game) throws IOException, InterruptedException {
@@ -237,6 +261,10 @@ public class GameService {
 
             // update the game status
             game.setGameStatus(GameStatus.FINISHED);
+
+            // send the game update as dto via the Game channel
+            websocketService.sendToGame(game.getGameId(), WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+
         }
         // if there was no winner yet, set up a new round for the game
         else {

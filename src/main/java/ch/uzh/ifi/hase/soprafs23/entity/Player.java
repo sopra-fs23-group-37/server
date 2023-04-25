@@ -42,6 +42,26 @@ public class Player implements Serializable {
 
     private int totalPoints = 0;
 
+    public int getPointsTotalCards() {
+        return pointsTotalCards;
+    }
+
+    public int getPointClubs() {
+        return pointClubs;
+    }
+
+    public int getTwoOfClubs() {
+        return twoOfClubs;
+    }
+
+    public int getTenOfDiamonds() {
+        return tenOfDiamonds;
+    }
+
+    public int getTotalPoints() {
+        return totalPoints;
+    }
+
     public Player() {
     }
 
