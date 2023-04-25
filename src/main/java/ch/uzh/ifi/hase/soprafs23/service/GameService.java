@@ -185,6 +185,7 @@ public class GameService {
 
         // send the game update as dto via the Game channel
         websocketService.sendToGame(gameId, WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+        websocketService.sendRoundUpdate(game, game.getCurrentRound());
 
         return game;
     }
