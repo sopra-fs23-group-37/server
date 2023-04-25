@@ -118,8 +118,6 @@ public class WebsocketService {
         dto.setOppTenOfDiamonds(opponent.getTenOfDiamonds());
         dto.setOppTotalPoints(opponent.getTotalPoints());
 
-        // TODO: deal with opponent left
-
         return dto;
 
     }
