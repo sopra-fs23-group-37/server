@@ -269,10 +269,6 @@ public class GameService {
         // if there was no winner yet, set up a new round for the game
         else {
             game.setCurrentRound(roundService.newRound(game));
-
-            // TODO: determine whether to send the round updat to the users, or wait for
-            // confirmation
-            // websocketService.sendRoundUpdate(game, game.getCurrentRound());
         }
     }
 }
