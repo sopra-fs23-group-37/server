@@ -218,6 +218,9 @@ public class GameService {
         Round updatedRound = roundService.executeMove(game.getCurrentRound(), message);
         game.setCurrentRound(updatedRound);
 
+        // send the updated round to the players
+        websocketService.sendRoundUpdate(game, game.getCurrentRound());
+
         // do post move checks and determine if the round was finished
         Boolean endOfRound = roundService.postMoveChecks(updatedRound);
 
@@ -266,6 +269,10 @@ public class GameService {
         // if there was no winner yet, set up a new round for the game
         else {
             game.setCurrentRound(roundService.newRound(game));
+
+            // TODO: determine whether to send the round updat to the users, or wait for
+            // confirmation
+            // websocketService.sendRoundUpdate(game, game.getCurrentRound());
         }
     }
 }
