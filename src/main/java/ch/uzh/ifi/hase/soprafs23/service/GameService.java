@@ -332,6 +332,11 @@ public class GameService {
         Game guestGame = gameRepository.findByGuestSessionId(sessionId);
         Game hostGame = gameRepository.findByHostSessionId(sessionId);
 
+        // abort if no game was found at all
+        if ((guestGame == null) && (hostGame == null)) {
+            return;
+        }
+
         if (guestGame != null) {
             game = guestGame;
             role = Role.GUEST;
