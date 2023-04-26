@@ -28,6 +28,26 @@ public class GameGetDTO {
 
     private Round currentRound;
 
+    private String guestSessionId;
+
+    private String hostSessionId;
+
+    public String getGuestSessionId() {
+        return guestSessionId;
+    }
+
+    public void setGuestSessionId(String guestSessionId) {
+        this.guestSessionId = guestSessionId;
+    }
+
+    public String getHostSessionId() {
+        return hostSessionId;
+    }
+
+    public void setHostSessionId(String hostSessionId) {
+        this.hostSessionId = hostSessionId;
+    }
+
     public Round getCurrentRound() {
         return currentRound;
     }

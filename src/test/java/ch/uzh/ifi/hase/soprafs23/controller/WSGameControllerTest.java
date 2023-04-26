@@ -62,7 +62,7 @@ public class WSGameControllerTest {
     game.setHost(host);
     game.setGuest(guest);
 
-    given(gameService.websocketJoin(Mockito.any(), Mockito.any())).willReturn(game);
+    given(gameService.websocketJoin(Mockito.any(), Mockito.any(), Mockito.any())).willReturn(game);
 
     webSocketStompClient = new WebSocketStompClient(new SockJsClient(
         List.of(new WebSocketTransport(new StandardWebSocketClient()))));
@@ -92,7 +92,7 @@ public class WSGameControllerTest {
   void verifyGameIsReceived() throws Exception {
 
     // mock the game service to return the game when a user joins
-    given(gameService.websocketJoin(Mockito.any(), Mockito.any())).willReturn(game);
+    given(gameService.websocketJoin(Mockito.any(), Mockito.any(), Mockito.any())).willReturn(game);
 
     // create a WebSocket message converter to convert the player join message to a
     // message that can be sent over STOMP
@@ -114,7 +114,7 @@ public class WSGameControllerTest {
     assertEquals(game.getGuest().getUserId(), receivedGame.getGuest().getUserId());
 
     // verify that the game service was called once with the correct arguments
-    verify(gameService, times(1)).websocketJoin(eq(3L), eq(null));
+    verify(gameService, times(1)).websocketJoin(eq(3L), eq(null), any());
   }
 
   @Test

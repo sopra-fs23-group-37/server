@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -25,12 +26,15 @@ class WebsocketServiceTest {
     @Mock
     private SimpMessagingTemplate simp;
 
+    @Mock
+    private GameService gameService;
+
+    @InjectMocks
     private WebsocketService websocketService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        websocketService = new WebsocketService(simp);
     }
 
     @Test
