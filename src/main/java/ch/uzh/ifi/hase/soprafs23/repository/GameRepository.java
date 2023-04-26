@@ -11,12 +11,12 @@ import org.springframework.stereotype.Repository;
 @Repository("gameRepository")
 public interface GameRepository extends JpaRepository<Game, Long> {
 
-    Game findByGameId(Long GameId);
+    Game findByGameId(Long gameId);
 
-    List<Game> findByGameStatus(GameStatus GameStatus);
+    List<Game> findByGameStatus(GameStatus gameStatus);
 
-    Game findByGuestSessionId(String GuestSessionId);
+    Game findByGuestSessionId(String guestSessionId);
 
-    Game findByHostSessionId(String HostSessionId);
+    Game findByHostSessionId(String hostSessionId);
 
 }

@@ -342,7 +342,7 @@ public class GameService {
             role = Role.GUEST;
             userId = guestGame.getGuest().getUserId();
 
-        } else if (hostGame != null) {
+        } else {
             game = hostGame;
             role = Role.HOST;
             userId = hostGame.getHost().getUserId();

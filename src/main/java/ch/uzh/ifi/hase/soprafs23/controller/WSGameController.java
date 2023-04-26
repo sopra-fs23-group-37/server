@@ -61,7 +61,7 @@ public class WSGameController {
 
     @MessageMapping("/surrender/{gameId}")
     public void surrender(@DestinationVariable Long gameId,
-            PlayerJoinMessage message) throws IOException, InterruptedException {
+            PlayerJoinMessage message) {
         this.gameService.surrender(gameId, message.getPlayerId());
     }
 
