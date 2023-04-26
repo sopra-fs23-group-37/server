@@ -59,4 +59,10 @@ public class WSGameController {
         gameService.findDisconnectedPlayer(sessionId);
     }
 
+    @MessageMapping("/surrender/{gameId}")
+    public void surrender(@DestinationVariable Long gameId,
+            PlayerJoinMessage message) throws IOException, InterruptedException {
+        this.gameService.surrender(gameId, message.getPlayerId());
+    }
+
 }

@@ -357,4 +357,18 @@ public class GameService {
         websocketService.startReconnectTimer(10, game, role, userId, sessionId);
     }
 
+    public void surrender(Long gameId, Long playerId) {
+        // find the game & player username
+        Game game = getGame(gameId);
+        User loser = userRepository.findByUserId(playerId);
+
+        // update the status
+        game.setGameStatus(GameStatus.SURRENDERED);
+        game.setEndGameReason("Player " + loser + "surrendered the game.");
+
+        // save and share the update
+        gameRepository.save(game);
+        websocketService.sendToGame(gameId, WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+
+    }
 }
