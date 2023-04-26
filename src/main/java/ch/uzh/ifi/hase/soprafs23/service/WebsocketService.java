@@ -59,6 +59,11 @@ public class WebsocketService {
         this.simp.convertAndSend(destination, dto);
     }
 
+    public void sendGameToUser(Long userId, Object dto) {
+        String destination = String.format("/queue/user/%d/game", userId);
+        this.simp.convertAndSend(destination, dto);
+    }
+
     /**
      * method to send a player-specific round update to all the players in the game
      * 

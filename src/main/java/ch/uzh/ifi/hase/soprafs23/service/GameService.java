@@ -164,7 +164,7 @@ public class GameService {
         Game game = getGame(gameId);
 
         // if the guest is trying to start the game, just return the game as is
-        if (game.getGuest().getUserId().equals(playerId)) {
+        if (game.getGuest().getUserId().equals(playerId) || game.getGameStatus().equals(GameStatus.ONGOING)) {
             return game;
         }
 
@@ -270,5 +270,17 @@ public class GameService {
         else {
             game.setCurrentRound(roundService.newRound(game));
         }
+    }
+
+    public void reconnect(Long gameId, Long playerId) {
+        // find the game
+        Game game = getGame(gameId);
+
+        // send the current game status to the reconnecting user
+        websocketService.sendGameToUser(playerId, WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+
+        // send the current round info to the reconnecting user
+        websocketService.sendRoundInfoToUser(game, game.getCurrentRound(), playerId);
+
     }
 }
