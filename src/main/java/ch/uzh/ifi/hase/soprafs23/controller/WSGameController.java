@@ -44,4 +44,10 @@ public class WSGameController {
         return this.gameService.makeMove(gameId, message);
     }
 
+    @MessageMapping("/reconnect/{gameId}")
+    public void reconnect(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId,
+            PlayerJoinMessage message) throws IOException, InterruptedException {
+        this.gameService.reconnect(gameId, message.getPlayerId());
+    }
+
 }
