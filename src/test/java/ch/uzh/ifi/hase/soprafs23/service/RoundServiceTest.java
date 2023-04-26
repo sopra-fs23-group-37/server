@@ -133,12 +133,14 @@ public class RoundServiceTest {
     public void executeMove_successT4() {
         mockPlayerMoveMessage.setMoveType(4);
         mockPlayerMoveMessage.setCardFromHand(card1);
+        hostPlayer.addCardsToHand(Arrays.asList(card8, card1));
         testRound.setLastCardGrab(Role.GUEST);
 
         roundService.executeMove(testRound, mockPlayerMoveMessage);
 
         assertEquals(testRound.getTableCards().size(), 1);
         assertEquals(testRound.getTableCards().get(0), card1);
+        assertEquals(hostPlayer.getCardsInHand().size(), 1);
         assertEquals(Role.GUEST, testRound.getLastCardGrab());
     }
 

@@ -156,6 +156,7 @@ public class RoundService {
 
         } else {
             // add card to field if move type correct
+            player.removeCardFromHand(message.getCardFromHand());
             round.addCardToTable(message.getCardFromHand());
         }
         return round;
