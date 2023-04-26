@@ -159,6 +159,7 @@ public class RoundService {
             player.removeCardFromHand(message.getCardFromHand());
             round.addCardToTable(message.getCardFromHand());
         }
+        round = roundRepository.save(round);
         return round;
     }
 }
