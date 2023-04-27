@@ -20,9 +20,9 @@ import org.mapstruct.factory.Mappers;
  * creating information (POST).
  */
 @Mapper
-public interface WSDTOMapper {
+public interface WebSockDTOMapper {
 
-    WSDTOMapper INSTANCE = Mappers.getMapper(WSDTOMapper.class);
+    WebSockDTOMapper INSTANCE = Mappers.getMapper(WebSockDTOMapper.class);
 
     @Mapping(source = "gameId", target = "gameId")
     @Mapping(source = "host.userId", target = "hostId", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
