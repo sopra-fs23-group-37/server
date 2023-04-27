@@ -129,5 +129,6 @@
 4. Adjusted the code so its fits to Carols solution of the new web-socket functionalities
 5. Implemented the tests for the M3 assignment (https://github.com/sopra-fs23-group-37/server/issues/99)
 6. Fixed the design of the game (https://github.com/sopra-fs23-group-37/client/issues/119)
+7. Fixed the .scss styling
 
 
