@@ -134,7 +134,7 @@ public class Player implements Serializable {
                     this.twoOfClubs = 1;
                 }
                 // check if player has the 10 of Diamonds
-            } else if (card.getCode().equals("10D")) {
+            } else if (card.getCode().equals("0D")) {
                 this.tenOfDiamonds = 1;
             }
         }
