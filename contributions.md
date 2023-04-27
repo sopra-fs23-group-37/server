@@ -87,7 +87,7 @@
 3. Testing for everything + added a lot of tests
 
 
-# Week 2 Contributions
+# Week 3 Contributions
 
 ## Beni
 
@@ -99,3 +99,10 @@
 6. Enable Moves while playing - (https://github.com/sopra-fs23-group-37/client/issues/11)
 7. Show opponent's hand - (https://github.com/sopra-fs23-group-37/client/issues/98)
 8. Show Discarded Pile - (https://github.com/sopra-fs23-group-37/client/issues/108)
+
+## Sinthu
+
+1.	Created the Gamet-Table on Gamescreen (sopra-fs23-group-37/client#81)
+2.	Implemented a new design for rulebook (sopra-fs23-group-37/client#106)
+3.	Creating Leave-Game-Button on GameScreen (sopra-fs23-group-37/client#19)
+
