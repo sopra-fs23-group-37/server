@@ -120,3 +120,14 @@
 3. Indicate which players turn it is (https://github.com/sopra-fs23-group-37/client/issues/9) and (https://github.com/sopra-fs23-group-37/client/issues/10)
 4. Implemented the complete move logic and ui structure together with Beni (https://github.com/sopra-fs23-group-37/client/issues/11)
 5. Minor ui updates all around
+
+## Timon
+
+1. Implemented the End Of Game screen (https://github.com/sopra-fs23-group-37/client/issues/16)
+2. Implemented the End Of Round screen (https://github.com/sopra-fs23-group-37/client/issues/15)
+3. Implemented the Game Point statistics (https://github.com/sopra-fs23-group-37/client/issues/88)
+4. Adjusted the code so its fits to Carols solution of the new web-socket functionalities
+5. Implemented the tests for the M3 assignment (https://github.com/sopra-fs23-group-37/server/issues/99)
+6. Fixed the design of the game (https://github.com/sopra-fs23-group-37/client/issues/119)
+
+
