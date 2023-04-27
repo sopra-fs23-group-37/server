@@ -106,3 +106,11 @@
 2.	Implemented a new design for rulebook (sopra-fs23-group-37/client#106)
 3.	Creating Leave-Game-Button on GameScreen (sopra-fs23-group-37/client#19)
 
+## Carol
+1. Refactored websocket both client and server side to be able to pass websocket connection flexibly between pages (https://github.com/sopra-fs23-group-37/client/issues/83, https://github.com/sopra-fs23-group-37/client/issues/40, https://github.com/sopra-fs23-group-37/server/issues/104)
+2. Updated environment for server to ensure websocket connects successfully in production (https://github.com/sopra-fs23-group-37/client/issues/32, https://github.com/sopra-fs23-group-37/server/issues/100)
+3. Handle disconnects and reconnects (https://github.com/sopra-fs23-group-37/client/issues/37 https://github.com/sopra-fs23-group-37/server/issues/108)
+4. Make sure player turn is changed after move depending on cards still left (https://github.com/sopra-fs23-group-37/server/issues/114)
+5. Allow surrender of game in server and client
+6. Server-side tests
+
