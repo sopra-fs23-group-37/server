@@ -366,6 +366,12 @@ public class GameService {
     public void confirmEOR(Long gameId, Long playerId) throws IOException, InterruptedException {
 
         Game game = getGame(gameId);
+
+        // skip if the game has finished
+        if (game.getGameStatus().equals(GameStatus.FINISHED)) {
+            return;
+        }
+
         // update the host/guest confirmed End of Round (EOR) status in the game
         if (playerId.equals(game.getHost().getUserId())) {
             game.getCurrentRound().setHostConfirmedEOR(true);
