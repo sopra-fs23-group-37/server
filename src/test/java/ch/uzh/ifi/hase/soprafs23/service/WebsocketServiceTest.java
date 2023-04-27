@@ -80,7 +80,7 @@ class WebsocketServiceTest {
         host.addCardsToHand(cards);
         game.setHost(hostUser);
         game.setGuest(guestUser);
-        guest.addCardsToDiscard(cards);
+        guest.addCardToDiscard(card);
         round.setHost(host);
         round.setGuest(guest);
         round.setCurrentTurnPlayer(Role.GUEST);
