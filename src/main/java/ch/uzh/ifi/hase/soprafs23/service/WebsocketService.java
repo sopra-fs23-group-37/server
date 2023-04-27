@@ -18,7 +18,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSRoundStatusDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.mapper.WSDTOMapper;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.WebSockDTOMapper;
 
 @Service
 @Transactional
@@ -177,8 +177,8 @@ public class WebsocketService {
         gameRepository.save(game);
 
         // send the update to the lobby and the game so that all players are informed
-        sendToLobby(game.getGameId(), WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
-        sendToGame(game.getGameId(), WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+        sendToLobby(game.getGameId(), WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+        sendToGame(game.getGameId(), WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
     }
 
 }

@@ -134,7 +134,7 @@ public class GameService {
         // if the game is already closed, send the game info back without joining it
         if (game.getGameStatus().equals(GameStatus.DISCONNECTED) || game.getGameStatus()
                 .equals(GameStatus.FINISHED) || game.getGameStatus().equals(GameStatus.SURRENDERED)) {
-            websocketService.sendToLobby(gameId, WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+            websocketService.sendToLobby(gameId, WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
             return game;
         }
 
@@ -369,7 +369,7 @@ public class GameService {
 
         // save and share the update
         gameRepository.save(game);
-        websocketService.sendToGame(gameId, WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+        websocketService.sendToGame(gameId, WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
 
     }
 }
