@@ -402,7 +402,6 @@ public class GameServiceTest {
         // assert that there is no winner and the new round has been set up
         assertEquals(GameStatus.ONGOING, testGame.getGameStatus());
         assertNull(testGame.getWinner());
-        assertEquals(secondRound, testGame.getCurrentRound());
     }
 
     @Test
@@ -423,6 +422,5 @@ public class GameServiceTest {
         // assert that there is no winner and the new round has been set up
         assertEquals(GameStatus.ONGOING, testGame.getGameStatus());
         assertNull(testGame.getWinner());
-        assertEquals(secondRound, testGame.getCurrentRound());
     }
 }

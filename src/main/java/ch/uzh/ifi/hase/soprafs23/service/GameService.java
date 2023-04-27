@@ -218,16 +218,15 @@ public class GameService {
         Round updatedRound = roundService.executeMove(game.getCurrentRound(), message);
         game.setCurrentRound(updatedRound);
 
-        // send the updated round to the players
-        websocketService.sendRoundUpdate(game, game.getCurrentRound());
-
         // do post move checks and determine if the round was finished
         Boolean endOfRound = roundService.postMoveChecks(updatedRound);
 
+        // send the updated round to the players
+        websocketService.sendRoundUpdate(game, game.getCurrentRound());
+
         // if the round was finished, updates the points and check if there is a winner
         if (endOfRound) {
-            updatePoints(game);
-            checkWinner(game);
+            checkWinner(updatePoints(game));
         }
 
         // update the game in the repository and return it
@@ -236,14 +235,12 @@ public class GameService {
         return game;
     }
 
-    public void updatePoints(Game game) {
+    public Game updatePoints(Game game) {
         // add points from the finished round (still set as current) to the total points
         // on the game
         game.setGuestPoints(game.getGuestPoints() + game.getCurrentRound().getGuestPoints());
         game.setHostPoints(game.getHostPoints() + game.getCurrentRound().getHostPoints());
-
-        // send the game update as dto via the Game channel
-        websocketService.sendToGame(game.getGameId(), WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+        return game;
     }
 
     public void checkWinner(Game game) throws IOException, InterruptedException {
@@ -258,19 +255,13 @@ public class GameService {
             } else {
                 game.setWinner(game.getHost());
             }
-
             // update the game status
             game.setGameStatus(GameStatus.FINISHED);
-
-            // send the game update as dto via the Game channel
-            websocketService.sendToGame(game.getGameId(),
-                    WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
-
         }
-        // if there was no winner yet, set up a new round for the game
-        else {
-            game.setCurrentRound(roundService.newRound(game));
-        }
+
+        // send the game update as dto via the Game channel
+        websocketService.sendToGame(game.getGameId(),
+                WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
     }
 
     public void reconnect(Long gameId, Long playerId) {
@@ -282,6 +273,29 @@ public class GameService {
 
         // send the current round info to the reconnecting user
         websocketService.sendRoundInfoToUser(game, game.getCurrentRound(), playerId);
+
+    }
+
+    public void confirmEOR(Long gameId, Long playerId) throws IOException, InterruptedException {
+
+        Game game = getGame(gameId);
+        // update the host/guest confirmed End of Round (EOR) status in the game
+        if (playerId.equals(game.getHost().getUserId())) {
+            game.getCurrentRound().setHostConfirmedEOR(true);
+        } else if (playerId.equals(game.getGuest().getUserId())) {
+            game.getCurrentRound().setGuestConfirmedEOR(true);
+        }
+
+        if (game.getCurrentRound().getHostConfirmedEOR() && game.getCurrentRound().getGuestConfirmedEOR()) {
+            // create a new round for the game
+            game.setCurrentRound(roundService.newRound(game));
+
+            // send the updated round to the players
+            websocketService.sendRoundUpdate(game, game.getCurrentRound());
+
+            // save the game
+            gameRepository.save(game);
+        }
 
     }
 }
