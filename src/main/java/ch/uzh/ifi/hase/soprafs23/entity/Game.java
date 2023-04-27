@@ -46,11 +46,47 @@ public class Game implements Serializable {
     @OneToOne(targetEntity = Round.class)
     private Round currentRound;
 
+    @Column(nullable = true)
     private int totalRounds;
 
+    @Column(nullable = true)
     private int hostPoints;
 
+    @Column(nullable = true)
     private int guestPoints;
+
+    @Column(nullable = true)
+    private String guestSessionId;
+
+    @Column(nullable = true)
+    private String hostSessionId;
+
+    @Column(nullable = true)
+    private String endGameReason;
+
+    public String getEndGameReason() {
+        return endGameReason;
+    }
+
+    public void setEndGameReason(String disconnectReason) {
+        this.endGameReason = disconnectReason;
+    }
+
+    public String getGuestSessionId() {
+        return guestSessionId;
+    }
+
+    public void setGuestSessionId(String sessionId) {
+        this.guestSessionId = sessionId;
+    }
+
+    public String getHostSessionId() {
+        return hostSessionId;
+    }
+
+    public void setHostSessionId(String sessionId) {
+        this.hostSessionId = sessionId;
+    }
 
     public int getHostPoints() {
         return hostPoints;

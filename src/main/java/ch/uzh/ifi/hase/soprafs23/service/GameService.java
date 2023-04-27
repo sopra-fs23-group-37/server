@@ -127,15 +127,36 @@ public class GameService {
         return nextGame;
     }
 
-    public Game websocketJoin(Long gameId, Long playerId) throws IOException, InterruptedException {
+    public Game websocketJoin(Long gameId, Long playerId, String sessionId) throws IOException, InterruptedException {
         // get the correct game
         Game game = getGame(gameId);
+
+        // if the game is already closed, send the game info back without joining it
+        if (game.getGameStatus().equals(GameStatus.DISCONNECTED) || game.getGameStatus()
+                .equals(GameStatus.FINISHED) || game.getGameStatus().equals(GameStatus.SURRENDERED)) {
+            websocketService.sendToLobby(gameId, WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+            return game;
+        }
 
         // update the host/guest status in the game
         if (playerId.equals(game.getHost().getUserId())) {
             game.setHostStatus(PlayerStatus.CONNECTED);
+
+            // check if this is a reconnect with a different session
+            if (game.getHostSessionId() != null) {
+                String oldSessionId = game.getHostSessionId();
+                websocketService.cancelDisconnect(playerId, oldSessionId);
+            }
+            game.setHostSessionId(sessionId);
+
         } else if (playerId.equals(game.getGuest().getUserId())) {
             game.setGuestStatus(PlayerStatus.CONNECTED);
+            // check if this is a reconnect with a different session
+            if (game.getGuestSessionId() != null) {
+                String oldSessionId = game.getGuestSessionId();
+                websocketService.cancelDisconnect(playerId, oldSessionId);
+            }
+            game.setGuestSessionId(sessionId);
         }
 
         // update the game status
@@ -143,8 +164,10 @@ public class GameService {
                 && game.getGuestStatus().equals(PlayerStatus.CONNECTED)) {
             game.setGameStatus(GameStatus.CONNECTED);
             // startGame(game);
-        } else if (game.getHostStatus().equals(
-                PlayerStatus.CONNECTED) || game.getGuestStatus().equals(PlayerStatus.CONNECTED)) {
+        } else if ((game.getHostStatus().equals(
+                PlayerStatus.CONNECTED)
+                || game.getGuestStatus().equals(PlayerStatus.CONNECTED)
+                        && !game.getGameStatus().equals(GameStatus.DISCONNECTED))) {
             game.setGameStatus(GameStatus.WAITING);
         }
 
@@ -264,15 +287,80 @@ public class GameService {
                 WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
     }
 
-    public void reconnect(Long gameId, Long playerId) {
+    public void reconnect(Long gameId, Long playerId, String sessionId) {
         // find the game
         Game game = getGame(gameId);
+        String oldSessionId = null;
+
+        // figure out which player is reconnecting and get their old session id, update
+        // to new id
+        if (playerId.equals(game.getHost().getUserId())) {
+            oldSessionId = game.getHostSessionId();
+            game.setHostSessionId(sessionId);
+        } else if (playerId.equals(game.getGuest().getUserId())) {
+            oldSessionId = game.getGuestSessionId();
+            game.setGuestSessionId(sessionId);
+        }
+
+        // cancel disconnecting for the previous session disconnect event
+        websocketService.cancelDisconnect(playerId, oldSessionId);
+
+        // save the game with the updated session
+        gameRepository.save(game);
 
         // send the current game status to the reconnecting user
         websocketService.sendGameToUser(playerId, WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
 
         // send the current round info to the reconnecting user
         websocketService.sendRoundInfoToUser(game, game.getCurrentRound(), playerId);
+    }
+
+    public void findDisconnectedPlayer(String sessionId) {
+        Game game = null;
+        Role role = null;
+        Long userId = null;
+
+        // find the player that has disconnected
+        Game guestGame = gameRepository.findByGuestSessionId(sessionId);
+        Game hostGame = gameRepository.findByHostSessionId(sessionId);
+
+        // abort if no game was found at all
+        if ((guestGame == null) && (hostGame == null)) {
+            return;
+        }
+
+        if (guestGame != null) {
+            game = guestGame;
+            role = Role.GUEST;
+            userId = guestGame.getGuest().getUserId();
+
+        } else {
+            game = hostGame;
+            role = Role.HOST;
+            userId = hostGame.getHost().getUserId();
+        }
+
+        // quickly check that the game is still active
+        if (game.getGameStatus().equals(GameStatus.DISCONNECTED) || game.getGameStatus()
+                .equals(GameStatus.FINISHED) || game.getGameStatus().equals(GameStatus.SURRENDERED)) {
+            return;
+        }
+
+        websocketService.startReconnectTimer(10, game, role, userId, sessionId);
+    }
+
+    public void surrender(Long gameId, Long playerId) {
+        // find the game & player username
+        Game game = getGame(gameId);
+        User loser = userRepository.findByUserId(playerId);
+
+        // update the status
+        game.setGameStatus(GameStatus.SURRENDERED);
+        game.setEndGameReason("Player " + loser + "surrendered the game.");
+
+        // save and share the update
+        gameRepository.save(game);
+        websocketService.sendToGame(gameId, WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
 
     }
 

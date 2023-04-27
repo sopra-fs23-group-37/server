@@ -25,7 +25,16 @@ public class WSGameStatusDTO {
     private Long winnerId;
     private String winnerUsername;
 
+    // reason for the end of the game
+    private String endGameReason;
 
+    public String getEndGameReason() {
+        return endGameReason;
+    }
+
+    public void setEndGameReason(String endOfGameReason) {
+        this.endGameReason = endOfGameReason;
+    }
 
     public int getGuestPoints() {
         return guestPoints;

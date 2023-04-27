@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -25,21 +26,30 @@ public class Player implements Serializable {
     @ManyToOne(optional = true, fetch = FetchType.EAGER)
     private User player;
 
+    @Column
     @Lob
     private ArrayList<Card> cardsInHand = new ArrayList<Card>();
+
+    @Column
     @Lob
     private ArrayList<Card> cardsInDiscard = new ArrayList<Card>();
 
+    @Column
     private Role role;
 
+    @Column
     private int pointsTotalCards = 0;
 
+    @Column
     private int pointClubs = 0;
 
+    @Column
     private int twoOfClubs = 0;
 
+    @Column
     private int tenOfDiamonds = 0;
 
+    @Column
     private int totalPoints = 0;
 
     public int getPointsTotalCards() {

@@ -45,6 +45,7 @@ public class GameServiceTest {
     @Mock
     private WebsocketService websocketService;
 
+    private String principal = "principal";
     private User testHost;
     private User testGuest;
     private Game testGame;
@@ -280,7 +281,7 @@ public class GameServiceTest {
     public void websocketjoin_validInputs_host_success() throws IOException, InterruptedException {
         testGame.setGuestStatus(PlayerStatus.WAITING);
         // websocket join test host to test game
-        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId());
+        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId(), principal);
 
         // check statuses
         assertEquals(PlayerStatus.CONNECTED, updatedGame.getHostStatus());
@@ -292,7 +293,7 @@ public class GameServiceTest {
     public void websocketjoin_validInputs_guest_success() throws IOException, InterruptedException {
         testGame.setHostStatus(PlayerStatus.WAITING);
         // websocket join test guest to test game
-        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testGuest.getUserId());
+        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testGuest.getUserId(), principal);
 
         // check statuses
         assertEquals(PlayerStatus.CONNECTED, updatedGame.getGuestStatus());
@@ -307,8 +308,8 @@ public class GameServiceTest {
         testGame.setGuestStatus(PlayerStatus.WAITING);
 
         // websocket join test host and guest to test game
-        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId());
-        updatedGame = gameService.websocketJoin(updatedGame.getGameId(), testGuest.getUserId());
+        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId(), principal);
+        updatedGame = gameService.websocketJoin(updatedGame.getGameId(), testGuest.getUserId(), principal);
 
         // check statuses
         assertEquals(PlayerStatus.CONNECTED, updatedGame.getHostStatus());
