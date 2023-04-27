@@ -87,3 +87,15 @@
 3. Testing for everything + added a lot of tests
 
 
+# Week 2 Contributions
+
+## Beni
+
+1. Closing tab should log out user & fix logout even if server returns error - (https://github.com/sopra-fs23-group-37/client/issues/62)
+2. Welcome Text in header should display username - (https://github.com/sopra-fs23-group-37/client/issues/64)
+3. Game Creation Page & Lobby Page Design & funktionalitäten anpassen - (https://github.com/sopra-fs23-group-37/client/issues/69)
+4. Create Containers for Game Screen - (https://github.com/sopra-fs23-group-37/client/issues/76)
+5. Implement Card Component with needed card features and game implementation example - (https://github.com/sopra-fs23-group-37/client/issues/6)
+6. Enable Moves while playing - (https://github.com/sopra-fs23-group-37/client/issues/11)
+7. Show opponent's hand - (https://github.com/sopra-fs23-group-37/client/issues/98)
+8. Show Discarded Pile - (https://github.com/sopra-fs23-group-37/client/issues/108)
