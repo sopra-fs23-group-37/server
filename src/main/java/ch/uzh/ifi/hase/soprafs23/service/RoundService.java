@@ -162,7 +162,17 @@ public class RoundService {
             player.removeCardFromHand(message.getCardFromHand());
             round.addCardToTable(message.getCardFromHand());
         }
+
+        // change player turn if the other player still has cards
+        if (round.getCurrentTurnPlayer().equals(Role.GUEST) && round.getHost().getCardsInHand().size() != 0) {
+            round.setCurrentTurnPlayer(Role.HOST);
+
+        } else if (round.getCurrentTurnPlayer().equals(Role.HOST) && round.getGuest().getCardsInHand().size() != 0) {
+            round.setCurrentTurnPlayer(Role.GUEST);
+        }
+
         round = roundRepository.save(round);
+
         return round;
     }
 }
