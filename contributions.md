@@ -114,3 +114,9 @@
 5. Allow surrender of game in server and client
 6. Server-side tests
 
+## Niels
+1. Parsing the game state from server to local implementation (https://github.com/sopra-fs23-group-37/client/issues/55)
+2. Display player hand and make cards selectable (https://github.com/sopra-fs23-group-37/client/issues/7)
+3. Indicate which players turn it is (https://github.com/sopra-fs23-group-37/client/issues/9) and (https://github.com/sopra-fs23-group-37/client/issues/10)
+4. Implemented the complete move logic and ui structure together with Beni (https://github.com/sopra-fs23-group-37/client/issues/11)
+5. Minor ui updates all around
