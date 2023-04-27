@@ -356,12 +356,11 @@ public class GameService {
 
         // update the status
         game.setGameStatus(GameStatus.SURRENDERED);
-        game.setEndGameReason("Player " + loser + "surrendered the game.");
+        game.setEndGameReason("Player " + loser.getUsername() + "surrendered the game.");
 
         // save and share the update
         gameRepository.save(game);
         websocketService.sendToGame(gameId, WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
-
     }
 
     public void confirmEOR(Long gameId, Long playerId) throws IOException, InterruptedException {
