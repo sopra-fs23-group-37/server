@@ -81,7 +81,7 @@ public class PlayerTest {
         twoOfClubs.setCode("2C");
         Card tenOfDiamonds = new Card();
         tenOfDiamonds.setSuit("DIAMONDS");
-        tenOfDiamonds.setCode("10D");
+        tenOfDiamonds.setCode("0D");
 
         winningCards.add(twoOfClubs);
         winningCards.add(tenOfDiamonds);
