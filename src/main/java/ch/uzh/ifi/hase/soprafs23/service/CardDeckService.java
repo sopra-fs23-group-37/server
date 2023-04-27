@@ -77,7 +77,7 @@ public class CardDeckService {
 		cards = cardRepository.saveAll(cards);
 		cardRepository.flush();
 
-		deck.setRemaining(deck.getRemaining() - number);
+		deck.setRemaining(cardDrawResponse.getRemaining());
 		cardDeckRepository.saveAndFlush(deck);
 
 		return cards;
