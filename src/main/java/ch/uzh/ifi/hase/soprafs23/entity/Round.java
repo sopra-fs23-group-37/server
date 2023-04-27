@@ -44,6 +44,26 @@ public class Round implements Serializable {
 
     private Role lastCardGrab;
 
+    private boolean guestConfirmedEOR = false;
+
+    private boolean hostConfirmedEOR = false;
+
+    public boolean getGuestConfirmedEOR() {
+        return guestConfirmedEOR;
+    }
+
+    public void setGuestConfirmedEOR(boolean guestConfirmedEOR) {
+        this.guestConfirmedEOR = guestConfirmedEOR;
+    }
+
+    public boolean getHostConfirmedEOR() {
+        return hostConfirmedEOR;
+    }
+
+    public void setHostConfirmedEOR(boolean hostConfirmedEOR) {
+        this.hostConfirmedEOR = hostConfirmedEOR;
+    }
+
     public Role getLastCardGrab() {
         return lastCardGrab;
     }

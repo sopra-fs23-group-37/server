@@ -50,4 +50,10 @@ public class WSGameController {
         this.gameService.reconnect(gameId, message.getPlayerId());
     }
 
+    @MessageMapping("/confirmEOR/{gameId}")
+    public void confirmEOR(SimpMessageHeaderAccessor headerAccessor, @DestinationVariable Long gameId,
+            PlayerJoinMessage message) throws IOException, InterruptedException {
+        this.gameService.confirmEOR(gameId, message.getPlayerId());
+    }
+
 }
