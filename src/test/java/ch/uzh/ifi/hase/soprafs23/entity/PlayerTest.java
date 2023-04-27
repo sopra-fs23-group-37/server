@@ -45,7 +45,7 @@ public class PlayerTest {
     @Test
     public void getValues_success() {
         player.addCardsToHand(cards1);
-        player.addCardsToDiscard(cards2);
+        player.addCardToDiscard(card2);
 
         assertEquals(player.getPlayer(), mockUser);
         assertEquals(1, player.getHandSize());
@@ -87,7 +87,9 @@ public class PlayerTest {
         winningCards.add(tenOfDiamonds);
 
         // add the cards to the player's discard pile
-        player.addCardsToDiscard(winningCards);
+        for (Card c : winningCards) {
+            player.addCardToDiscard(c);
+        }
 
         // count the points for the player
         int playerPoints = player.countDiscard();
@@ -104,8 +106,9 @@ public class PlayerTest {
 
     @Test
     public void countDiscard_noPoints() {
-
-        player.addCardsToDiscard(cardsInDiscard);
+        for (Card c : cardsInDiscard) {
+            player.addCardToDiscard(c);
+        }
         // no cards added so player will get no points
         int playerPoints = player.countDiscard();
         assertEquals(0, playerPoints);

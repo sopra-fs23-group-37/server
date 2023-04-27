@@ -87,3 +87,36 @@
 3. Testing for everything + added a lot of tests
 
 
+# Week 3 Contributions
+
+## Beni
+
+1. Closing tab should log out user & fix logout even if server returns error - (https://github.com/sopra-fs23-group-37/client/issues/62)
+2. Welcome Text in header should display username - (https://github.com/sopra-fs23-group-37/client/issues/64)
+3. Game Creation Page & Lobby Page Design & funktionalitäten anpassen - (https://github.com/sopra-fs23-group-37/client/issues/69)
+4. Create Containers for Game Screen - (https://github.com/sopra-fs23-group-37/client/issues/76)
+5. Implement Card Component with needed card features and game implementation example - (https://github.com/sopra-fs23-group-37/client/issues/6)
+6. Enable Moves while playing - (https://github.com/sopra-fs23-group-37/client/issues/11)
+7. Show opponent's hand - (https://github.com/sopra-fs23-group-37/client/issues/98)
+8. Show Discarded Pile - (https://github.com/sopra-fs23-group-37/client/issues/108)
+
+## Sinthu
+
+1.	Created the Gamet-Table on Gamescreen (sopra-fs23-group-37/client#81)
+2.	Implemented a new design for rulebook (sopra-fs23-group-37/client#106)
+3.	Creating Leave-Game-Button on GameScreen (sopra-fs23-group-37/client#19)
+
+## Carol
+1. Refactored websocket both client and server side to be able to pass websocket connection flexibly between pages (https://github.com/sopra-fs23-group-37/client/issues/83, https://github.com/sopra-fs23-group-37/client/issues/40, https://github.com/sopra-fs23-group-37/server/issues/104)
+2. Updated environment for server to ensure websocket connects successfully in production (https://github.com/sopra-fs23-group-37/client/issues/32, https://github.com/sopra-fs23-group-37/server/issues/100)
+3. Handle disconnects and reconnects (https://github.com/sopra-fs23-group-37/client/issues/37 https://github.com/sopra-fs23-group-37/server/issues/108)
+4. Make sure player turn is changed after move depending on cards still left (https://github.com/sopra-fs23-group-37/server/issues/114)
+5. Allow surrender of game in server and client
+6. Server-side tests
+
+## Niels
+1. Parsing the game state from server to local implementation (https://github.com/sopra-fs23-group-37/client/issues/55)
+2. Display player hand and make cards selectable (https://github.com/sopra-fs23-group-37/client/issues/7)
+3. Indicate which players turn it is (https://github.com/sopra-fs23-group-37/client/issues/9) and (https://github.com/sopra-fs23-group-37/client/issues/10)
+4. Implemented the complete move logic and ui structure together with Beni (https://github.com/sopra-fs23-group-37/client/issues/11)
+5. Minor ui updates all around

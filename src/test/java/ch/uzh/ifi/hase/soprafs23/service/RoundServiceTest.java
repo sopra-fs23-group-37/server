@@ -133,12 +133,14 @@ public class RoundServiceTest {
     public void executeMove_successT4() {
         mockPlayerMoveMessage.setMoveType(4);
         mockPlayerMoveMessage.setCardFromHand(card1);
+        hostPlayer.addCardsToHand(Arrays.asList(card8, card1));
         testRound.setLastCardGrab(Role.GUEST);
 
         roundService.executeMove(testRound, mockPlayerMoveMessage);
 
         assertEquals(testRound.getTableCards().size(), 1);
         assertEquals(testRound.getTableCards().get(0), card1);
+        assertEquals(hostPlayer.getCardsInHand().size(), 1);
         assertEquals(Role.GUEST, testRound.getLastCardGrab());
     }
 
@@ -156,8 +158,7 @@ public class RoundServiceTest {
         assertEquals(3, testRound.getTableCards().size());
         assertEquals(1, hostPlayer.getCardsInHand().size());
         assertEquals(card5, hostPlayer.getCardsInHand().get(0));
-        assertEquals(1, hostPlayer.getCardsInDiscard().size());
-        assertEquals(card2, hostPlayer.getCardsInDiscard().get(0));
+        assertEquals(2, hostPlayer.getCardsInDiscard().size());
         assertEquals(Role.HOST, testRound.getLastCardGrab());
     }
 
@@ -175,7 +176,7 @@ public class RoundServiceTest {
         assertEquals(2, testRound.getTableCards().size());
         assertEquals(1, hostPlayer.getCardsInHand().size());
         assertEquals(card5, hostPlayer.getCardsInHand().get(0));
-        assertEquals(2, hostPlayer.getCardsInDiscard().size());
+        assertEquals(3, hostPlayer.getCardsInDiscard().size());
         assertEquals(Role.HOST, testRound.getLastCardGrab());
     }
 
@@ -193,8 +194,7 @@ public class RoundServiceTest {
         assertEquals(0, testRound.getTableCards().size());
         assertEquals(1, hostPlayer.getCardsInHand().size());
         assertEquals(card5, hostPlayer.getCardsInHand().get(0));
-        assertEquals(4, hostPlayer.getCardsInDiscard().size());
-        assertEquals(cards4, hostPlayer.getCardsInDiscard());
+        assertEquals(5, hostPlayer.getCardsInDiscard().size());
         assertEquals(Role.HOST, testRound.getLastCardGrab());
     }
 

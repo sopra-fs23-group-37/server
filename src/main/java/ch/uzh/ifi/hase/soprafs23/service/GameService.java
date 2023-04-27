@@ -9,7 +9,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
-import ch.uzh.ifi.hase.soprafs23.rest.mapper.WSDTOMapper;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.WebSockDTOMapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,7 +176,7 @@ public class GameService {
         gameRepository.flush();
 
         // send the game update as dto via the lobby channel
-        websocketService.sendToLobby(gameId, WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+        websocketService.sendToLobby(gameId, WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
 
         return game;
     }
@@ -207,7 +207,7 @@ public class GameService {
         gameRepository.flush();
 
         // send the game update as dto via the Game channel
-        websocketService.sendToGame(gameId, WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+        websocketService.sendToGame(gameId, WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
         websocketService.sendRoundUpdate(game, game.getCurrentRound());
 
         return game;
@@ -266,7 +266,7 @@ public class GameService {
         game.setHostPoints(game.getHostPoints() + game.getCurrentRound().getHostPoints());
 
         // send the game update as dto via the Game channel
-        websocketService.sendToGame(game.getGameId(), WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+        websocketService.sendToGame(game.getGameId(), WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
     }
 
     public void checkWinner(Game game) throws IOException, InterruptedException {
@@ -286,7 +286,8 @@ public class GameService {
             game.setGameStatus(GameStatus.FINISHED);
 
             // send the game update as dto via the Game channel
-            websocketService.sendToGame(game.getGameId(), WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+            websocketService.sendToGame(game.getGameId(),
+                    WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
 
         }
         // if there was no winner yet, set up a new round for the game
@@ -317,7 +318,7 @@ public class GameService {
         gameRepository.save(game);
 
         // send the current game status to the reconnecting user
-        websocketService.sendGameToUser(playerId, WSDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+        websocketService.sendGameToUser(playerId, WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
 
         // send the current round info to the reconnecting user
         websocketService.sendRoundInfoToUser(game, game.getCurrentRound(), playerId);

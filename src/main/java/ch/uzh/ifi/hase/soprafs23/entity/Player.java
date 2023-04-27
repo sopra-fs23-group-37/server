@@ -88,8 +88,8 @@ public class Player implements Serializable {
         cardsInHand.addAll(cards);
     }
 
-    public void addCardsToDiscard(List<Card> cards) {
-        cardsInDiscard.addAll(cards);
+    public void addCardToDiscard(Card card) {
+        cardsInDiscard.add(card);
     }
 
     public void removeCardFromHand(Card card) {

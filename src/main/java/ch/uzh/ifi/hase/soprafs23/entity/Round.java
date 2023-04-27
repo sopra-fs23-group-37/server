@@ -8,7 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
@@ -26,7 +26,7 @@ public class Round implements Serializable {
     @Column
     private Role currentTurnPlayer;
 
-    @OneToMany(targetEntity = Card.class)
+    @ManyToMany(targetEntity = Card.class)
     private List<Card> cardsOnTable = new ArrayList<Card>();
 
     @OneToOne(targetEntity = Player.class)

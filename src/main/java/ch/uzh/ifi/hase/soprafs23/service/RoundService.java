@@ -121,7 +121,9 @@ public class RoundService {
 
         // give any remaining table cards to the player who last grabbed some cards
         Player recipient = round.getLastCardGrab() == Role.HOST ? round.getHost() : round.getGuest();
-        recipient.addCardsToDiscard(round.getTableCards());
+        for (Card c : round.getTableCards()) {
+            recipient.addCardToDiscard(c);
+        }
 
         // count points of the hands
         round.setHostPoints(round.getHost().countDiscard());
@@ -146,18 +148,31 @@ public class RoundService {
         if (message.getMoveType() != 4) {
             // remove card from hand
             player.removeCardFromHand(message.getCardFromHand());
+            player.addCardToDiscard(message.getCardFromHand());
 
             // remove cards from field and add it to that players discard
             for (Card c : message.getCardsFromField()) {
                 round.removeCardFromTable(c);
+                player.addCardToDiscard(c);
             }
-            player.addCardsToDiscard(message.getCardsFromField());
             round.setLastCardGrab(player.getRole());
 
         } else {
             // add card to field if move type correct
+            player.removeCardFromHand(message.getCardFromHand());
             round.addCardToTable(message.getCardFromHand());
         }
+
+        // change player turn if the other player still has cards
+        if (round.getCurrentTurnPlayer().equals(Role.GUEST) && round.getHost().getCardsInHand().size() != 0) {
+            round.setCurrentTurnPlayer(Role.HOST);
+
+        } else if (round.getCurrentTurnPlayer().equals(Role.HOST) && round.getGuest().getCardsInHand().size() != 0) {
+            round.setCurrentTurnPlayer(Role.GUEST);
+        }
+
+        round = roundRepository.save(round);
+
         return round;
     }
 }
