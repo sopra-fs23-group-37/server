@@ -11,6 +11,8 @@ import ch.uzh.ifi.hase.soprafs23.repository.RoundRepository;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,8 @@ public class RoundService {
 
     private final CardDeckService cardDeckService;
 
+    Logger logger = LoggerFactory.getLogger(RoundService.class);
+
     RoundService(
             @Qualifier("roundRepository") RoundRepository roundRepository,
             @Qualifier("playerRepository") PlayerRepository playerRepository,
@@ -37,8 +41,8 @@ public class RoundService {
     }
 
     public Round newRound(Game game) throws IOException, InterruptedException {
-        // for debug
-        System.out.println(String.format("Starting a new round for game %d", game.getGameId()));
+
+        logger.info(String.format("Starting a new round for game %d", game.getGameId()));
 
         // create the new round
         Round round = new Round();
@@ -109,8 +113,7 @@ public class RoundService {
     }
 
     public Player dealEightCards(Player player, CardDeck deck) throws IOException, InterruptedException {
-        // for debug
-        System.out.println(String.format("Dealing 8 cards to player %s ", player.getPlayer().getUsername()));
+        logger.info(String.format("Dealing 8 cards to player %s ", player.getPlayer().getUsername()));
 
         List<Card> cards = cardDeckService.drawCards(deck, 8);
         player.addCardsToHand(cards);
@@ -120,8 +123,7 @@ public class RoundService {
     }
 
     public Round dealFourCardsTable(Round round, CardDeck deck) throws IOException, InterruptedException {
-        // for debug
-        System.out.println("Adding 4 cards to the table");
+        logger.info("Adding 4 cards to the table");
 
         List<Card> tableCards = cardDeckService.drawCards(deck, 4);
         round.addCardsToTable(tableCards);
@@ -129,8 +131,7 @@ public class RoundService {
     }
 
     public Round endRound(Round round) {
-        // for debug
-        System.out.println("Ending the round");
+        logger.info("Ending the round");
 
         // give any remaining table cards to the player who last grabbed some cards
         Player recipient = round.getLastCardGrab() == Role.HOST ? round.getHost() : round.getGuest();

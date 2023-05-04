@@ -8,6 +8,8 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +40,8 @@ public class CardDeckService {
 		this.objectMapper = new ObjectMapper();
 	}
 
+	Logger logger = LoggerFactory.getLogger(CardDeckService.class);
+
 	public CardDeck createDeck() throws IOException, InterruptedException {
 		String uri = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1";
 
@@ -59,8 +63,8 @@ public class CardDeckService {
 	}
 
 	public List<Card> drawCards(CardDeck deck, int number) throws IOException, InterruptedException {
-		// for debug
-		System.out.println(String.format("Drawing %d cards", number));
+
+		logger.info(String.format("Drawing %d cards", number));
 
 		List<Card> cards = new ArrayList<>();
 		String uri = String.format("https://deckofcardsapi.com/api/deck/%s/draw/?count=%s", deck.getDeck_id(), number);
@@ -83,8 +87,7 @@ public class CardDeckService {
 		deck.setRemaining(cardDrawResponse.getRemaining());
 		cardDeckRepository.saveAndFlush(deck);
 
-		// for debug
-		System.out.println(String.format("Remaining cards in deck: %d", deck.getRemaining()));
+		logger.info(String.format("Remaining cards in deck: %d", deck.getRemaining()));
 
 		return cards;
 	}
