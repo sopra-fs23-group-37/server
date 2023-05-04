@@ -146,3 +146,8 @@
 1. Implementing a check if user entered a game the user is not part of & handle it accordingly (Display the issue & relocate the user) - (https://github.com/sopra-fs23-group-37/client/issues/95)
 2. Implementing the log & visibility of the opponent's last capture, so the user can strategize his own move - (https://github.com/sopra-fs23-group-37/client/issues/129)
 3. Helping to add UI features
+
+## Sinthu
+1. Created Display Error when navigating to a lobby that the user is not a part of ( https://github.com/sopra-fs23-group-37/client/issues/96)
+2. Created Display Error when a user joining a finished game (https://github.com/sopra-fs23-group-37/client/issues/99)
+3. Beta Testing for Group38
