@@ -37,6 +37,8 @@ public class RoundService {
     }
 
     public Round newRound(Game game) throws IOException, InterruptedException {
+        // for debug
+        System.out.println(String.format("Starting a new round for game %d", game.getGameId()));
 
         // create the new round
         Round round = new Round();
@@ -48,10 +50,10 @@ public class RoundService {
 
         // create player hands, deal 8 cards to each
         Player host = new Player(game.getHost(), Role.HOST);
-        dealEightCards(host, deck);
+        host = dealEightCards(host, deck);
 
         Player guest = new Player(game.getGuest(), Role.GUEST);
-        dealEightCards(guest, deck);
+        guest = dealEightCards(guest, deck);
 
         // add players to round and set starting turn
         round.setHost(host);
@@ -59,7 +61,7 @@ public class RoundService {
         round.setCurrentTurnPlayer(determineStartTurn(game));
 
         // add 4 cards to table, save
-        dealFourCardsTable(round, deck);
+        round = dealFourCardsTable(round, deck);
         round = roundRepository.save(round);
         roundRepository.flush();
 
@@ -83,13 +85,14 @@ public class RoundService {
                 return true;
             } else {
                 // deal new cards to players
-                dealEightCards(round.getHost(), round.getCardDeck());
-                dealEightCards(round.getGuest(), round.getCardDeck());
+                Player host = dealEightCards(round.getHost(), round.getCardDeck());
+                Player guest = dealEightCards(round.getGuest(), round.getCardDeck());
+                round.setHost(host);
+                round.setGuest(guest);
+                round = roundRepository.save(round);
+                roundRepository.flush();
             }
         }
-
-        round = roundRepository.save(round);
-        roundRepository.flush();
         // return end of round = false
         return false;
     }
@@ -105,19 +108,29 @@ public class RoundService {
         }
     }
 
-    public void dealEightCards(Player player, CardDeck deck) throws IOException, InterruptedException {
+    public Player dealEightCards(Player player, CardDeck deck) throws IOException, InterruptedException {
+        // for debug
+        System.out.println(String.format("Dealing 8 cards to player %s ", player.getPlayer().getUsername()));
+
         List<Card> cards = cardDeckService.drawCards(deck, 8);
         player.addCardsToHand(cards);
         player = playerRepository.save(player);
         playerRepository.flush();
+        return player;
     }
 
-    public void dealFourCardsTable(Round round, CardDeck deck) throws IOException, InterruptedException {
+    public Round dealFourCardsTable(Round round, CardDeck deck) throws IOException, InterruptedException {
+        // for debug
+        System.out.println(String.format("Adding 4 cards to the table"));
+
         List<Card> tableCards = cardDeckService.drawCards(deck, 4);
         round.addCardsToTable(tableCards);
+        return round;
     }
 
     public Round endRound(Round round) {
+        // for debug
+        System.out.println(String.format("Ending the round"));
 
         // give any remaining table cards to the player who last grabbed some cards
         Player recipient = round.getLastCardGrab() == Role.HOST ? round.getHost() : round.getGuest();
