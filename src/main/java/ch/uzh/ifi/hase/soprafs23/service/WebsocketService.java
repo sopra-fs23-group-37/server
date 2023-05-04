@@ -184,10 +184,14 @@ public class WebsocketService {
     }
 
     public void sendInvalidMoveMsg(Long userId) {
+        sendErrorToUser(userId, createInvalidMoveMsg());
+    }
+
+    public WSErrorMessageDTO createInvalidMoveMsg() {
         WSErrorMessageDTO dto = new WSErrorMessageDTO();
         dto.setType(WSErrorType.INVALIDMOVE);
         dto.setMessage("This is not a valid move. Please try a different move");
-        sendErrorToUser(userId, dto);
+        return dto;
     }
 
     public void sendErrorToUser(Long userId, Object dto) {
