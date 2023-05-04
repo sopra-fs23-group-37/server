@@ -382,6 +382,7 @@ public class GameService {
         if (game.getCurrentRound().getHostConfirmedEOR() && game.getCurrentRound().getGuestConfirmedEOR()) {
             // create a new round for the game
             game.setCurrentRound(roundService.newRound(game));
+            game.setTotalRounds(game.getTotalRounds() + 1);
 
             // send the updated round to the players
             websocketService.sendRoundUpdate(game, game.getCurrentRound());
