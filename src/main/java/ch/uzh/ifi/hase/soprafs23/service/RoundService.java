@@ -121,7 +121,7 @@ public class RoundService {
 
     public Round dealFourCardsTable(Round round, CardDeck deck) throws IOException, InterruptedException {
         // for debug
-        System.out.println(String.format("Adding 4 cards to the table"));
+        System.out.println("Adding 4 cards to the table");
 
         List<Card> tableCards = cardDeckService.drawCards(deck, 4);
         round.addCardsToTable(tableCards);
@@ -130,7 +130,7 @@ public class RoundService {
 
     public Round endRound(Round round) {
         // for debug
-        System.out.println(String.format("Ending the round"));
+        System.out.println("Ending the round");
 
         // give any remaining table cards to the player who last grabbed some cards
         Player recipient = round.getLastCardGrab() == Role.HOST ? round.getHost() : round.getGuest();
