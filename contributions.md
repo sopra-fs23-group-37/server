@@ -131,4 +131,11 @@
 6. Fixed the design of the game (https://github.com/sopra-fs23-group-37/client/issues/119)
 7. Fixed the .scss styling
 
+# Week 4 Contributions
 
+## Niels
+
+1. Improved UX for different screen sizes (https://github.com/sopra-fs23-group-37/client/issues/128)
+2. Added UI in the gamescreen for hand, field and opponent, and adjusted for screen sizes (https://github.com/sopra-fs23-group-37/client/issues/131)
+3. Minor UI updates all around
+4. Bug fixes
