@@ -33,6 +33,7 @@
 5. Fixed tests failing (https://github.com/sopra-fs23-group-37/server/issues/77)
 6. Fixed tests and bugs (https://github.com/sopra-fs23-group-37/server/issues/79)
 7. Design fixed everywhere
+
 ## Beni
 
 1. Fixed login functionalities (https://github.com/sopra-fs23-group-37/client/issues/27)
@@ -62,9 +63,9 @@
 ## Beni
 1. Implement Login Page Design according to FIGMA (https://github.com/sopra-fs23-group-37/client/issues/1)
 2. Implement and design the Game-Creation page according to FIGMA (https://github.com/sopra-fs23-group-37/client/issues/21)
-3. Fix Guarding & Routing bug (https://github.com/sopra-fs23-group-37/client/issues/51)
-4. Fix header text ((https://github.com/sopra-fs23-group-37/client/issues/47)
-5. Fix token deletion when tab is closed (https://github.com/sopra-fs23-group-37/client/issues/43)
+3. Fix Guarding & Routing issue (https://github.com/sopra-fs23-group-37/client/issues/51)
+4. Add header text to be variable ((https://github.com/sopra-fs23-group-37/client/issues/47)
+5. Add token deletion when tab is closed (https://github.com/sopra-fs23-group-37/client/issues/43)
 
 ## Niels
 1. Implemented game logic for move validation (https://github.com/sopra-fs23-group-37/server/issues/41)
@@ -91,7 +92,7 @@
 
 ## Beni
 
-1. Closing tab should log out user & fix logout even if server returns error - (https://github.com/sopra-fs23-group-37/client/issues/62)
+1. Closing tab should log out user & implement logout even if server returns error - (https://github.com/sopra-fs23-group-37/client/issues/62)
 2. Welcome Text in header should display username - (https://github.com/sopra-fs23-group-37/client/issues/64)
 3. Game Creation Page & Lobby Page Design & funktionalitäten anpassen - (https://github.com/sopra-fs23-group-37/client/issues/69)
 4. Create Containers for Game Screen - (https://github.com/sopra-fs23-group-37/client/issues/76)
@@ -139,3 +140,9 @@
 2. Added UI in the gamescreen for hand, field and opponent, and adjusted for screen sizes (https://github.com/sopra-fs23-group-37/client/issues/131)
 3. Minor UI updates all around
 4. Bug fixes
+
+## Beni
+
+1. Implementing a check if user entered a game the user is not part of & handle it accordingly (Display the issue & relocate the user) - (https://github.com/sopra-fs23-group-37/client/issues/95)
+2. Implementing the log & visibility of the opponent's last capture, so the user can strategize his own move - (https://github.com/sopra-fs23-group-37/client/issues/129)
+3. Helping to add UI features
