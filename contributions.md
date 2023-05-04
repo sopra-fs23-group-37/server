@@ -139,3 +139,8 @@
 2. Added UI in the gamescreen for hand, field and opponent, and adjusted for screen sizes (https://github.com/sopra-fs23-group-37/client/issues/131)
 3. Minor UI updates all around
 4. Bug fixes
+
+## Sinthu
+1. Created Display Error when navigating to a lobby that the user is not a part of ( https://github.com/sopra-fs23-group-37/client/issues/96)
+2. Created Display Error when a user joining a finished game (https://github.com/sopra-fs23-group-37/client/issues/99)
+3. Beta Testing for Group38
