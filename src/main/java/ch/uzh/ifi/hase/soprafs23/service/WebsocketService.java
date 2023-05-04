@@ -13,10 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.constant.WSErrorType;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.WSErrorMessageDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSRoundStatusDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.WebSockDTOMapper;
 
@@ -179,6 +181,18 @@ public class WebsocketService {
         // send the update to the lobby and the game so that all players are informed
         sendToLobby(game.getGameId(), WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
         sendToGame(game.getGameId(), WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+    }
+
+    public void sendInvalidMoveMsg(Long userId) {
+        WSErrorMessageDTO dto = new WSErrorMessageDTO();
+        dto.setType(WSErrorType.INVALIDMOVE);
+        dto.setMessage("This is not a valid move. Please try a different move");
+        sendErrorToUser(userId, dto);
+    }
+
+    public void sendErrorToUser(Long userId, Object dto) {
+        String destination = String.format("/queue/user/%d/error", userId);
+        this.simp.convertAndSend(destination, dto);
     }
 
 }
