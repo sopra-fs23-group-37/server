@@ -25,6 +25,11 @@ public class WSGameController {
         this.gameService = gameService;
     }
 
+    @MessageMapping("/home")
+    public void sendUpdates() {
+        this.gameService.sendPublicGamesUpdate();
+    }
+
     @MessageMapping("/join/{gameId}")
     @SendTo("/topic/game/{gameId}")
     public Game join(@Header("simpSessionId") String sessionId, @DestinationVariable Long gameId,
