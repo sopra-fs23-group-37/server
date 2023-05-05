@@ -43,11 +43,12 @@ public class WebsocketService {
      * @param dto any data object, should be a dto with only data necessary for
      *            the client
      */
-    public void sendGamesUpdateToHome() {
+    public WSHomeDTO sendGamesUpdateToHome() {
         WSHomeDTO dto = new WSHomeDTO();
         dto.setNumberOpenGames(this.gameRepository.findByGameStatus(GameStatus.WAITING).size());
         String destination = "/topic/game/home";
         this.simp.convertAndSend(destination, dto);
+        return dto;
     }
 
     /**

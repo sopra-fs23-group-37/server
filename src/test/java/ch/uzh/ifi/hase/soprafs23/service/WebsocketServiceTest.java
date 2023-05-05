@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Card;
 import ch.uzh.ifi.hase.soprafs23.entity.CardDeck;
@@ -19,6 +21,8 @@ import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.WSHomeDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSRoundStatusDTO;
 
 class WebsocketServiceTest {
@@ -29,12 +33,31 @@ class WebsocketServiceTest {
     @Mock
     private GameService gameService;
 
+    @Mock
+    private GameRepository gameRepository;
+
     @InjectMocks
     private WebsocketService websocketService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testSendGamesUpdateToHome() {
+        List<Game> openGames = new ArrayList<>();
+        Game game1 = new Game();
+        Game game2 = new Game();
+        openGames.add(game1);
+        openGames.add(game2);
+        when(gameRepository.findByGameStatus(GameStatus.WAITING)).thenReturn(openGames);
+
+        WSHomeDTO dto = websocketService.sendGamesUpdateToHome();
+        String destination = "/topic/game/home";
+
+        verify(simp).convertAndSend(destination, dto);
+        assertEquals(2, dto.getNumberOpenGames());
     }
 
     @Test
