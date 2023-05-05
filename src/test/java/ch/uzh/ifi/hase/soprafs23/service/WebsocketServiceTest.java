@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Card;
 import ch.uzh.ifi.hase.soprafs23.entity.CardDeck;
@@ -114,6 +115,23 @@ class WebsocketServiceTest {
         round.addCardsToTable(cards);
         WSRoundStatusDTO dto = websocketService.createWSRoundStatusDTOforUser(game, round, 2L);
         assert (dto.getMyTurn() == true);
+
+    }
+
+    @Test
+    void testDisconnectPlayerHost() {
+        Game game = new Game();
+        User host = new User();
+        host.setUsername("hostname");
+        game.setHost(host);
+        game.setHostStatus(PlayerStatus.CONNECTED);
+        game.setGameStatus(GameStatus.ONGOING);
+
+        websocketService.disconnectPlayer(game, Role.HOST);
+
+        assertEquals(GameStatus.DISCONNECTED, game.getGameStatus());
+        assertEquals(PlayerStatus.DISCONNECTED, game.getHostStatus());
+        assertEquals("Player hostname unexpectedly disconnected from the game.", game.getEndGameReason());
 
     }
 
