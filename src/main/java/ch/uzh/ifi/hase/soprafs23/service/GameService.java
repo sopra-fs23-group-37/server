@@ -240,6 +240,7 @@ public class GameService {
         Boolean validMove = moveLogicService.checkMove(message);
         if (!validMove) {
             // handle the issue if the move is not valid and return
+            websocketService.sendInvalidMoveMsg(message.getPlayerId());
             return game;
         }
 
