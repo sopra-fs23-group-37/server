@@ -364,23 +364,21 @@ public class GameService {
     }
 
     public void confirmEOR(Long gameId, Long playerId) throws IOException, InterruptedException {
+
         Game game = getGame(gameId);
 
         // skip if the game has finished
-        if (game.getGameStatus() == GameStatus.FINISHED) return;
-
-        Round currentRound = game.getCurrentRound();
-
-        // update the player's confirmed EOR status
-        if (playerId.equals(game.getHost().getUserId())) {
-            currentRound.setHostConfirmedEOR(true);
-
-        } else if (playerId.equals(game.getGuest().getUserId())) {
-            currentRound.setGuestConfirmedEOR(true);
-
+        if (game.getGameStatus().equals(GameStatus.FINISHED)) {
+            return;
         }
 
-        // check if both players confirmed EOR
+        // update the host/guest confirmed End of Round (EOR) status in the game
+        if (playerId.equals(game.getHost().getUserId())) {
+            game.getCurrentRound().setHostConfirmedEOR(true);
+        } else if (playerId.equals(game.getGuest().getUserId())) {
+            game.getCurrentRound().setGuestConfirmedEOR(true);
+        }
+
         if (game.getCurrentRound().getHostConfirmedEOR() && game.getCurrentRound().getGuestConfirmedEOR()) {
             // create a new round for the game
             game.setCurrentRound(roundService.newRound(game));
@@ -391,6 +389,7 @@ public class GameService {
             // save the game
             gameRepository.save(game);
         }
+
     }
 
 }
