@@ -18,7 +18,10 @@ import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSErrorMessageDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.WSHomeDTO;
+
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSRoundStatusDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.WebSockDTOMapper;
 
@@ -36,6 +39,20 @@ public class WebsocketService {
     public WebsocketService(GameRepository gameRepository, SimpMessagingTemplate simp) {
         this.simp = simp;
         this.gameRepository = gameRepository;
+    }
+
+    /**
+     * method to send a dto to the Home channel
+     * 
+     * @param dto any data object, should be a dto with only data necessary for
+     *            the client
+     */
+    public WSHomeDTO sendGamesUpdateToHome() {
+        WSHomeDTO dto = new WSHomeDTO();
+        dto.setNumberOpenGames(this.gameRepository.findByGameStatus(GameStatus.WAITING).size());
+        String destination = "/topic/game/home";
+        this.simp.convertAndSend(destination, dto);
+        return dto;
     }
 
     /**
@@ -173,10 +190,11 @@ public class WebsocketService {
 
         // update the status of the game and set the reason for the end of the game
         game.setGameStatus(GameStatus.DISCONNECTED);
-        game.setEndGameReason("Player " + username + " unexpectedly disconnected from the game.");
 
+        game.setEndGameReason("Player " + username + " unexpectedly disconnected from the game.");
         // save to ensure DB is up to date
         gameRepository.save(game);
+        sendGamesUpdateToHome();
 
         // send the update to the lobby and the game so that all players are informed
         sendToLobby(game.getGameId(), WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
