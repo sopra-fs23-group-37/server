@@ -134,6 +134,15 @@
 
 # Week 4 Contributions
 
+
+## Timon
+
+1. Implemented overlay after End Of Round screen, which pops up to wait for the other user to click enter (https://github.com/sopra-fs23-group-37/client/issues/126)
+2. Implemented loading icon on game start (https://github.com/sopra-fs23-group-37/client/issues/125)
+3. Implemented the overlay that pops up when the user leaves the game (https://github.com/sopra-fs23-group-37/client/issues/18)
+4. Alert player when the user disconnected from the game (https://github.com/sopra-fs23-group-37/client/issues/38)
+5. Fixed the .scss styling
+
 ## Niels
 
 1. Improved UX for different screen sizes (https://github.com/sopra-fs23-group-37/client/issues/128)
