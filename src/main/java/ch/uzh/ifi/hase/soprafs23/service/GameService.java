@@ -60,6 +60,10 @@ public class GameService {
         return openGames;
     }
 
+    public void sendPublicGamesUpdate() {
+        websocketService.sendGamesUpdateToHome();
+    }
+
     public Game createGame(Game newGame) {
         // update Session status
         newGame.setGameStatus(GameStatus.CREATED);
@@ -159,21 +163,23 @@ public class GameService {
             game.setGuestSessionId(sessionId);
         }
 
-        // update the game status
+        // update the game status and send updates to users on home page
         if (game.getHostStatus().equals(PlayerStatus.CONNECTED)
                 && game.getGuestStatus().equals(PlayerStatus.CONNECTED)) {
             game.setGameStatus(GameStatus.CONNECTED);
-            // startGame(game);
+
         } else if ((game.getHostStatus().equals(
                 PlayerStatus.CONNECTED)
                 || game.getGuestStatus().equals(PlayerStatus.CONNECTED)
                         && !game.getGameStatus().equals(GameStatus.DISCONNECTED))) {
             game.setGameStatus(GameStatus.WAITING);
+
         }
 
         // save to repo and flush
         game = gameRepository.save(game);
         gameRepository.flush();
+        sendPublicGamesUpdate();
 
         // send the game update as dto via the lobby channel
         websocketService.sendToLobby(gameId, WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
