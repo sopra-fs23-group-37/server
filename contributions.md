@@ -160,3 +160,9 @@
 1. Created Display Error when navigating to a lobby that the user is not a part of ( https://github.com/sopra-fs23-group-37/client/issues/96)
 2. Created Display Error when a user joining a finished game (https://github.com/sopra-fs23-group-37/client/issues/99)
 3. Beta Testing for Group38
+
+## Carol
+1. Added websocket methods to client and server to ensure the number of open games on the home screen is updated without reload (https://github.com/sopra-fs23-group-37/client/issues/139, https://github.com/sopra-fs23-group-37/client/issues/140, https://github.com/sopra-fs23-group-37/server/issues/137)
+2. Handle invalid moves in the server and return an error message on an error channel that the client can handle (https://github.com/sopra-fs23-group-37/server/issues/87, https://github.com/sopra-fs23-group-37/client/issues/136)
+3. Update server order of operations to ensure full deck is played before end of round and handle fast player moves (https://github.com/sopra-fs23-group-37/server/issues/126, https://github.com/sopra-fs23-group-37/server/issues/127)
+4. Wrote tests for all of the above
