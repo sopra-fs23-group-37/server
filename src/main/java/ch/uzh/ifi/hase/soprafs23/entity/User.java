@@ -45,10 +45,10 @@ public class User implements Serializable {
   private Date birthday;
 
   @Column(nullable = false)
-  private Long gamesPlayed;
+  private Long gamesPlayed = 0L;
 
   @Column(nullable = false)
-  private Long gamesWon;
+  private Long gamesWon = 0L;
 
   public Long getGamesPlayed() {
     return gamesPlayed;
