@@ -44,6 +44,7 @@ public interface GameDTOMapper {
     @Mapping(source = "winner", target = "winner")
     @Mapping(source = "createdDate", target = "createdDate")
     @Mapping(source = "gameStatus", target = "gameStatus")
+    @Mapping(source = "isPrivate", target = "isPrivate")
     @Mapping(target = "hostStatus", ignore = true)
     @Mapping(target = "guestStatus", ignore = true)
     @Mapping(target = "startingPlayer", ignore = true)

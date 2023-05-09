@@ -19,6 +19,16 @@ public class GamePostDTO {
 
     private GameStatus gameStatus;
 
+    private Boolean isPrivate;
+
+    public Boolean getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
     public Long getGameId() {
         return gameId;
     }

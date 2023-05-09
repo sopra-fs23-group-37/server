@@ -237,7 +237,7 @@ public class GameServiceTest {
         testGame.setGameStatus(GameStatus.WAITING);
         List<Game> waitingGames = new ArrayList<>();
         waitingGames.add(testGame);
-        Mockito.when(gameRepository.findByGameStatus(GameStatus.WAITING)).thenReturn(waitingGames);
+        Mockito.when(gameRepository.findByGameStatusAndIsPrivate(GameStatus.WAITING, false)).thenReturn(waitingGames);
 
         // join the game with valid guest id
         Game updatedGame = gameService.joinGame(testGuest.getUserId());

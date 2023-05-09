@@ -64,6 +64,28 @@ public class Game implements Serializable {
     @Column(nullable = true)
     private String endGameReason;
 
+    @Column(nullable = true)
+    private String gameCode;
+
+    @Column(nullable = false) 
+    private Boolean isPrivate;
+    
+    public String getGameCode() {
+        return gameCode;
+    }
+
+    public void setGameCode(String gameCode) {
+        this.gameCode = gameCode;
+    }
+
+    public Boolean getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
     public String getEndGameReason() {
         return endGameReason;
     }

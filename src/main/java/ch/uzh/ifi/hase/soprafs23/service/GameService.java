@@ -97,6 +97,13 @@ public class GameService {
         return this.gameRepository.findByGameId(gameId);
     }
 
+    public Game joinGameByCode(String gameCode, Long guestId) {
+        Game game = gameRepository.findByGameCode(gameCode);
+        User guest = userRepository.findByUserId(guestId);
+
+        return game;
+    }
+
     public Game joinGame(Long guestId) {
 
         // find the player who wants to join a game
@@ -110,7 +117,7 @@ public class GameService {
         }
 
         // get open games and pick oldest one
-        List<Game> waitingGames = this.gameRepository.findByGameStatus(GameStatus.WAITING);
+        List<Game> waitingGames = this.gameRepository.findByGameStatusAndIsPrivate(GameStatus.WAITING, false);
         Game nextGame = waitingGames.isEmpty() ? null : waitingGames.get(0);
 
         // throw errror if no waiting games
