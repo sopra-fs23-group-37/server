@@ -148,4 +148,16 @@ public class UserService {
     userRepository.deleteById(userToDelete.getUserId());
   }
 
+  public User updateUserWinStatistics(User user, Boolean winner) {
+    user.setGamesPlayed(user.getGamesPlayed() + 1);
+    if (winner) {
+      user.setGamesWon(user.getGamesWon() + 1);
+    }
+
+    userRepository.save(user);
+    userRepository.flush();
+
+    return user;
+  }
+
 }

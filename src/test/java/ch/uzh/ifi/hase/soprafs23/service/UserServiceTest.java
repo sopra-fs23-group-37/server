@@ -52,6 +52,22 @@ public class UserServiceTest {
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
     }
 
+    @Test 
+    public void updateStatistics_winner() {
+        User returnUser = userService.updateUserWinStatistics(testUser, true);
+
+        assertEquals(1, returnUser.getGamesPlayed());
+        assertEquals(1, returnUser.getGamesWon());
+    }
+
+    @Test 
+    public void updateStatistics_loser() {
+        User returnUser = userService.updateUserWinStatistics(testUser, false);
+
+        assertEquals(1, returnUser.getGamesPlayed());
+        assertEquals(0, returnUser.getGamesWon());
+    }
+
     @Test
     public void createUser_validInputs_success() {
         User createdUser = userService.createUser(testUser);

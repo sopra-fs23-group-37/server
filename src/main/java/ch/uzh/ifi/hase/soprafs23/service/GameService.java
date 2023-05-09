@@ -44,15 +44,17 @@ public class GameService {
     private final RoundService roundService;
     private final MoveLogicService moveLogicService;
     private final WebsocketService websocketService;
+    private final UserService userService;
 
     public GameService(@Qualifier("userRepository") UserRepository userRepository,
             @Qualifier("gameRepository") GameRepository gameRepository, RoundService roundService,
-            MoveLogicService moveLogicService, WebsocketService websocketService) {
+            MoveLogicService moveLogicService, WebsocketService websocketService, UserService userService) {
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
         this.roundService = roundService;
         this.moveLogicService = moveLogicService;
         this.websocketService = websocketService;
+        this.userService = userService;
     }
 
     public List<Game> getPublicGames() {
@@ -288,14 +290,20 @@ public class GameService {
 
             // check if it is the guest or the host who won and set them as the winnre
             if (game.getGuestPoints() > game.getHostPoints()) {
+                game.setGuest(userService.updateUserWinStatistics(game.getGuest(), true));
+                game.setHost(userService.updateUserWinStatistics(game.getHost(), false));
                 game.setWinner(game.getGuest());
             } else {
+                userService.updateUserWinStatistics(game.getGuest(), false);
+                game.setGuest(userService.updateUserWinStatistics(game.getGuest(), false));
+                game.setHost(userService.updateUserWinStatistics(game.getHost(), true));
                 game.setWinner(game.getHost());
             }
             // update the game status
             game.setGameStatus(GameStatus.FINISHED);
         }
 
+        gameRepository.save(game);
         // send the game update as dto via the Game channel
         websocketService.sendToGame(game.getGameId(),
                 WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
@@ -366,11 +374,25 @@ public class GameService {
     public void surrender(Long gameId, Long playerId) {
         // find the game & player username
         Game game = getGame(gameId);
-        User loser = userRepository.findByUserId(playerId);
+
+        // id matches host => host surrendered
+        if (playerId.equals(game.getHost().getUserId())) {
+            game.setEndGameReason("Player " + game.getHost().getUsername() + " surrendered the game.");
+            game.setGuest(userService.updateUserWinStatistics(game.getGuest(), true));
+            game.setHost(userService.updateUserWinStatistics(game.getHost(), false));
+            game.setWinner(game.getGuest());
+        // id matches guest => guest surrendered
+        } else if (playerId.equals(game.getGuest().getUserId())) {
+            game.setEndGameReason("Player " + game.getGuest().getUsername() + " surrendered the game.");
+            game.setGuest(userService.updateUserWinStatistics(game.getGuest(), false));
+            game.setHost(userService.updateUserWinStatistics(game.getHost(), true));
+            game.setWinner(game.getHost());
+        } else {
+            return;
+        }
 
         // update the status
         game.setGameStatus(GameStatus.SURRENDERED);
-        game.setEndGameReason("Player " + loser.getUsername() + " surrendered the game.");
 
         // save and share the update
         gameRepository.save(game);
