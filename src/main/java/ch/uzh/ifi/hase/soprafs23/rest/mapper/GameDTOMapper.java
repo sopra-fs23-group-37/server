@@ -36,6 +36,7 @@ public interface GameDTOMapper {
     @Mapping(source = "currentRound", target = "currentRound")
     @Mapping(source = "hostSessionId", target = "hostSessionId")
     @Mapping(source = "guestSessionId", target = "guestSessionId")
+    @Mapping(source = "gameCode", target = "gameCode")
     GameGetDTO convertEntityToGameGetDTO(Game game);
 
     @Mapping(source = "gameId", target = "gameId")
@@ -55,6 +56,7 @@ public interface GameDTOMapper {
     @Mapping(target = "hostSessionId", ignore = true)
     @Mapping(target = "guestSessionId", ignore = true)
     @Mapping(target = "endGameReason", ignore = true)
+    @Mapping(target = "gameCode", ignore = true)
     Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
 
     @Mapping(source = "gameId", target = "gameId")
@@ -73,6 +75,8 @@ public interface GameDTOMapper {
     @Mapping(target = "hostSessionId", ignore = true)
     @Mapping(target = "guestSessionId", ignore = true)
     @Mapping(target = "endGameReason", ignore = true)
+    @Mapping(target = "gameCode", ignore = true)
+    @Mapping(target = "isPrivate", ignore = true)
     Game convertGamePutDTOtoEntity(GamePutDTO gamePutDTO);
 
 }

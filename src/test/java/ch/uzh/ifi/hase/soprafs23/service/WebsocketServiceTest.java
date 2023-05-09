@@ -31,8 +31,6 @@ import ch.uzh.ifi.hase.soprafs23.rest.dto.WSHomeDTO;
 
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSRoundStatusDTO;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class WebsocketServiceTest {
 
     @Mock
@@ -64,7 +62,7 @@ class WebsocketServiceTest {
         Game game2 = new Game();
         openGames.add(game1);
         openGames.add(game2);
-        when(gameRepository.findByGameStatus(GameStatus.WAITING)).thenReturn(openGames);
+        when(gameRepository.findByGameStatusAndIsPrivate(GameStatus.WAITING, false)).thenReturn(openGames);
 
         WSHomeDTO dto = websocketService.sendGamesUpdateToHome();
         String destination = "/topic/game/home";

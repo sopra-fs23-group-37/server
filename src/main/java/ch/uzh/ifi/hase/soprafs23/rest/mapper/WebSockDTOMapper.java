@@ -37,6 +37,7 @@ public interface WebSockDTOMapper {
     @Mapping(source = "guestPoints", target = "guestPoints", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "hostPoints", target = "hostPoints", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "endGameReason", target = "endGameReason", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(source = "gameCode", target = "gameCode", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     WSGameStatusDTO convertEntityToWSGameStatusDTO(Game game);
 
 }

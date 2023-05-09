@@ -148,7 +148,7 @@ public class GameServiceTest {
         allGames.add(inProgressGame);
 
         // set up mock repository
-        when(gameRepository.findByGameStatus(GameStatus.WAITING)).thenReturn(Arrays.asList(openGame1, openGame2));
+        when(gameRepository.findByGameStatusAndIsPrivate(GameStatus.WAITING, false)).thenReturn(Arrays.asList(openGame1, openGame2));
 
         // call method under test
         List<Game> result = gameService.getPublicGames();
@@ -160,7 +160,7 @@ public class GameServiceTest {
         assertFalse(result.contains(inProgressGame));
 
         // verify mock repository interaction
-        verify(gameRepository, times(1)).findByGameStatus(GameStatus.WAITING);
+        verify(gameRepository, times(1)).findByGameStatusAndIsPrivate(GameStatus.WAITING, false);
     }
 
     @Test
@@ -261,7 +261,7 @@ public class GameServiceTest {
 
         // simulate no games returned from the Repo
         List<Game> waitingGames = new ArrayList<>();
-        Mockito.when(gameRepository.findByGameStatus(GameStatus.WAITING)).thenReturn(waitingGames);
+        Mockito.when(gameRepository.findByGameStatusAndIsPrivate(GameStatus.WAITING, false)).thenReturn(waitingGames);
 
         // assert exception
         assertThrows(ResponseStatusException.class, () -> gameService.joinGame(testGuest.getUserId()));
@@ -275,7 +275,7 @@ public class GameServiceTest {
         testGame.setGameStatus(GameStatus.WAITING);
         List<Game> waitingGames = new ArrayList<>();
         waitingGames.add(testGame);
-        Mockito.when(gameRepository.findByGameStatus(GameStatus.WAITING)).thenReturn(waitingGames);
+        Mockito.when(gameRepository.findByGameStatusAndIsPrivate(GameStatus.WAITING, false)).thenReturn(waitingGames);
 
         Long invalidId = 9L;
 

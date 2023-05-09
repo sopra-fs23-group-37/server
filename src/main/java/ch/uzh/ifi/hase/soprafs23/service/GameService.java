@@ -58,7 +58,7 @@ public class GameService {
     }
 
     public List<Game> getPublicGames() {
-        List<Game> openGames = this.gameRepository.findByGameStatus(GameStatus.WAITING);
+        List<Game> openGames = this.gameRepository.findByGameStatusAndIsPrivate(GameStatus.WAITING, false);
         return openGames;
     }
 
@@ -67,9 +67,11 @@ public class GameService {
     }
 
     public Game createGame(Game newGame) {
+        
         // update Session status
         newGame.setGameStatus(GameStatus.CREATED);
         newGame.setCreatedDate(new Date());
+
 
         // find host
         String baseErrorMessage = "Host with id %x was not found";
@@ -87,6 +89,12 @@ public class GameService {
         newGame.setGuestStatus(PlayerStatus.WAITING);
         newGame.setTotalRounds(0);
 
+        // if game is private generate code
+        if (newGame.getIsPrivate()) {
+            int number = rnd.nextInt(999999);
+            newGame.setGameCode(String.format("%06d", number));
+        }
+
         // save to repo and flush
         newGame = gameRepository.save(newGame);
         gameRepository.flush();
@@ -100,14 +108,32 @@ public class GameService {
     }
 
     public Game joinGameByCode(String gameCode, Long guestId) {
-        Game game = gameRepository.findByGameCode(gameCode);
+        Game gameByCode = gameRepository.findByGameCode(gameCode);
         User guest = userRepository.findByUserId(guestId);
 
-        return game;
+        String playerErrorMessage = "Player with id %x was not found";
+        if (guest == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    String.format(playerErrorMessage, guestId));
+        }
+
+        String gameErrorMessage = "Invalid code. Try creating your own game.";
+        if (gameByCode == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    String.format(gameErrorMessage));
+        }
+
+        gameByCode.setGuest(guest);
+        gameByCode.setGameStatus(GameStatus.GUEST_SET);
+
+        // save to repo and flush
+        gameByCode = gameRepository.save(gameByCode);
+        gameRepository.flush();
+
+        return gameByCode;
     }
 
     public Game joinGame(Long guestId) {
-
         // find the player who wants to join a game
         User guest = userRepository.findByUserId(guestId);
 

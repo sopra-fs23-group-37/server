@@ -68,7 +68,7 @@ public class Game implements Serializable {
     private String gameCode;
 
     @Column(nullable = false) 
-    private Boolean isPrivate;
+    private Boolean isPrivate = false;
     
     public String getGameCode() {
         return gameCode;

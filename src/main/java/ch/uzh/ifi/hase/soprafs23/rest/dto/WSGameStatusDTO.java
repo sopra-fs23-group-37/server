@@ -28,6 +28,17 @@ public class WSGameStatusDTO {
     // reason for the end of the game
     private String endGameReason;
 
+    // code
+    private String gameCode;
+
+    public String getGameCode() {
+        return gameCode;
+    }
+
+    public void setGameCode(String gameCode) {
+        this.gameCode = gameCode;
+    }
+
     public String getEndGameReason() {
         return endGameReason;
     }
