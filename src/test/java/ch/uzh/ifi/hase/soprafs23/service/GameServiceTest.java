@@ -45,7 +45,7 @@ public class GameServiceTest {
     @Mock
     private WebsocketService websocketService;
 
-    @Mock 
+    @Mock
     private UserService userService;
 
     private String principal = "principal";
@@ -258,6 +258,20 @@ public class GameServiceTest {
     // test exceptions - no games
     @Test
     public void joinGame_noGames_throwsException() {
+
+        // make sure the game is in the right status
+        testGame.setGameStatus(GameStatus.WAITING);
+        List<Game> waitingGames = new ArrayList<>();
+        waitingGames.add(testGame);
+        Mockito.when(gameRepository.findByGameStatus(GameStatus.WAITING)).thenReturn(waitingGames);
+
+        // assert exception
+        assertThrows(ResponseStatusException.class, () -> gameService.joinGame(testHost.getUserId()));
+    }
+
+    // test exceptions - no valid games
+    @Test
+    public void joinGame_noValidGames_throwsException() {
 
         // simulate no games returned from the Repo
         List<Game> waitingGames = new ArrayList<>();
