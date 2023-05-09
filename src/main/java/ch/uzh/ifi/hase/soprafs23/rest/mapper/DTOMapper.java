@@ -31,6 +31,8 @@ public interface DTOMapper {
   @Mapping(target = "creation_date", ignore = true)
   @Mapping(target = "token", ignore = true)
   @Mapping(target = "userStatus", ignore = true)
+  @Mapping(target = "gamesWon", ignore = true)
+  @Mapping(target = "gamesPlayed", ignore = true)
   User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
   // @Mapping(source = "name", target = "name")
@@ -40,8 +42,6 @@ public interface DTOMapper {
   @Mapping(source = "creation_date", target = "creation_date")
   @Mapping(source = "birthday", target = "birthday")
   @Mapping(source = "token", target = "token")
-  @Mapping(source = "gamesWon", target = "gamesWon")
-  @Mapping(source = "gamesPlayed", target = "gamesPlayed")
   UserGetDTO convertEntityToUserGetDTO(User user);
 
   @Mapping(source = "userId", target = "userId")
@@ -50,6 +50,8 @@ public interface DTOMapper {
   @Mapping(source = "creation_date", target = "creation_date")
   @Mapping(source = "birthday", target = "birthday")
   @Mapping(target = "token", ignore = true)
+  @Mapping(target = "gamesWon", ignore = true)
+  @Mapping(target = "gamesPlayed", ignore = true)
   User convertUserPutDTOtoEntity(UserPutDTO userPutDTO);
 
   @Mapping(target = "userId", ignore = true)

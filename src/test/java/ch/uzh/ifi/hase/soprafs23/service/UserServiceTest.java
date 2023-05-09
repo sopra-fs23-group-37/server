@@ -23,6 +23,9 @@ public class UserServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private WebsocketService websocketService;
+
     @InjectMocks
     private UserService userService;
 
@@ -52,7 +55,7 @@ public class UserServiceTest {
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
     }
 
-    @Test 
+    @Test
     public void updateStatistics_winner() {
         User returnUser = userService.updateUserWinStatistics(testUser, true);
 
@@ -60,7 +63,7 @@ public class UserServiceTest {
         assertEquals(1, returnUser.getGamesWon());
     }
 
-    @Test 
+    @Test
     public void updateStatistics_loser() {
         User returnUser = userService.updateUserWinStatistics(testUser, false);
 
