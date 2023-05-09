@@ -283,7 +283,6 @@ public class GameService {
 
             // check if it is the guest or the host who won and set them as the winnre
             if (game.getGuestPoints() > game.getHostPoints()) {
-                // game shouldnt need to be saved and flushed to repo since we dont use it anymore
                 game.setGuest(userService.updateUserWinStatistics(game.getGuest(), true));
                 game.setHost(userService.updateUserWinStatistics(game.getHost(), false));
                 game.setWinner(game.getGuest());
@@ -297,6 +296,7 @@ public class GameService {
             game.setGameStatus(GameStatus.FINISHED);
         }
 
+        gameRepository.save(game);
         // send the game update as dto via the Game channel
         websocketService.sendToGame(game.getGameId(),
                 WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
