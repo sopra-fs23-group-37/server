@@ -31,8 +31,6 @@ import ch.uzh.ifi.hase.soprafs23.rest.dto.WSHomeDTO;
 
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSRoundStatusDTO;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class WebsocketServiceTest {
 
     @Mock

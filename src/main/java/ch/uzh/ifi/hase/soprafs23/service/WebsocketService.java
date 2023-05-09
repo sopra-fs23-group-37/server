@@ -17,12 +17,14 @@ import ch.uzh.ifi.hase.soprafs23.constant.WSErrorType;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSErrorMessageDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSHomeDTO;
 
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSRoundStatusDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.WSStatsDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.WebSockDTOMapper;
 
 @Service
@@ -51,6 +53,15 @@ public class WebsocketService {
         WSHomeDTO dto = new WSHomeDTO();
         dto.setNumberOpenGames(this.gameRepository.findByGameStatus(GameStatus.WAITING).size());
         String destination = "/topic/game/home";
+        this.simp.convertAndSend(destination, dto);
+        return dto;
+    }
+
+    public WSStatsDTO sendStatsUpdateToUser(User user) {
+        WSStatsDTO dto = new WSStatsDTO();
+        dto.setGamesPlayed(user.getGamesPlayed());
+        dto.setGamesWon(user.getGamesWon());
+        String destination = String.format("/queue/user/%d/statistics", user.getUserId());
         this.simp.convertAndSend(destination, dto);
         return dto;
     }

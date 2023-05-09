@@ -32,8 +32,11 @@ public class UserService {
 
   private final UserRepository userRepository;
 
-  public UserService(@Qualifier("userRepository") UserRepository userRepository) {
+  private final WebsocketService websocketService;
+
+  public UserService(@Qualifier("userRepository") UserRepository userRepository, WebsocketService websocketService) {
     this.userRepository = userRepository;
+    this.websocketService = websocketService;
   }
 
   public List<User> getUsers() {
@@ -156,6 +159,8 @@ public class UserService {
 
     userRepository.save(user);
     userRepository.flush();
+
+    websocketService.sendStatsUpdateToUser(user);
 
     return user;
   }

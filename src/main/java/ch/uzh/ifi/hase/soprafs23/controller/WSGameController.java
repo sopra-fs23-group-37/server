@@ -14,20 +14,30 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerJoinMessage;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
+import ch.uzh.ifi.hase.soprafs23.service.UserService;
+import ch.uzh.ifi.hase.soprafs23.service.WebsocketService;
 
 @Controller
 public class WSGameController {
 
     private final GameService gameService;
+    private final UserService userService;
+    private final WebsocketService websocketService;
 
-    WSGameController(GameService gameService) {
+    WSGameController(GameService gameService, UserService userService, WebsocketService websocketService) {
         this.gameService = gameService;
+        this.userService = userService;
+        this.websocketService = websocketService;
     }
 
     @MessageMapping("/home")
-    public void sendUpdates() {
+    public void sendUpdates(PlayerJoinMessage message) {
         this.gameService.sendPublicGamesUpdate();
+        User user = this.userService.getUserById(message.getPlayerId());
+        this.websocketService.sendStatsUpdateToUser(user);
+
     }
 
     @MessageMapping("/join/{gameId}")
