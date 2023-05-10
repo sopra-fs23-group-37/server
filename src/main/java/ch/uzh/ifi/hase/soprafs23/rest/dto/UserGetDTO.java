@@ -14,24 +14,6 @@ public class UserGetDTO {
   private UserStatus userStatus;
   private Date creation_date;
   private Date birthday;
-  private Long gamesPlayed;
-  private Long gamesWon;
-
-  public Long getGamesPlayed() {
-    return gamesPlayed;
-  }
-
-  public void setGamesPlayed(Long gamesPlayed) {
-    this.gamesPlayed = gamesPlayed;
-  }
-
-  public Long getGamesWon() {
-    return gamesWon;
-  }
-
-  public void setGamesWon(Long gamesWon) {
-    this.gamesWon = gamesWon;
-  }
 
   public String getToken() {
     return token;

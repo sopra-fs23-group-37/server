@@ -155,15 +155,34 @@ public class GameService {
                     String.format(gameErrorMessage));
         }
 
+        // make sure the user is not joining their own game, loop through list
+        Game validGame = null;
+        for (Game game : waitingGames) {
+            // if the host in the game is not the user trying to join, set it as the first
+            // valid game and exit the loop
+            if (!game.getHost().getUserId().equals(guestId)) {
+                validGame = game;
+                break;
+            }
+        }
+
+        // throw errror if no valid games
+        gameErrorMessage = "The only open games to join were created by you. You cannot join your own game. Please wait for another player to join you.";
+        if (validGame == null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    String.format(gameErrorMessage));
+        }
+
         // add guest to game
-        nextGame.setGuest(guest);
-        nextGame.setGameStatus(GameStatus.GUEST_SET);
+        validGame.setGuest(guest);
+        validGame.setGameStatus(GameStatus.GUEST_SET);
 
         // save to repo and flush
-        nextGame = gameRepository.save(nextGame);
+        validGame = gameRepository.save(validGame);
         gameRepository.flush();
 
-        return nextGame;
+        return validGame;
+
     }
 
     public Game websocketJoin(Long gameId, Long playerId, String sessionId) throws IOException, InterruptedException {
@@ -407,7 +426,7 @@ public class GameService {
             game.setGuest(userService.updateUserWinStatistics(game.getGuest(), true));
             game.setHost(userService.updateUserWinStatistics(game.getHost(), false));
             game.setWinner(game.getGuest());
-        // id matches guest => guest surrendered
+            // id matches guest => guest surrendered
         } else if (playerId.equals(game.getGuest().getUserId())) {
             game.setEndGameReason("Player " + game.getGuest().getUsername() + " surrendered the game.");
             game.setGuest(userService.updateUserWinStatistics(game.getGuest(), false));
