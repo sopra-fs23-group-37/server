@@ -195,3 +195,11 @@
 6. Updated rules to better clarify that Ace is treated as 1 (https://github.com/sopra-fs23-group-37/client/issues/164)
 7. Updated websocket service to return the last capture of the opppent with every roundinfo update (https://github.com/sopra-fs23-group-37/server/issues/138)
 8. Tests for all of the above, bugfixes
+
+## Sinthu
+1.	Created a prompt when user log in for first time the user is directed tot he rulebook. (https://github.com/sopra-fs23-group-37/client/issues/154 
+2.	Changed the homescreen, so that the user can navigate easily. (https://github.com/sopra-fs23-group-37/client/issues/163) 
+3.	Created a button on GameScreen, so that the user can check the rulebook during the game. (https://github.com/sopra-fs23-group-37/client/issues/155) 
+4.	Created a button to join private game (https://github.com/sopra-fs23-group-37/client/issues/158 
+5.	Wrote Test-Suite to verify the functionality, performance.
+
