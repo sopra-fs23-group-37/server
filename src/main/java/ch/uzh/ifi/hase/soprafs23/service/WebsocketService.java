@@ -151,6 +151,7 @@ public class WebsocketService {
         dto.setOppCardsInDiscard(opponent.getCardsInDiscard());
         dto.setCardsOnTable(round.getTableCards());
         dto.setDeckCards(round.getCardDeck().getRemaining() > 0);
+        dto.setOppLastCapture(opponent.getLastCapturedCards());
 
         // set points
         // players points

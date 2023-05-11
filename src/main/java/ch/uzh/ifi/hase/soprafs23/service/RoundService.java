@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -154,6 +155,9 @@ public class RoundService {
         // check if move is made by correct player
         Player player = round.getCurrentTurnPlayer() == Role.HOST ? round.getHost() : round.getGuest();
 
+        // add a list of captured cards to keep track
+        List<Card> capturedCards = new ArrayList<>();
+
         // we need a structure to tell if a move was successful or not
         if (player.getPlayer().getUserId() != message.getPlayerId()) {
             return round;
@@ -163,13 +167,18 @@ public class RoundService {
             // remove card from hand
             player.removeCardFromHand(message.getCardFromHand());
             player.addCardToDiscard(message.getCardFromHand());
+            capturedCards.add(message.getCardFromHand());
 
             // remove cards from field and add it to that players discard
             for (Card c : message.getCardsFromField()) {
                 round.removeCardFromTable(c);
                 player.addCardToDiscard(c);
+                capturedCards.add(c);
             }
             round.setLastCardGrab(player.getRole());
+
+            // overwrite the last captured cards on the player
+            player.setLastCapturedCards(capturedCards);
 
         } else {
             // add card to field if move type correct
@@ -184,6 +193,7 @@ public class RoundService {
         } else if (round.getCurrentTurnPlayer().equals(Role.HOST) && round.getGuest().getCardsInHand().size() != 0) {
             round.setCurrentTurnPlayer(Role.GUEST);
         }
+        player = playerRepository.save(player);
 
         round = roundRepository.save(round);
 
