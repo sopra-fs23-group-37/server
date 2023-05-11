@@ -174,4 +174,6 @@
 2. Added backend functionalities for private games (https://github.com/sopra-fs23-group-37/server/issues/146)
 3. Added functionalities to display statistics on home screen (https://github.com/sopra-fs23-group-37/client/issues/142)
 4. Implemented tracking of user statistics (https://github.com/sopra-fs23-group-37/server/issues/150)
-5. 
+5. Added button to join private game (https://github.com/sopra-fs23-group-37/client/issues/158)
+6. Added backend functionalities to treat ace as value of 1 (https://github.com/sopra-fs23-group-37/server/issues/162)
+7. bugfixes
