@@ -105,25 +105,46 @@ public class UserService {
     return user;
   }
 
-  public void updateUser(Long userId, User userInput) {
+    //get a User
+    public User getUser(Long userId) {
+        //Retrieve user from repository using ID
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if(optionalUser.isPresent()) {
+            return optionalUser.get();}
+        else{//throw error if no user found for this id in the repository
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("user with userid %d was not found", userId));}}
+
+
+    public void updateUser(Long userId, User userInput) {
     User updateUser = getUserById(userId);
+
+      User databaseUser = getUser(userInput.getUserId());
+
+
 
     if (checkIfUsernameExistsWithoutMine(userId, userInput)) {
       String ErrorMessage = "Modifying the user failed because username already exists";
       throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
-    }
 
-    else if (updateUser.getUserStatus() == UserStatus.OFFLINE) {
+    } else if (updateUser.getUserStatus() == UserStatus.OFFLINE) {
       String ErrorMessage = "Modifying the user failed because user is offline";
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage);
-    } else if (userInput.getUsername().isEmpty()) {
+
+    } else if (userInput.getUsername().isEmpty() || userInput.getUsername().equals("")) {
       String ErrorMessage = "Modifying the user failed because username is empty";
       throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
-    }
 
-    else {
+      // if the avatarUrl is not null or "", then give error!
+    } else if (userInput.getAvatarUrl().isEmpty() || userInput.getAvatarUrl().equals("")) {
+      String ErrorMessage = "Modifying the user failed because avatarUrl is empty";
+      throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
+
+    } else {
       updateUser.setUsername(userInput.getUsername());
       updateUser.setBirthday(userInput.getBirthday());
+      updateUser.setAvatarUrl(userInput.getAvatarUrl());
+
       userRepository.save(updateUser);
       userRepository.flush();
     }

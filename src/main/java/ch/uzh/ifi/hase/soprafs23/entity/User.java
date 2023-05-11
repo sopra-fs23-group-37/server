@@ -44,6 +44,9 @@ public class User implements Serializable {
   @Column(nullable = true)
   private Date birthday;
 
+  @Column(nullable = true)
+  private String avatarUrl;
+
   public Long getUserId() {
     return userId;
   }
@@ -99,5 +102,10 @@ public class User implements Serializable {
   public void setBirthday(Date birthday) {
     this.birthday = birthday;
   }
+
+  public String getAvatarUrl() { return avatarUrl; }
+
+  public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
+
 
 }

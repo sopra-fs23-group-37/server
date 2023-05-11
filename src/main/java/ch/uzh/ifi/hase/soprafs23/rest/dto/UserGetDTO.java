@@ -14,6 +14,7 @@ public class UserGetDTO {
   private UserStatus userStatus;
   private Date creation_date;
   private Date birthday;
+  private String avatarUrl;
 
   public String getToken() {
     return token;
@@ -78,5 +79,9 @@ public class UserGetDTO {
   public void setBirthday(Date birthday) {
     this.birthday = birthday;
   }
+
+  public String getAvatarUrl() { return avatarUrl; }
+
+  public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
 
 }
