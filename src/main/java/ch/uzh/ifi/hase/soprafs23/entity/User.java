@@ -47,6 +47,28 @@ public class User implements Serializable {
   @Column(nullable = true)
   private String avatarUrl;
 
+  @Column(nullable = false)
+  private Long gamesPlayed = 0L;
+
+  @Column(nullable = false)
+  private Long gamesWon = 0L;
+
+  public Long getGamesPlayed() {
+    return gamesPlayed;
+  }
+
+  public void setGamesPlayed(Long gamesPlayed) {
+    this.gamesPlayed = gamesPlayed;
+  }
+
+  public Long getGamesWon() {
+    return gamesWon;
+  }
+
+  public void setGamesWon(Long gamesWon) {
+    this.gamesWon = gamesWon;
+  }
+
   public Long getUserId() {
     return userId;
   }

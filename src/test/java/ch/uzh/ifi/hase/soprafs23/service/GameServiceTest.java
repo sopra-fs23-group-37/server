@@ -45,6 +45,9 @@ public class GameServiceTest {
     @Mock
     private WebsocketService websocketService;
 
+    @Mock
+    private UserService userService;
+
     private String principal = "principal";
     private User testHost;
     private User testGuest;
@@ -86,6 +89,10 @@ public class GameServiceTest {
 
         Mockito.when(gameRepository.save(Mockito.any())).thenReturn(testGame);
 
+        Mockito.when(userService.updateUserWinStatistics(testGuest, true)).thenReturn(testGuest);
+        Mockito.when(userService.updateUserWinStatistics(testGuest, false)).thenReturn(testGuest);
+        Mockito.when(userService.updateUserWinStatistics(testHost, true)).thenReturn(testHost);
+        Mockito.when(userService.updateUserWinStatistics(testHost, false)).thenReturn(testHost);
     }
 
     @Test
@@ -252,6 +259,20 @@ public class GameServiceTest {
     @Test
     public void joinGame_noGames_throwsException() {
 
+        // make sure the game is in the right status
+        testGame.setGameStatus(GameStatus.WAITING);
+        List<Game> waitingGames = new ArrayList<>();
+        waitingGames.add(testGame);
+        Mockito.when(gameRepository.findByGameStatus(GameStatus.WAITING)).thenReturn(waitingGames);
+
+        // assert exception
+        assertThrows(ResponseStatusException.class, () -> gameService.joinGame(testHost.getUserId()));
+    }
+
+    // test exceptions - no valid games
+    @Test
+    public void joinGame_noValidGames_throwsException() {
+
         // simulate no games returned from the Repo
         List<Game> waitingGames = new ArrayList<>();
         Mockito.when(gameRepository.findByGameStatus(GameStatus.WAITING)).thenReturn(waitingGames);
@@ -355,6 +376,22 @@ public class GameServiceTest {
         // check that the points on the game have been updated correctly
         assertEquals(5, testGame.getHostPoints());
         assertEquals(7, testGame.getGuestPoints());
+    }
+
+    @Test
+    public void surrender_host() {
+        gameService.surrender(3L, 1L);
+
+        assertEquals(GameStatus.SURRENDERED, testGame.getGameStatus());
+        assertEquals(testGame.getGuest(), testGame.getWinner());
+    }
+
+    @Test
+    public void surrender_guest() {
+        gameService.surrender(3L, 2L);
+
+        assertEquals(GameStatus.SURRENDERED, testGame.getGameStatus());
+        assertEquals(testGame.getHost(), testGame.getWinner());
     }
 
     @Test
