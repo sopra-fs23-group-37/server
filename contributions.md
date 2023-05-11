@@ -166,3 +166,12 @@
 2. Handle invalid moves in the server and return an error message on an error channel that the client can handle (https://github.com/sopra-fs23-group-37/server/issues/87, https://github.com/sopra-fs23-group-37/client/issues/136)
 3. Update server order of operations to ensure full deck is played before end of round and handle fast player moves (https://github.com/sopra-fs23-group-37/server/issues/126, https://github.com/sopra-fs23-group-37/server/issues/127)
 4. Wrote tests for all of the above
+
+# Week 5 Contributions
+
+## Niels 
+1. Implemented endpoint to join private game via code (https://github.com/sopra-fs23-group-37/server/issues/149)
+2. Added backend functionalities for private games (https://github.com/sopra-fs23-group-37/server/issues/146)
+3. Added functionalities to display statistics on home screen (https://github.com/sopra-fs23-group-37/client/issues/142)
+4. Implemented tracking of user statistics (https://github.com/sopra-fs23-group-37/server/issues/150)
+5. 
