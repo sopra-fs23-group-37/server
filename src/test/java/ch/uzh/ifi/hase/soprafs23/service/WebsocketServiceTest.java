@@ -30,8 +30,7 @@ import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSHomeDTO;
 
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSRoundStatusDTO;
-
-import static org.junit.jupiter.api.Assertions.*;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.WSStatsDTO;
 
 class WebsocketServiceTest {
 
@@ -71,6 +70,24 @@ class WebsocketServiceTest {
 
         verify(simp).convertAndSend(destination, dto);
         assertEquals(2, dto.getNumberOpenGames());
+    }
+
+    @Test
+    void testSendStatsToUser() {
+        // given this user played and won this many games
+        User user = new User();
+        user.setUserId(testUserId);
+        user.setGamesPlayed(5L);
+        user.setGamesWon(3L);
+
+        // create the dto
+        WSStatsDTO dto = websocketService.sendStatsUpdateToUser(user);
+        String destination = "/queue/user/" + testUserId + "/statistics";
+
+        // verify the send and content
+        verify(simp).convertAndSend(destination, dto);
+        assertEquals(5, dto.getGamesPlayed());
+        assertEquals(3, dto.getGamesWon());
     }
 
     @Test
@@ -148,8 +165,8 @@ class WebsocketServiceTest {
 
         assertEquals(dto.getType(), createdDto.getType());
         assertEquals(dto.getMessage(), createdDto.getMessage());
-       }
-       
+    }
+
     @Test
     void testDisconnectPlayerHost() {
         Game game = new Game();

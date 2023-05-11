@@ -44,15 +44,17 @@ public class GameService {
     private final RoundService roundService;
     private final MoveLogicService moveLogicService;
     private final WebsocketService websocketService;
+    private final UserService userService;
 
     public GameService(@Qualifier("userRepository") UserRepository userRepository,
             @Qualifier("gameRepository") GameRepository gameRepository, RoundService roundService,
-            MoveLogicService moveLogicService, WebsocketService websocketService) {
+            MoveLogicService moveLogicService, WebsocketService websocketService, UserService userService) {
         this.userRepository = userRepository;
         this.gameRepository = gameRepository;
         this.roundService = roundService;
         this.moveLogicService = moveLogicService;
         this.websocketService = websocketService;
+        this.userService = userService;
     }
 
     public List<Game> getPublicGames() {
@@ -120,15 +122,34 @@ public class GameService {
                     String.format(gameErrorMessage));
         }
 
+        // make sure the user is not joining their own game, loop through list
+        Game validGame = null;
+        for (Game game : waitingGames) {
+            // if the host in the game is not the user trying to join, set it as the first
+            // valid game and exit the loop
+            if (!game.getHost().getUserId().equals(guestId)) {
+                validGame = game;
+                break;
+            }
+        }
+
+        // throw errror if no valid games
+        gameErrorMessage = "The only open games to join were created by you. You cannot join your own game. Please wait for another player to join you.";
+        if (validGame == null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    String.format(gameErrorMessage));
+        }
+
         // add guest to game
-        nextGame.setGuest(guest);
-        nextGame.setGameStatus(GameStatus.GUEST_SET);
+        validGame.setGuest(guest);
+        validGame.setGameStatus(GameStatus.GUEST_SET);
 
         // save to repo and flush
-        nextGame = gameRepository.save(nextGame);
+        validGame = gameRepository.save(validGame);
         gameRepository.flush();
 
-        return nextGame;
+        return validGame;
+
     }
 
     public Game websocketJoin(Long gameId, Long playerId, String sessionId) throws IOException, InterruptedException {
@@ -281,14 +302,20 @@ public class GameService {
 
             // check if it is the guest or the host who won and set them as the winnre
             if (game.getGuestPoints() > game.getHostPoints()) {
+                game.setGuest(userService.updateUserWinStatistics(game.getGuest(), true));
+                game.setHost(userService.updateUserWinStatistics(game.getHost(), false));
                 game.setWinner(game.getGuest());
             } else {
+                userService.updateUserWinStatistics(game.getGuest(), false);
+                game.setGuest(userService.updateUserWinStatistics(game.getGuest(), false));
+                game.setHost(userService.updateUserWinStatistics(game.getHost(), true));
                 game.setWinner(game.getHost());
             }
             // update the game status
             game.setGameStatus(GameStatus.FINISHED);
         }
 
+        gameRepository.save(game);
         // send the game update as dto via the Game channel
         websocketService.sendToGame(game.getGameId(),
                 WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
@@ -353,17 +380,31 @@ public class GameService {
             return;
         }
 
-        websocketService.startReconnectTimer(10, game, role, userId, sessionId);
+        websocketService.startReconnectTimer(5, game, role, userId, sessionId);
     }
 
     public void surrender(Long gameId, Long playerId) {
         // find the game & player username
         Game game = getGame(gameId);
-        User loser = userRepository.findByUserId(playerId);
+
+        // id matches host => host surrendered
+        if (playerId.equals(game.getHost().getUserId())) {
+            game.setEndGameReason("Player " + game.getHost().getUsername() + " surrendered the game.");
+            game.setGuest(userService.updateUserWinStatistics(game.getGuest(), true));
+            game.setHost(userService.updateUserWinStatistics(game.getHost(), false));
+            game.setWinner(game.getGuest());
+            // id matches guest => guest surrendered
+        } else if (playerId.equals(game.getGuest().getUserId())) {
+            game.setEndGameReason("Player " + game.getGuest().getUsername() + " surrendered the game.");
+            game.setGuest(userService.updateUserWinStatistics(game.getGuest(), false));
+            game.setHost(userService.updateUserWinStatistics(game.getHost(), true));
+            game.setWinner(game.getHost());
+        } else {
+            return;
+        }
 
         // update the status
         game.setGameStatus(GameStatus.SURRENDERED);
-        game.setEndGameReason("Player " + loser.getUsername() + " surrendered the game.");
 
         // save and share the update
         gameRepository.save(game);

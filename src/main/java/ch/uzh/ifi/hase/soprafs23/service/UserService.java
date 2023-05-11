@@ -32,8 +32,11 @@ public class UserService {
 
   private final UserRepository userRepository;
 
-  public UserService(@Qualifier("userRepository") UserRepository userRepository) {
+  private final WebsocketService websocketService;
+
+  public UserService(@Qualifier("userRepository") UserRepository userRepository, WebsocketService websocketService) {
     this.userRepository = userRepository;
+    this.websocketService = websocketService;
   }
 
   public List<User> getUsers() {
@@ -167,6 +170,20 @@ public class UserService {
 
     // delete user
     userRepository.deleteById(userToDelete.getUserId());
+  }
+
+  public User updateUserWinStatistics(User user, Boolean winner) {
+    user.setGamesPlayed(user.getGamesPlayed() + 1);
+    if (winner) {
+      user.setGamesWon(user.getGamesWon() + 1);
+    }
+
+    userRepository.save(user);
+    userRepository.flush();
+
+    websocketService.sendStatsUpdateToUser(user);
+
+    return user;
   }
 
 }
