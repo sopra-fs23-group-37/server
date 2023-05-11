@@ -185,3 +185,13 @@
 4. implement an automatically execution of a player move instead of clicking on button once the selection is complete and valid otherwise give him feedback and make reselecting possible - (https://github.com/sopra-fs23-group-37/client/issues/149)
 5. implement a way to determine if a card is already clicked and make the unselecting possible - (https://github.com/sopra-fs23-group-37/client/issues/162)
 6. finish User Story: As a player, I want to have a great UX when making a move and have few clicks, so that playing is more fun - when the mentioned tasks & improvement of UI & stability - (https://github.com/sopra-fs23-group-37/client/issues/127)
+
+## Carol
+1. Updated Rulebooks rules to provide easier understanding (https://github.com/sopra-fs23-group-37/client/issues/146)
+2. Added websocket subscription to statistics channel on Home page with method to update stats (https://github.com/sopra-fs23-group-37/client/issues/141)
+3. Created method in websocket service to send statistics update, made sure method is triggered in ws controller for home and after every game update (https://github.com/sopra-fs23-group-37/server/issues/138)
+4. Created error path for users trying to join their own game with useful message sent back to the user (https://github.com/sopra-fs23-group-37/server/issues/151)
+5. Updated disconnect delay to ensure wait time for opponents is not excessive (https://github.com/sopra-fs23-group-37/server/issues/159)
+6. Updated rules to better clarify that Ace is treated as 1 (https://github.com/sopra-fs23-group-37/client/issues/164)
+7. Updated websocket service to return the last capture of the opppent with every roundinfo update (https://github.com/sopra-fs23-group-37/server/issues/138)
+8. Tests for all of the above, bugfixes
