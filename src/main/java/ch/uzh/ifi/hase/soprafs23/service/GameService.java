@@ -413,7 +413,7 @@ public class GameService {
             return;
         }
 
-        websocketService.startReconnectTimer(10, game, role, userId, sessionId);
+        websocketService.startReconnectTimer(5, game, role, userId, sessionId);
     }
 
     public void surrender(Long gameId, Long playerId) {
