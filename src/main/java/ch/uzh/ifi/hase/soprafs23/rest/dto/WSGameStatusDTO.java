@@ -72,7 +72,7 @@ public class WSGameStatusDTO {
 
     public String getHostAvatarUrl() { return hostAvatarUrl; }
 
-    public void setHostAvatarUrl(String hostAvatar) { this.hostAvatarUrl = hostAvatarUrl; }
+    public void setHostAvatarUrl(String hostAvatarUrl) { this.hostAvatarUrl = hostAvatarUrl; }
 
     public String getGuestUsername() {
         return guestUsername;
