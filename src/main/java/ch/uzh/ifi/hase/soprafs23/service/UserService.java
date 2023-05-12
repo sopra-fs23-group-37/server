@@ -108,15 +108,6 @@ public class UserService {
     return user;
   }
 
-    //get a User
-    public User getUser(Long userId) {
-        //Retrieve user from repository using ID
-
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if(optionalUser.isPresent()) {
-            return optionalUser.get();}
-        else{//throw error if no user found for this id in the repository
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("user with userid %d was not found", userId));}}
 
 
     public void updateUser(Long userId, User userInput) {
