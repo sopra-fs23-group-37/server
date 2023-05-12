@@ -85,6 +85,7 @@ public class UserServiceTest {
         assertEquals(UserStatus.ONLINE, createdUser.getUserStatus());
     }
 
+
     @Test
     public void createUser_duplicateUsername_throwsException() {
         userService.createUser(testUser);
@@ -92,6 +93,42 @@ public class UserServiceTest {
         when(userRepository.findByUsername(testUser.getUsername())).thenReturn(testUser);
 
         assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
+    }
+
+    @Test
+    public void createUser_nullUsername_throwsException() {
+        User newUser = new User();
+        newUser.setUsername(null);
+        newUser.setPassword("testpassword");
+
+        assertThrows(NullPointerException.class, () -> userService.createUser(newUser));
+    }
+
+    @Test
+    public void createUser_emptyUsername_throwsException() {
+        User newUser = new User();
+        newUser.setUsername("");
+        newUser.setPassword("testpassword");
+
+        assertThrows(ResponseStatusException.class, () -> userService.createUser(newUser));
+    }
+
+    @Test
+    public void createUser_nullPassword_throwsException() {
+        User newUser = new User();
+        newUser.setUsername("testuser");
+        newUser.setPassword(null);
+
+        assertThrows(NullPointerException.class, () -> userService.createUser(newUser));
+    }
+
+    @Test
+    public void createUser_emptyPassword_throwsException() {
+        User newUser = new User();
+        newUser.setUsername("testuser");
+        newUser.setPassword("");
+
+        assertThrows(ResponseStatusException.class, () -> userService.createUser(newUser));
     }
 
     @Test
@@ -294,6 +331,5 @@ public class UserServiceTest {
         assertEquals(HttpStatus.CONFLICT, exception.getStatus());
         assertEquals("Modifying the user failed because avatarUrl is empty", exception.getReason());
     }
-
 
 }
