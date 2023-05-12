@@ -122,10 +122,6 @@ public class UserService {
     public void updateUser(Long userId, User userInput) {
     User updateUser = getUserById(userId);
 
-      User databaseUser = getUser(userInput.getUserId());
-
-
-
     if (checkIfUsernameExistsWithoutMine(userId, userInput)) {
       String ErrorMessage = "Modifying the user failed because username already exists";
       throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
