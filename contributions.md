@@ -195,3 +195,10 @@
 6. Updated rules to better clarify that Ace is treated as 1 (https://github.com/sopra-fs23-group-37/client/issues/164)
 7. Updated websocket service to return the last capture of the opppent with every roundinfo update (https://github.com/sopra-fs23-group-37/server/issues/138)
 8. Tests for all of the above, bugfixes
+
+## Timon
+1. Implemented the avatar server functionalities (https://github.com/sopra-fs23-group-37/server/issues/169)
+2. Displayed avatar in the header on home page and allow to update it when you  click on it (https://github.com/sopra-fs23-group-37/client/issues/168)
+3. Implemented the avatars for the GameScreen (https://github.com/sopra-fs23-group-37/client/issues/174)
+4. Implemented Firebase database for the avatar images (https://github.com/sopra-fs23-group-37/client/issues/169)
+5. Write tests for the avatar server side (https://github.com/sopra-fs23-group-37/server/issues/172)
