@@ -11,8 +11,10 @@ public class WSGameStatusDTO {
     // participants
     private Long hostId;
     private String hostUsername;
+    private String hostAvatarUrl;
     private Long guestId;
     private String guestUsername;
+    private String guestAvatarUrl;
 
     // status
     private GameStatus gameStatus;
@@ -68,6 +70,10 @@ public class WSGameStatusDTO {
         this.hostUsername = hostUsername;
     }
 
+    public String getHostAvatarUrl() { return hostAvatarUrl; }
+
+    public void setHostAvatarUrl(String hostAvatarUrl) { this.hostAvatarUrl = hostAvatarUrl; }
+
     public String getGuestUsername() {
         return guestUsername;
     }
@@ -75,6 +81,10 @@ public class WSGameStatusDTO {
     public void setGuestUsername(String guestUsername) {
         this.guestUsername = guestUsername;
     }
+
+    public String getGuestAvatarUrl() { return guestAvatarUrl; }
+
+    public void setGuestAvatarUrl(String guestAvatarUrl) { this.guestAvatarUrl = guestAvatarUrl; }
 
     public Long getWinnerId() {
         return winnerId;

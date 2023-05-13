@@ -108,25 +108,33 @@ public class UserService {
     return user;
   }
 
-  public void updateUser(Long userId, User userInput) {
+
+
+    public void updateUser(Long userId, User userInput) {
     User updateUser = getUserById(userId);
 
     if (checkIfUsernameExistsWithoutMine(userId, userInput)) {
       String ErrorMessage = "Modifying the user failed because username already exists";
       throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
-    }
 
-    else if (updateUser.getUserStatus() == UserStatus.OFFLINE) {
+    } else if (updateUser.getUserStatus() == UserStatus.OFFLINE) {
       String ErrorMessage = "Modifying the user failed because user is offline";
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage);
-    } else if (userInput.getUsername().isEmpty()) {
+
+    } else if (userInput.getUsername().isEmpty() || userInput.getUsername().equals("")) {
       String ErrorMessage = "Modifying the user failed because username is empty";
       throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
-    }
 
-    else {
+      // if the avatarUrl is not null or "", then give error!
+    } else if (userInput.getAvatarUrl().isEmpty() || userInput.getAvatarUrl().equals("")) {
+      String ErrorMessage = "Modifying the user failed because avatarUrl is empty";
+      throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
+
+    } else {
       updateUser.setUsername(userInput.getUsername());
       updateUser.setBirthday(userInput.getBirthday());
+      updateUser.setAvatarUrl(userInput.getAvatarUrl());
+
       userRepository.save(updateUser);
       userRepository.flush();
     }

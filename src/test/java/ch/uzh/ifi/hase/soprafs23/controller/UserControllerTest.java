@@ -64,6 +64,7 @@ public class UserControllerTest {
     userPutDTO = new UserPutDTO();
     userPutDTO.setUsername("otherUsername");
     userPutDTO.setBirthday(new Date(552218400000L));
+    userPutDTO.setAvatarUrl("otherAvatarUrl");
 
   }
 
