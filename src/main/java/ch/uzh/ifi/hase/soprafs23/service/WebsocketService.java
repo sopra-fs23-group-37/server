@@ -226,6 +226,29 @@ public class WebsocketService {
         return dto;
     }
 
+    public void sendInvalidGameMsg(Long userId) {
+        sendErrorToUser(userId, createInvalidGameMsg());
+    }
+
+    public WSErrorMessageDTO createInvalidGameMsg() {
+        WSErrorMessageDTO dto = new WSErrorMessageDTO();
+        dto.setType(WSErrorType.INVALIDGAME);
+        dto.setMessage("There is no Game under this link. Please create or join a game from the Home page");
+        return dto;
+    }
+
+    public void sendInvalidUserMsg(Long userId) {
+        sendErrorToUser(userId, createInvalidUserMsg());
+    }
+
+    public WSErrorMessageDTO createInvalidUserMsg() {
+        WSErrorMessageDTO dto = new WSErrorMessageDTO();
+        dto.setType(WSErrorType.INVALIDUSER);
+        dto.setMessage(
+                "You tried to play a game you are not a part of! Please create or join a game from the Home screen.");
+        return dto;
+    }
+
     public void sendErrorToUser(Long userId, Object dto) {
         String destination = String.format("/queue/user/%d/error", userId);
         this.simp.convertAndSend(destination, dto);

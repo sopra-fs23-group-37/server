@@ -33,6 +33,7 @@ public interface DTOMapper {
   @Mapping(target = "userStatus", ignore = true)
   @Mapping(target = "gamesWon", ignore = true)
   @Mapping(target = "gamesPlayed", ignore = true)
+  @Mapping(target = "avatarUrl", ignore = true)
   User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
   // @Mapping(source = "name", target = "name")
