@@ -251,6 +251,17 @@ public class GameServiceTest {
         assertEquals(GameStatus.GUEST_SET, updatedGame.getGameStatus());
     }
 
+    @Test
+    public void joinPrivateGame_invalidInputs_code() {
+        // make sure the game is in the right status
+        testGame.setGameStatus(GameStatus.WAITING);
+        Mockito.when(gameRepository.findByGameCode(Mockito.anyString())).thenReturn(null);
+
+        // assert that the guest has been added to the game and the game status is
+        // correct
+        assertThrows(ResponseStatusException.class, () -> gameService.joinGameByCode("asdasd", testGuest.getUserId()));
+    }
+
     // test that a valid guest joining the game updates the game as expected
     @Test
     public void joinGame_validInputs_success() {
