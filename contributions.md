@@ -200,8 +200,12 @@
 1.	Created a prompt when user log in for first time the user is directed tot he rulebook. (https://github.com/sopra-fs23-group-37/client/issues/154 
 2.	Changed the homescreen, so that the user can navigate easily. (https://github.com/sopra-fs23-group-37/client/issues/163) 
 3.	Created a button on GameScreen, so that the user can check the rulebook during the game. (https://github.com/sopra-fs23-group-37/client/issues/155) 
-4.	Created a button to join private game (https://github.com/sopra-fs23-group-37/client/issues/158 
+4.	Created a button to join private game (https://github.com/sopra-fs23-group-37/client/issues/158 )
 5.	Wrote Test-Suite to verify the functionality, performance.
+6.	Created GameModus : When creating a new game, the user can choose between public and private game and gets a code to their private game (https://github.com/sopra-fs23-group-37/client/issues/181 )
+7.	Added ability to leave the lobby before/after creating game (https://github.com/sopra-fs23-group-37/client/issues/175 )
+8. 	Created Button on HomeScreen for tutorial (https://github.com/sopra-fs23-group-37/client/issues/188)  
+
 
 ## Timon
 1. Implemented the avatar server functionalities (https://github.com/sopra-fs23-group-37/server/issues/169)
