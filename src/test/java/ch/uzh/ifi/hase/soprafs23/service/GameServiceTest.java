@@ -262,6 +262,16 @@ public class GameServiceTest {
         assertThrows(ResponseStatusException.class, () -> gameService.joinGameByCode("asdasd", testGuest.getUserId()));
     }
 
+    @Test
+    public void joinPrivateGame_invalidInputs_gameIsFull() {
+        // make sure the game is in the right status
+        testGame.setGameStatus(GameStatus.ONGOING);
+
+        // assert that the guest has been added to the game and the game status is
+        // correct
+        assertThrows(ResponseStatusException.class, () -> gameService.joinGameByCode("asdasd", testGuest.getUserId()));
+    }
+
     // test that a valid guest joining the game updates the game as expected
     @Test
     public void joinGame_validInputs_success() {

@@ -123,6 +123,11 @@ public class GameService {
                     String.format(gameErrorMessage));
         }
 
+        String joinErrorMessage = "Game is already full";
+        if (gameByCode.getGameStatus() != GameStatus.WAITING) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, joinErrorMessage);
+        }
+
         gameByCode.setGuest(guest);
         gameByCode.setGameStatus(GameStatus.GUEST_SET);
 
