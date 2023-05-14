@@ -63,7 +63,7 @@ class WebsocketServiceTest {
         Game game2 = new Game();
         openGames.add(game1);
         openGames.add(game2);
-        when(gameRepository.findByGameStatus(GameStatus.WAITING)).thenReturn(openGames);
+        when(gameRepository.findByGameStatusAndIsPrivate(GameStatus.WAITING, false)).thenReturn(openGames);
 
         WSHomeDTO dto = websocketService.sendGamesUpdateToHome();
         String destination = "/topic/game/home";

@@ -51,7 +51,7 @@ public class WebsocketService {
      */
     public WSHomeDTO sendGamesUpdateToHome() {
         WSHomeDTO dto = new WSHomeDTO();
-        dto.setNumberOpenGames(this.gameRepository.findByGameStatus(GameStatus.WAITING).size());
+        dto.setNumberOpenGames(this.gameRepository.findByGameStatusAndIsPrivate(GameStatus.WAITING, false).size());
         String destination = "/topic/game/home";
         this.simp.convertAndSend(destination, dto);
         return dto;

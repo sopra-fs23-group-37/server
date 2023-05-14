@@ -32,6 +32,16 @@ public class GameGetDTO {
 
     private String hostSessionId;
 
+    private String gameCode;
+
+    public String getGameCode() {
+        return gameCode;
+    }
+
+    public void setGameCode(String gameCode) {
+        this.gameCode = gameCode;
+    }
+
     public String getGuestSessionId() {
         return guestSessionId;
     }
