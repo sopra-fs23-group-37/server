@@ -168,6 +168,31 @@ class WebsocketServiceTest {
     }
 
     @Test
+    public void createInvalidGameMessageTest() {
+        WSErrorMessageDTO dto = new WSErrorMessageDTO();
+        dto.setType(WSErrorType.INVALIDGAME);
+        dto.setMessage("There is no Game under this link. Please create or join a game from the Home page");
+
+        WSErrorMessageDTO createdDto = websocketService.createInvalidGameMsg();
+
+        assertEquals(dto.getType(), createdDto.getType());
+        assertEquals(dto.getMessage(), createdDto.getMessage());
+    }
+
+    @Test
+    public void createInvalidUserMessageTest() {
+        WSErrorMessageDTO dto = new WSErrorMessageDTO();
+        dto.setType(WSErrorType.INVALIDUSER);
+        dto.setMessage(
+                "You tried to play a game you are not a part of! Please create or join a game from the Home screen.");
+
+        WSErrorMessageDTO createdDto = websocketService.createInvalidUserMsg();
+
+        assertEquals(dto.getType(), createdDto.getType());
+        assertEquals(dto.getMessage(), createdDto.getMessage());
+    }
+
+    @Test
     void testDisconnectPlayerHost() {
         Game game = new Game();
         User host = new User();

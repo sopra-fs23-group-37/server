@@ -372,6 +372,7 @@ public class GameService {
         Game game = getGame(gameId);
         if (game == null) {
             websocketService.sendInvalidGameMsg(playerId);
+            return;
         }
         String oldSessionId = null;
 
@@ -439,6 +440,7 @@ public class GameService {
         Game game = getGame(gameId);
         if (game == null) {
             websocketService.sendInvalidGameMsg(playerId);
+            return;
         }
 
         // id matches host => host surrendered
@@ -470,6 +472,7 @@ public class GameService {
         Game game = getGame(gameId);
         if (game == null) {
             websocketService.sendInvalidGameMsg(playerId);
+            return;
         }
 
         // skip if the game has finished
