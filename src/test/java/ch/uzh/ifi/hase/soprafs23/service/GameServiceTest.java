@@ -48,7 +48,7 @@ public class GameServiceTest {
     @Mock
     private UserService userService;
 
-    private String principal = "principal";
+    private String sessionId = "principal";
     private User testHost;
     private User testGuest;
     private Game testGame;
@@ -149,7 +149,8 @@ public class GameServiceTest {
         allGames.add(inProgressGame);
 
         // set up mock repository
-        when(gameRepository.findByGameStatusAndIsPrivate(GameStatus.WAITING, false)).thenReturn(Arrays.asList(openGame1, openGame2));
+        when(gameRepository.findByGameStatusAndIsPrivate(GameStatus.WAITING, false))
+                .thenReturn(Arrays.asList(openGame1, openGame2));
 
         // call method under test
         List<Game> result = gameService.getPublicGames();
@@ -338,7 +339,7 @@ public class GameServiceTest {
     public void websocketjoin_validInputs_host_success() throws IOException, InterruptedException {
         testGame.setGuestStatus(PlayerStatus.WAITING);
         // websocket join test host to test game
-        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId(), principal);
+        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId(), sessionId);
 
         // check statuses
         assertEquals(PlayerStatus.CONNECTED, updatedGame.getHostStatus());
@@ -350,7 +351,7 @@ public class GameServiceTest {
     public void websocketjoin_validInputs_guest_success() throws IOException, InterruptedException {
         testGame.setHostStatus(PlayerStatus.WAITING);
         // websocket join test guest to test game
-        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testGuest.getUserId(), principal);
+        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testGuest.getUserId(), sessionId);
 
         // check statuses
         assertEquals(PlayerStatus.CONNECTED, updatedGame.getGuestStatus());
@@ -365,13 +366,24 @@ public class GameServiceTest {
         testGame.setGuestStatus(PlayerStatus.WAITING);
 
         // websocket join test host and guest to test game
-        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId(), principal);
-        updatedGame = gameService.websocketJoin(updatedGame.getGameId(), testGuest.getUserId(), principal);
+        Game updatedGame = gameService.websocketJoin(testGame.getGameId(), testHost.getUserId(), sessionId);
+        updatedGame = gameService.websocketJoin(updatedGame.getGameId(), testGuest.getUserId(), sessionId);
 
         // check statuses
         assertEquals(PlayerStatus.CONNECTED, updatedGame.getHostStatus());
         assertEquals(PlayerStatus.CONNECTED, updatedGame.getGuestStatus());
         assertEquals(GameStatus.CONNECTED, updatedGame.getGameStatus());
+    }
+
+    @Test
+    public void websocketjoin_invalidGame() throws IOException, InterruptedException {
+
+        // websocket join a player to an invalid game
+        Game updatedGame = gameService.websocketJoin(99L, testHost.getUserId(), sessionId);
+
+        // check statuses
+        assertEquals(null, updatedGame);
+        verify(websocketService).sendInvalidGameMsg(testHost.getUserId());
     }
 
     @Test
@@ -386,6 +398,17 @@ public class GameServiceTest {
 
         // // check status
         assertEquals(GameStatus.ONGOING, updatedGame.getGameStatus());
+    }
+
+    @Test
+    public void startGame_invalidGame() throws IOException, InterruptedException {
+
+        // websocket join a player to an invalid game
+        Game updatedGame = gameService.startGame(99L, testHost.getUserId());
+
+        // check statuses
+        assertEquals(null, updatedGame);
+        verify(websocketService).sendInvalidGameMsg(testHost.getUserId());
     }
 
     // update with mock random or something
@@ -496,5 +519,35 @@ public class GameServiceTest {
         // assert that there is no winner and the new round has been set up
         assertEquals(GameStatus.ONGOING, testGame.getGameStatus());
         assertNull(testGame.getWinner());
+    }
+
+    @Test
+    public void reconnect_invalidGame() throws IOException, InterruptedException {
+
+        // websocket join a player to an invalid game
+        gameService.reconnect(99L, testHost.getUserId(), sessionId);
+
+        // check statuses
+        verify(websocketService).sendInvalidGameMsg(testHost.getUserId());
+    }
+
+    @Test
+    public void surrender_invalidGame() throws IOException, InterruptedException {
+
+        // websocket join a player to an invalid game
+        gameService.surrender(99L, testHost.getUserId());
+
+        // check statuses
+        verify(websocketService).sendInvalidGameMsg(testHost.getUserId());
+    }
+
+    @Test
+    public void confirmEOR_invalidGame() throws IOException, InterruptedException {
+
+        // websocket join a player to an invalid game
+        gameService.confirmEOR(99L, testHost.getUserId());
+
+        // check statuses
+        verify(websocketService).sendInvalidGameMsg(testHost.getUserId());
     }
 }

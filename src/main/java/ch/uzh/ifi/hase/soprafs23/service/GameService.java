@@ -67,11 +67,10 @@ public class GameService {
     }
 
     public Game createGame(Game newGame) {
-        
+
         // update Session status
         newGame.setGameStatus(GameStatus.CREATED);
         newGame.setCreatedDate(new Date());
-
 
         // find host
         String baseErrorMessage = "Host with id %x was not found";
@@ -193,6 +192,10 @@ public class GameService {
     public Game websocketJoin(Long gameId, Long playerId, String sessionId) throws IOException, InterruptedException {
         // get the correct game
         Game game = getGame(gameId);
+        if (game == null) {
+            websocketService.sendInvalidGameMsg(playerId);
+            return game;
+        }
 
         // if the game is already closed, send the game info back without joining it
         if (game.getGameStatus().equals(GameStatus.DISCONNECTED) || game.getGameStatus()
@@ -250,6 +253,11 @@ public class GameService {
 
         // update the game status
         Game game = getGame(gameId);
+
+        if (game == null) {
+            websocketService.sendInvalidGameMsg(playerId);
+            return game;
+        }
 
         // if the guest is trying to start the game, just return the game as is
         if (game.getGuest().getUserId().equals(playerId) || game.getGameStatus().equals(GameStatus.ONGOING)) {
@@ -362,6 +370,10 @@ public class GameService {
     public void reconnect(Long gameId, Long playerId, String sessionId) {
         // find the game
         Game game = getGame(gameId);
+        if (game == null) {
+            websocketService.sendInvalidGameMsg(playerId);
+            return;
+        }
         String oldSessionId = null;
 
         // figure out which player is reconnecting and get their old session id, update
@@ -372,6 +384,8 @@ public class GameService {
         } else if (playerId.equals(game.getGuest().getUserId())) {
             oldSessionId = game.getGuestSessionId();
             game.setGuestSessionId(sessionId);
+        } else {
+            websocketService.sendInvalidUserMsg(playerId);
         }
 
         // cancel disconnecting for the previous session disconnect event
@@ -424,6 +438,10 @@ public class GameService {
     public void surrender(Long gameId, Long playerId) {
         // find the game & player username
         Game game = getGame(gameId);
+        if (game == null) {
+            websocketService.sendInvalidGameMsg(playerId);
+            return;
+        }
 
         // id matches host => host surrendered
         if (playerId.equals(game.getHost().getUserId())) {
@@ -452,6 +470,10 @@ public class GameService {
     public void confirmEOR(Long gameId, Long playerId) throws IOException, InterruptedException {
 
         Game game = getGame(gameId);
+        if (game == null) {
+            websocketService.sendInvalidGameMsg(playerId);
+            return;
+        }
 
         // skip if the game has finished
         if (game.getGameStatus().equals(GameStatus.FINISHED)) {
