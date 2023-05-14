@@ -193,7 +193,6 @@ public class RoundService {
         } else if (round.getCurrentTurnPlayer().equals(Role.HOST) && round.getGuest().getCardsInHand().size() != 0) {
             round.setCurrentTurnPlayer(Role.GUEST);
         }
-        player = playerRepository.save(player);
 
         round = roundRepository.save(round);
 

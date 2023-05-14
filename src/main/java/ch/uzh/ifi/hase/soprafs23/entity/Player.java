@@ -54,14 +54,16 @@ public class Player implements Serializable {
 
     @Column
     @Lob
-    private List<Card> lastCapturedCards = new ArrayList<>();
+    private ArrayList<Card> lastCapturedCards = new ArrayList<Card>();
 
     public List<Card> getLastCapturedCards() {
         return lastCapturedCards;
     }
 
     public void setLastCapturedCards(List<Card> lastCapturedCards) {
-        this.lastCapturedCards = lastCapturedCards;
+
+        this.lastCapturedCards = new ArrayList<Card>();
+        this.lastCapturedCards.addAll(lastCapturedCards);
     }
 
     public int getPointsTotalCards() {
