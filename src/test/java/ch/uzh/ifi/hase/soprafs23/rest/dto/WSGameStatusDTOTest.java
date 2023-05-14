@@ -16,8 +16,10 @@ public class WSGameStatusDTOTest {
         dto.setGameId(1L);
         dto.setHostId(2L);
         dto.setHostUsername("alice");
+        dto.setHostAvatarUrl("hostAvatarUrl");
         dto.setGuestId(3L);
         dto.setGuestUsername("bob");
+        dto.setGuestAvatarUrl("guestAvatarUrl");
         dto.setGameStatus(GameStatus.ONGOING);
         dto.setHostStatus(PlayerStatus.WAITING);
         dto.setGuestStatus(PlayerStatus.CONNECTED);
@@ -30,8 +32,10 @@ public class WSGameStatusDTOTest {
         Assertions.assertEquals(1L, dto.getGameId());
         Assertions.assertEquals(2L, dto.getHostId());
         Assertions.assertEquals("alice", dto.getHostUsername());
+        Assertions.assertEquals("hostAvatarUrl", dto.getHostAvatarUrl());
         Assertions.assertEquals(3L, dto.getGuestId());
         Assertions.assertEquals("bob", dto.getGuestUsername());
+        Assertions.assertEquals("guestAvatarUrl", dto.getGuestAvatarUrl());
         Assertions.assertEquals(GameStatus.ONGOING, dto.getGameStatus());
         Assertions.assertEquals(PlayerStatus.WAITING, dto.getHostStatus());
         Assertions.assertEquals(PlayerStatus.CONNECTED, dto.getGuestStatus());

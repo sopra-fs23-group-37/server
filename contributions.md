@@ -166,3 +166,47 @@
 2. Handle invalid moves in the server and return an error message on an error channel that the client can handle (https://github.com/sopra-fs23-group-37/server/issues/87, https://github.com/sopra-fs23-group-37/client/issues/136)
 3. Update server order of operations to ensure full deck is played before end of round and handle fast player moves (https://github.com/sopra-fs23-group-37/server/issues/126, https://github.com/sopra-fs23-group-37/server/issues/127)
 4. Wrote tests for all of the above
+
+# Week 5 Contributions
+
+## Niels 
+1. Implemented endpoint to join private game via code (https://github.com/sopra-fs23-group-37/server/issues/149)
+2. Added backend functionalities for private games (https://github.com/sopra-fs23-group-37/server/issues/146)
+3. Added functionalities to display statistics on home screen (https://github.com/sopra-fs23-group-37/client/issues/142)
+4. Implemented tracking of user statistics (https://github.com/sopra-fs23-group-37/server/issues/150)
+5. Added button to join private game (https://github.com/sopra-fs23-group-37/client/issues/158)
+6. Added backend functionalities to treat ace as value of 1 (https://github.com/sopra-fs23-group-37/server/issues/162)
+7. bugfixes
+
+## Beni
+1. method to check if move is valid and give the user a reasonable response for each case - (https://github.com/sopra-fs23-group-37/client/issues/148)
+2. implement "dead jack" - jack gets put on table if no cards on table - (https://github.com/sopra-fs23-group-37/client/issues/150)
+3. implement better UX-experience when selecting a card from table or hand & not have it moved to a different area - (https://github.com/sopra-fs23-group-37/client/issues/147)
+4. implement an automatically execution of a player move instead of clicking on button once the selection is complete and valid otherwise give him feedback and make reselecting possible - (https://github.com/sopra-fs23-group-37/client/issues/149)
+5. implement a way to determine if a card is already clicked and make the unselecting possible - (https://github.com/sopra-fs23-group-37/client/issues/162)
+6. finish User Story: As a player, I want to have a great UX when making a move and have few clicks, so that playing is more fun - when the mentioned tasks & improvement of UI & stability - (https://github.com/sopra-fs23-group-37/client/issues/127)
+
+## Carol
+1. Updated Rulebooks rules to provide easier understanding (https://github.com/sopra-fs23-group-37/client/issues/146)
+2. Added websocket subscription to statistics channel on Home page with method to update stats (https://github.com/sopra-fs23-group-37/client/issues/141)
+3. Created method in websocket service to send statistics update, made sure method is triggered in ws controller for home and after every game update (https://github.com/sopra-fs23-group-37/server/issues/138)
+4. Created error path for users trying to join their own game with useful message sent back to the user (https://github.com/sopra-fs23-group-37/server/issues/151)
+5. Updated disconnect delay to ensure wait time for opponents is not excessive (https://github.com/sopra-fs23-group-37/server/issues/159)
+6. Updated rules to better clarify that Ace is treated as 1 (https://github.com/sopra-fs23-group-37/client/issues/164)
+7. Updated websocket service to return the last capture of the opppent with every roundinfo update (https://github.com/sopra-fs23-group-37/server/issues/138)
+8. Tests for all of the above, bugfixes
+
+## Sinthu
+1.	Created a prompt when user log in for first time the user is directed tot he rulebook. (https://github.com/sopra-fs23-group-37/client/issues/154 
+2.	Changed the homescreen, so that the user can navigate easily. (https://github.com/sopra-fs23-group-37/client/issues/163) 
+3.	Created a button on GameScreen, so that the user can check the rulebook during the game. (https://github.com/sopra-fs23-group-37/client/issues/155) 
+4.	Created a button to join private game (https://github.com/sopra-fs23-group-37/client/issues/158 
+5.	Wrote Test-Suite to verify the functionality, performance.
+
+## Timon
+1. Implemented the avatar server functionalities (https://github.com/sopra-fs23-group-37/server/issues/169)
+2. Displayed avatar in the header on home page and allow to update it when you  click on it (https://github.com/sopra-fs23-group-37/client/issues/168)
+3. Implemented the avatars for the GameScreen (https://github.com/sopra-fs23-group-37/client/issues/174)
+4. Implemented Firebase database for the avatar images (https://github.com/sopra-fs23-group-37/client/issues/169)
+5. Write tests for the avatar server side (https://github.com/sopra-fs23-group-37/server/issues/172)
+
