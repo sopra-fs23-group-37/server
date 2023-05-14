@@ -4,8 +4,6 @@ import java.util.Date;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 
-import javax.persistence.Column;
-
 public class UserPutDTO {
 
   private Long userId;
@@ -15,7 +13,6 @@ public class UserPutDTO {
   private Date creation_date;
   private Date birthday;
   private String avatarUrl;
-
 
   public Long getUserId() {
     return userId;
@@ -65,9 +62,12 @@ public class UserPutDTO {
     this.birthday = birthday;
   }
 
-  public String getAvatarUrl() { return avatarUrl; }
+  public String getAvatarUrl() {
+    return avatarUrl;
+  }
 
-  public void setAvatarUrl(String avatarUrl) {this.avatarUrl = avatarUrl; }
-
+  public void setAvatarUrl(String avatarUrl) {
+    this.avatarUrl = avatarUrl;
+  }
 
 }
