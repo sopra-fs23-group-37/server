@@ -86,6 +86,7 @@ public class GameServiceTest {
         Mockito.when(userRepository.findByUserId(1L)).thenReturn(testHost);
         Mockito.when(userRepository.findByUserId(2L)).thenReturn(testGuest);
         Mockito.when(gameRepository.findByGameId(3L)).thenReturn(testGame);
+        Mockito.when(gameRepository.findByGameCode(Mockito.anyString())).thenReturn(testGame);
 
         Mockito.when(gameRepository.save(Mockito.any())).thenReturn(testGame);
 
@@ -234,6 +235,20 @@ public class GameServiceTest {
 
         // expected return
         assertEquals(testGame, updatedGame);
+    }
+
+    @Test
+    public void joinPrivateGame_validInputs_success() {
+        // make sure the game is in the right status
+        testGame.setGameStatus(GameStatus.WAITING);
+
+        // join the game with valid guest id
+        Game updatedGame = gameService.joinGameByCode("asdasd", testGuest.getUserId());
+
+        // assert that the guest has been added to the game and the game status is
+        // correct
+        assertEquals(testGuest, updatedGame.getGuest());
+        assertEquals(GameStatus.GUEST_SET, updatedGame.getGameStatus());
     }
 
     // test that a valid guest joining the game updates the game as expected
