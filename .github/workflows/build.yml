@@ -1,5 +1,8 @@
 name: SonarCloud on pullrequest
 on:
+  push:
+    branches:
+      - M4
   pull_request:
     types: [opened, synchronize, reopened]
 
