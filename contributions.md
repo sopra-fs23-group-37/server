@@ -194,7 +194,9 @@
 5. Updated disconnect delay to ensure wait time for opponents is not excessive (https://github.com/sopra-fs23-group-37/server/issues/159)
 6. Updated rules to better clarify that Ace is treated as 1 (https://github.com/sopra-fs23-group-37/client/issues/164)
 7. Updated websocket service to return the last capture of the opppent with every roundinfo update (https://github.com/sopra-fs23-group-37/server/issues/138)
-8. Tests for all of the above, bugfixes
+8. Return error if a user tries to access a game or lobby with an invalid id (https://github.com/sopra-fs23-group-37/server/issues/168)
+9. Added interactive tutorial screen (https://github.com/sopra-fs23-group-37/client/issues/184),  added information for each tutorial step (https://github.com/sopra-fs23-group-37/client/issues/185), added tutorial prompts (https://github.com/sopra-fs23-group-37/client/issues/190)
+10. Tests for all of the above, bugfixes
 
 ## Sinthu
 1.	Created a prompt when user log in for first time the user is directed tot he rulebook. (https://github.com/sopra-fs23-group-37/client/issues/154 
@@ -213,4 +215,13 @@
 3. Implemented the avatars for the GameScreen (https://github.com/sopra-fs23-group-37/client/issues/174)
 4. Implemented Firebase database for the avatar images (https://github.com/sopra-fs23-group-37/client/issues/169)
 5. Write tests for the avatar server side (https://github.com/sopra-fs23-group-37/server/issues/172)
+
+# Week 6 Contributions
+
+## Entire Team pre-worked in week 5 for week 6
+Our team decided to all pre-work for week 6 in week 5, in order to apply a feature freeze and focus on testing / QA (confirmed by TA, greenlighted by Professor Fritz). The team continued to collaborate on the application by thoroughly testing, fixing bugs, and increasing code quality to ensure robustness. 
+
+# Week 7 Contributions
+## Entire Team took Joker in week 7
+Our team decided to all take our Joker in week7 in order to apply a feature freeze and focus on testing / QA (confirmed by TA, greenlighted by Professor Fritz). The team continued to collaborate on the application by thoroughly testing, fixing bugs, and increasing code quality to ensure robustness. 
 
