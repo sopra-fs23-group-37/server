@@ -28,6 +28,7 @@ public class WSRoundStatusDTO {
     // cards
     private List<Card> myCardsInHand = new ArrayList<>();
     private List<Card> myCardsInDiscard = new ArrayList<>();
+    private List<Card> myLastCapture = new ArrayList<>();
 
     private int oppCards;
     private List<Card> oppCardsInDiscard = new ArrayList<>();
@@ -145,6 +146,14 @@ public class WSRoundStatusDTO {
 
     public void setMyCardsInDiscard(List<Card> myCardsInDiscard) {
         this.myCardsInDiscard = myCardsInDiscard;
+    }
+
+    public List<Card> getMyLastCapture() {
+        return myLastCapture;
+    }
+
+    public void setMyLastCapture(List<Card> myLastCapture) {
+        this.myLastCapture = myLastCapture;
     }
 
     public int getOppCards() {
