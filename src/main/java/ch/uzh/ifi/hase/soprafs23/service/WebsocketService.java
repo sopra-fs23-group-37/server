@@ -155,6 +155,10 @@ public class WebsocketService {
             dto.setOppLastCapture(opponent.getLastCapturedCards());
         }
 
+        if (myPlayer.getLastCapturedCards() != null) {
+            dto.setMyLastCapture(myPlayer.getLastCapturedCards());
+        }
+
         // set points
         // players points
         dto.setMyPointsTotalCards(myPlayer.getPointsTotalCards());
