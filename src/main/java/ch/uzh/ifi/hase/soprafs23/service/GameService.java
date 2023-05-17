@@ -361,7 +361,7 @@ public class GameService {
             game.setGameStatus(GameStatus.FINISHED);
         }
 
-        gameRepository.save(game);
+        game = gameRepository.save(game);
         // send the game update as dto via the Game channel
         websocketService.sendToGame(game.getGameId(),
                 WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));

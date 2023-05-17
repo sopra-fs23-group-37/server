@@ -187,7 +187,9 @@ public class WebsocketService {
 
     public synchronized void cancelDisconnect(Long userId, String oldSessionId) {
         // cancel the task to disconnect
-        this.reconnectTimer.get(userId + oldSessionId).cancel();
+        if (this.reconnectTimer.get(userId + oldSessionId) != null) {
+            this.reconnectTimer.get(userId + oldSessionId).cancel();
+        }
     }
 
     public void disconnectPlayer(Game game, Role role) {
