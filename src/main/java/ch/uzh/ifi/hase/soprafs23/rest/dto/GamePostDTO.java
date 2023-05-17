@@ -21,6 +21,16 @@ public class GamePostDTO {
 
     private Boolean isPrivate;
 
+    private Boolean isSingleRound;
+
+    public Boolean getIsSingleRound() {
+        return isSingleRound;
+    }
+
+    public void setIsSingleRound(Boolean isSingleRound) {
+        this.isSingleRound = isSingleRound;
+    }
+
     public Boolean getIsPrivate() {
         return isPrivate;
     }
@@ -76,6 +86,5 @@ public class GamePostDTO {
     public void setGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
     }
-
 
 }

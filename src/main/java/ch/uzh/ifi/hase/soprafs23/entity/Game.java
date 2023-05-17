@@ -67,9 +67,20 @@ public class Game implements Serializable {
     @Column(nullable = true)
     private String gameCode;
 
-    @Column(nullable = false) 
+    @Column(nullable = false)
     private Boolean isPrivate = false;
-    
+
+    @Column(nullable = false)
+    private Boolean isSingleRound = false;
+
+    public Boolean getIsSingleRound() {
+        return isSingleRound;
+    }
+
+    public void setIsSingleRound(Boolean isSingleRound) {
+        this.isSingleRound = isSingleRound;
+    }
+
     public String getGameCode() {
         return gameCode;
     }
