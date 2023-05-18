@@ -27,6 +27,8 @@ public class WSGameStatusDTOTest {
         dto.setGuestPoints(1);
         dto.setWinnerId(2L);
         dto.setWinnerUsername("alice");
+        dto.setIsPrivate(true);
+        dto.setIsSingleRound(true);
 
         // Verify that the values were set correctly
         Assertions.assertEquals(1L, dto.getGameId());
@@ -43,6 +45,8 @@ public class WSGameStatusDTOTest {
         Assertions.assertEquals(1, dto.getGuestPoints());
         Assertions.assertEquals(2L, dto.getWinnerId());
         Assertions.assertEquals("alice", dto.getWinnerUsername());
+        Assertions.assertEquals(true, dto.getIsPrivate());
+        Assertions.assertEquals(true, dto.getIsSingleRound());
 
         // Modify some of the values and verify that they were changed correctly
         dto.setGameStatus(GameStatus.FINISHED);
