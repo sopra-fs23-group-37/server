@@ -21,6 +21,10 @@ public class WSGameStatusDTO {
     private PlayerStatus hostStatus;
     private PlayerStatus guestStatus;
 
+    // mode
+    private Boolean isPrivate;
+    private Boolean isSingleRound;
+
     // points and winner
     private int guestPoints;
     private int hostPoints;
@@ -81,9 +85,13 @@ public class WSGameStatusDTO {
         this.hostUsername = hostUsername;
     }
 
-    public String getHostAvatarUrl() { return hostAvatarUrl; }
+    public String getHostAvatarUrl() {
+        return hostAvatarUrl;
+    }
 
-    public void setHostAvatarUrl(String hostAvatarUrl) { this.hostAvatarUrl = hostAvatarUrl; }
+    public void setHostAvatarUrl(String hostAvatarUrl) {
+        this.hostAvatarUrl = hostAvatarUrl;
+    }
 
     public String getGuestUsername() {
         return guestUsername;
@@ -93,9 +101,13 @@ public class WSGameStatusDTO {
         this.guestUsername = guestUsername;
     }
 
-    public String getGuestAvatarUrl() { return guestAvatarUrl; }
+    public String getGuestAvatarUrl() {
+        return guestAvatarUrl;
+    }
 
-    public void setGuestAvatarUrl(String guestAvatarUrl) { this.guestAvatarUrl = guestAvatarUrl; }
+    public void setGuestAvatarUrl(String guestAvatarUrl) {
+        this.guestAvatarUrl = guestAvatarUrl;
+    }
 
     public Long getWinnerId() {
         return winnerId;
@@ -152,4 +164,21 @@ public class WSGameStatusDTO {
     public void setGuestStatus(PlayerStatus guestStatus) {
         this.guestStatus = guestStatus;
     }
+
+    public Boolean getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    public Boolean getIsSingleRound() {
+        return isSingleRound;
+    }
+
+    public void setIsSingleRound(Boolean isSingleRound) {
+        this.isSingleRound = isSingleRound;
+    }
+
 }

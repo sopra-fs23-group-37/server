@@ -46,6 +46,7 @@ public interface GameDTOMapper {
     @Mapping(source = "createdDate", target = "createdDate")
     @Mapping(source = "gameStatus", target = "gameStatus")
     @Mapping(source = "isPrivate", target = "isPrivate")
+    @Mapping(source = "isSingleRound", target = "isSingleRound")
     @Mapping(target = "hostStatus", ignore = true)
     @Mapping(target = "guestStatus", ignore = true)
     @Mapping(target = "startingPlayer", ignore = true)
@@ -77,6 +78,7 @@ public interface GameDTOMapper {
     @Mapping(target = "endGameReason", ignore = true)
     @Mapping(target = "gameCode", ignore = true)
     @Mapping(target = "isPrivate", ignore = true)
+    @Mapping(target = "isSingleRound", ignore = true)
     Game convertGamePutDTOtoEntity(GamePutDTO gamePutDTO);
 
 }

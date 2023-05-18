@@ -343,8 +343,8 @@ public class GameService {
     public void checkWinner(Game game) throws IOException, InterruptedException {
         // check if there is a winner, i.e. if one of the players has at least 11 points
         // and 2 more than the other player
-        if ((game.getGuestPoints() >= 11 || game.getHostPoints() >= 11)
-                && java.lang.Math.abs(game.getGuestPoints() - game.getHostPoints()) >= 2) {
+        if (((game.getGuestPoints() >= 11 || game.getHostPoints() >= 11)
+                && java.lang.Math.abs(game.getGuestPoints() - game.getHostPoints()) >= 2) || game.getIsSingleRound()) {
 
             // check if it is the guest or the host who won and set them as the winnre
             if (game.getGuestPoints() > game.getHostPoints()) {
@@ -361,7 +361,7 @@ public class GameService {
             game.setGameStatus(GameStatus.FINISHED);
         }
 
-        gameRepository.save(game);
+        game = gameRepository.save(game);
         // send the game update as dto via the Game channel
         websocketService.sendToGame(game.getGameId(),
                 WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
