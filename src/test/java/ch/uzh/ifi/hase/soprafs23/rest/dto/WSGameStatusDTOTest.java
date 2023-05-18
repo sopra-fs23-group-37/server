@@ -16,8 +16,10 @@ public class WSGameStatusDTOTest {
         dto.setGameId(1L);
         dto.setHostId(2L);
         dto.setHostUsername("alice");
+        dto.setHostAvatarUrl("hostAvatarUrl");
         dto.setGuestId(3L);
         dto.setGuestUsername("bob");
+        dto.setGuestAvatarUrl("guestAvatarUrl");
         dto.setGameStatus(GameStatus.ONGOING);
         dto.setHostStatus(PlayerStatus.WAITING);
         dto.setGuestStatus(PlayerStatus.CONNECTED);
@@ -25,13 +27,17 @@ public class WSGameStatusDTOTest {
         dto.setGuestPoints(1);
         dto.setWinnerId(2L);
         dto.setWinnerUsername("alice");
+        dto.setIsPrivate(true);
+        dto.setIsSingleRound(true);
 
         // Verify that the values were set correctly
         Assertions.assertEquals(1L, dto.getGameId());
         Assertions.assertEquals(2L, dto.getHostId());
         Assertions.assertEquals("alice", dto.getHostUsername());
+        Assertions.assertEquals("hostAvatarUrl", dto.getHostAvatarUrl());
         Assertions.assertEquals(3L, dto.getGuestId());
         Assertions.assertEquals("bob", dto.getGuestUsername());
+        Assertions.assertEquals("guestAvatarUrl", dto.getGuestAvatarUrl());
         Assertions.assertEquals(GameStatus.ONGOING, dto.getGameStatus());
         Assertions.assertEquals(PlayerStatus.WAITING, dto.getHostStatus());
         Assertions.assertEquals(PlayerStatus.CONNECTED, dto.getGuestStatus());
@@ -39,6 +45,8 @@ public class WSGameStatusDTOTest {
         Assertions.assertEquals(1, dto.getGuestPoints());
         Assertions.assertEquals(2L, dto.getWinnerId());
         Assertions.assertEquals("alice", dto.getWinnerUsername());
+        Assertions.assertEquals(true, dto.getIsPrivate());
+        Assertions.assertEquals(true, dto.getIsSingleRound());
 
         // Modify some of the values and verify that they were changed correctly
         dto.setGameStatus(GameStatus.FINISHED);

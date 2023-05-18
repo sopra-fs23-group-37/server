@@ -27,8 +27,10 @@ public interface WebSockDTOMapper {
     @Mapping(source = "gameId", target = "gameId")
     @Mapping(source = "host.userId", target = "hostId", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "host.username", target = "hostUsername", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(source = "host.avatarUrl", target = "hostAvatarUrl", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "guest.userId", target = "guestId", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "guest.username", target = "guestUsername", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(source = "guest.avatarUrl", target = "guestAvatarUrl", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "winner.userId", target = "winnerId", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "winner.username", target = "winnerUsername", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "gameStatus", target = "gameStatus", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -37,6 +39,9 @@ public interface WebSockDTOMapper {
     @Mapping(source = "guestPoints", target = "guestPoints", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "hostPoints", target = "hostPoints", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "endGameReason", target = "endGameReason", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(source = "gameCode", target = "gameCode", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(source = "isPrivate", target = "isPrivate", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(source = "isSingleRound", target = "isSingleRound", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     WSGameStatusDTO convertEntityToWSGameStatusDTO(Game game);
 
 }

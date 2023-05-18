@@ -48,6 +48,7 @@ public class MoveLogicService {
     }
 
     // x-1
+    // crashes if other picture cards apart from ace are in the bundle
     public boolean checkMove2(PlayerMoveMessage message) {
         Card playerCard = message.getCardFromHand();
 
@@ -59,7 +60,11 @@ public class MoveLogicService {
         // needs a check if picture cards are used
         int total = 0;
         for (Card c : message.getCardsFromField()) {
-            total += Integer.parseInt(c.getValue());
+            if (c.getValue().equals("ACE")) {
+                total += 1;
+            } else {
+                total += Integer.parseInt(c.getValue());
+            }
         }
 
         if (Integer.toString(total).equals(playerCard.getValue())) {

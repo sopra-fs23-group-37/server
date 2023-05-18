@@ -22,6 +22,8 @@ public class MoveLogicServiceTest {
     private Card mockCard2H;
     private Card mockCardKH;
     private Card mockCardJS;
+    private Card mockCardAH;
+    private Card mockCard7C;
     private PlayerMoveMessage mockPlayerMoveMessage;
 
     @InjectMocks
@@ -56,6 +58,18 @@ public class MoveLogicServiceTest {
         mockCardJS = new Card();
         mockCardJS.setCode("JS");
         mockCardJS.setValue("JACK");
+
+        mockCardAH = new Card();
+        mockCardAH.setCode("AH");
+        mockCardAH.setValue("ACE");
+
+        mockCardAH = new Card();
+        mockCardAH.setCode("AH");
+        mockCardAH.setValue("ACE");
+
+        mockCard7C = new Card();
+        mockCard7C.setCode("7C");
+        mockCard7C.setValue("7");
     }
 
     @Test
@@ -119,6 +133,17 @@ public class MoveLogicServiceTest {
         mockPlayerMoveMessage.setMoveType(2);
 
         assertEquals(false, moveLogicService.checkMove2(mockPlayerMoveMessage));
+    }
+
+    @Test
+    public void checkMove2_success_ace() {
+        mockPlayerMoveMessage.setCardFromHand(mockCard7C);
+        mockCards.add(mockCardAH);
+        mockCards.add(mockCard6H);
+        mockPlayerMoveMessage.setCardsFromField(mockCards);
+        mockPlayerMoveMessage.setMoveType(2);
+
+        assertEquals(true, moveLogicService.checkMove2(mockPlayerMoveMessage));
     }
 
     @Test

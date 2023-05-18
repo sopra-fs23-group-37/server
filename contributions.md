@@ -33,6 +33,7 @@
 5. Fixed tests failing (https://github.com/sopra-fs23-group-37/server/issues/77)
 6. Fixed tests and bugs (https://github.com/sopra-fs23-group-37/server/issues/79)
 7. Design fixed everywhere
+
 ## Beni
 
 1. Fixed login functionalities (https://github.com/sopra-fs23-group-37/client/issues/27)
@@ -62,9 +63,9 @@
 ## Beni
 1. Implement Login Page Design according to FIGMA (https://github.com/sopra-fs23-group-37/client/issues/1)
 2. Implement and design the Game-Creation page according to FIGMA (https://github.com/sopra-fs23-group-37/client/issues/21)
-3. Fix Guarding & Routing bug (https://github.com/sopra-fs23-group-37/client/issues/51)
-4. Fix header text ((https://github.com/sopra-fs23-group-37/client/issues/47)
-5. Fix token deletion when tab is closed (https://github.com/sopra-fs23-group-37/client/issues/43)
+3. Fix Guarding & Routing issue (https://github.com/sopra-fs23-group-37/client/issues/51)
+4. Add header text to be variable ((https://github.com/sopra-fs23-group-37/client/issues/47)
+5. Add token deletion when tab is closed (https://github.com/sopra-fs23-group-37/client/issues/43)
 
 ## Niels
 1. Implemented game logic for move validation (https://github.com/sopra-fs23-group-37/server/issues/41)
@@ -91,7 +92,7 @@
 
 ## Beni
 
-1. Closing tab should log out user & fix logout even if server returns error - (https://github.com/sopra-fs23-group-37/client/issues/62)
+1. Closing tab should log out user & implement logout even if server returns error - (https://github.com/sopra-fs23-group-37/client/issues/62)
 2. Welcome Text in header should display username - (https://github.com/sopra-fs23-group-37/client/issues/64)
 3. Game Creation Page & Lobby Page Design & funktionalitäten anpassen - (https://github.com/sopra-fs23-group-37/client/issues/69)
 4. Create Containers for Game Screen - (https://github.com/sopra-fs23-group-37/client/issues/76)
@@ -131,4 +132,96 @@
 6. Fixed the design of the game (https://github.com/sopra-fs23-group-37/client/issues/119)
 7. Fixed the .scss styling
 
+# Week 4 Contributions
+
+
+## Timon
+
+1. Implemented overlay after End Of Round screen, which pops up to wait for the other user to click enter (https://github.com/sopra-fs23-group-37/client/issues/126)
+2. Implemented loading icon on game start (https://github.com/sopra-fs23-group-37/client/issues/125)
+3. Implemented the overlay that pops up when the user leaves the game (https://github.com/sopra-fs23-group-37/client/issues/18)
+4. Alert player when the user disconnected from the game (https://github.com/sopra-fs23-group-37/client/issues/38)
+5. Fixed the .scss styling
+
+## Niels
+
+1. Improved UX for different screen sizes (https://github.com/sopra-fs23-group-37/client/issues/128)
+2. Added UI in the gamescreen for hand, field and opponent, and adjusted for screen sizes (https://github.com/sopra-fs23-group-37/client/issues/131)
+3. Minor UI updates all around
+4. Bug fixes
+
+## Beni
+
+1. Implementing a check if user entered a game the user is not part of & handle it accordingly (Display the issue & relocate the user) - (https://github.com/sopra-fs23-group-37/client/issues/95)
+2. Implementing the log & visibility of the opponent's last capture, so the user can strategize his own move - (https://github.com/sopra-fs23-group-37/client/issues/129)
+3. Helping to add UI features
+
+## Sinthu
+1. Created Display Error when navigating to a lobby that the user is not a part of ( https://github.com/sopra-fs23-group-37/client/issues/96)
+2. Created Display Error when a user joining a finished game (https://github.com/sopra-fs23-group-37/client/issues/99)
+3. Beta Testing for Group38
+
+## Carol
+1. Added websocket methods to client and server to ensure the number of open games on the home screen is updated without reload (https://github.com/sopra-fs23-group-37/client/issues/139, https://github.com/sopra-fs23-group-37/client/issues/140, https://github.com/sopra-fs23-group-37/server/issues/137)
+2. Handle invalid moves in the server and return an error message on an error channel that the client can handle (https://github.com/sopra-fs23-group-37/server/issues/87, https://github.com/sopra-fs23-group-37/client/issues/136)
+3. Update server order of operations to ensure full deck is played before end of round and handle fast player moves (https://github.com/sopra-fs23-group-37/server/issues/126, https://github.com/sopra-fs23-group-37/server/issues/127)
+4. Wrote tests for all of the above
+
+# Week 5 Contributions
+
+## Niels 
+1. Implemented endpoint to join private game via code (https://github.com/sopra-fs23-group-37/server/issues/149)
+2. Added backend functionalities for private games (https://github.com/sopra-fs23-group-37/server/issues/146)
+3. Added functionalities to display statistics on home screen (https://github.com/sopra-fs23-group-37/client/issues/142)
+4. Implemented tracking of user statistics (https://github.com/sopra-fs23-group-37/server/issues/150)
+5. Added button to join private game (https://github.com/sopra-fs23-group-37/client/issues/158)
+6. Added backend functionalities to treat ace as value of 1 (https://github.com/sopra-fs23-group-37/server/issues/162)
+7. bugfixes
+
+## Beni
+1. method to check if move is valid and give the user a reasonable response for each case - (https://github.com/sopra-fs23-group-37/client/issues/148)
+2. implement "dead jack" - jack gets put on table if no cards on table - (https://github.com/sopra-fs23-group-37/client/issues/150)
+3. implement better UX-experience when selecting a card from table or hand & not have it moved to a different area - (https://github.com/sopra-fs23-group-37/client/issues/147)
+4. implement an automatically execution of a player move instead of clicking on button once the selection is complete and valid otherwise give him feedback and make reselecting possible - (https://github.com/sopra-fs23-group-37/client/issues/149)
+5. implement a way to determine if a card is already clicked and make the unselecting possible - (https://github.com/sopra-fs23-group-37/client/issues/162)
+6. finish User Story: As a player, I want to have a great UX when making a move and have few clicks, so that playing is more fun - when the mentioned tasks & improvement of UI & stability - (https://github.com/sopra-fs23-group-37/client/issues/127)
+
+## Carol
+1. Updated Rulebooks rules to provide easier understanding (https://github.com/sopra-fs23-group-37/client/issues/146)
+2. Added websocket subscription to statistics channel on Home page with method to update stats (https://github.com/sopra-fs23-group-37/client/issues/141)
+3. Created method in websocket service to send statistics update, made sure method is triggered in ws controller for home and after every game update (https://github.com/sopra-fs23-group-37/server/issues/138)
+4. Created error path for users trying to join their own game with useful message sent back to the user (https://github.com/sopra-fs23-group-37/server/issues/151)
+5. Updated disconnect delay to ensure wait time for opponents is not excessive (https://github.com/sopra-fs23-group-37/server/issues/159)
+6. Updated rules to better clarify that Ace is treated as 1 (https://github.com/sopra-fs23-group-37/client/issues/164)
+7. Updated websocket service to return the last capture of the opppent with every roundinfo update (https://github.com/sopra-fs23-group-37/server/issues/138)
+8. Return error if a user tries to access a game or lobby with an invalid id (https://github.com/sopra-fs23-group-37/server/issues/168)
+9. Added interactive tutorial screen (https://github.com/sopra-fs23-group-37/client/issues/184),  added information for each tutorial step (https://github.com/sopra-fs23-group-37/client/issues/185), added tutorial prompts (https://github.com/sopra-fs23-group-37/client/issues/190)
+10. Tests for all of the above, bugfixes
+
+## Sinthu
+1.	Created a prompt when user log in for first time the user is directed tot he rulebook. (https://github.com/sopra-fs23-group-37/client/issues/154 
+2.	Changed the homescreen, so that the user can navigate easily. (https://github.com/sopra-fs23-group-37/client/issues/163) 
+3.	Created a button on GameScreen, so that the user can check the rulebook during the game. (https://github.com/sopra-fs23-group-37/client/issues/155) 
+4.	Created a button to join private game (https://github.com/sopra-fs23-group-37/client/issues/158 )
+5.	Wrote Test-Suite to verify the functionality, performance.
+6.	Created GameModus : When creating a new game, the user can choose between public and private game and gets a code to their private game (https://github.com/sopra-fs23-group-37/client/issues/181 )
+7.	Added ability to leave the lobby before/after creating game (https://github.com/sopra-fs23-group-37/client/issues/175 )
+8. 	Created Button on HomeScreen for tutorial (https://github.com/sopra-fs23-group-37/client/issues/188)  
+
+
+## Timon
+1. Implemented the avatar server functionalities (https://github.com/sopra-fs23-group-37/server/issues/169)
+2. Displayed avatar in the header on home page and allow to update it when you  click on it (https://github.com/sopra-fs23-group-37/client/issues/168)
+3. Implemented the avatars for the GameScreen (https://github.com/sopra-fs23-group-37/client/issues/174)
+4. Implemented Firebase database for the avatar images (https://github.com/sopra-fs23-group-37/client/issues/169)
+5. Write tests for the avatar server side (https://github.com/sopra-fs23-group-37/server/issues/172)
+
+# Week 6 Contributions
+
+## Entire Team pre-worked in week 5 for week 6
+Our team decided to all pre-work for week 6 in week 5, in order to apply a feature freeze and focus on testing / QA (confirmed by TA, greenlighted by Professor Fritz). The team continued to collaborate on the application by thoroughly testing, fixing bugs, and increasing code quality to ensure robustness. 
+
+# Week 7 Contributions
+## Entire Team took Joker in week 7
+Our team decided to all take our Joker in week7 in order to apply a feature freeze and focus on testing / QA (confirmed by TA, greenlighted by Professor Fritz). The team continued to collaborate on the application by thoroughly testing, fixing bugs, and increasing code quality to ensure robustness. 
 

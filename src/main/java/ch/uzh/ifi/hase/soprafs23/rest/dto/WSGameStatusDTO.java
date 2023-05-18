@@ -11,13 +11,19 @@ public class WSGameStatusDTO {
     // participants
     private Long hostId;
     private String hostUsername;
+    private String hostAvatarUrl;
     private Long guestId;
     private String guestUsername;
+    private String guestAvatarUrl;
 
     // status
     private GameStatus gameStatus;
     private PlayerStatus hostStatus;
     private PlayerStatus guestStatus;
+
+    // mode
+    private Boolean isPrivate;
+    private Boolean isSingleRound;
 
     // points and winner
     private int guestPoints;
@@ -27,6 +33,17 @@ public class WSGameStatusDTO {
 
     // reason for the end of the game
     private String endGameReason;
+
+    // code
+    private String gameCode;
+
+    public String getGameCode() {
+        return gameCode;
+    }
+
+    public void setGameCode(String gameCode) {
+        this.gameCode = gameCode;
+    }
 
     public String getEndGameReason() {
         return endGameReason;
@@ -68,12 +85,28 @@ public class WSGameStatusDTO {
         this.hostUsername = hostUsername;
     }
 
+    public String getHostAvatarUrl() {
+        return hostAvatarUrl;
+    }
+
+    public void setHostAvatarUrl(String hostAvatarUrl) {
+        this.hostAvatarUrl = hostAvatarUrl;
+    }
+
     public String getGuestUsername() {
         return guestUsername;
     }
 
     public void setGuestUsername(String guestUsername) {
         this.guestUsername = guestUsername;
+    }
+
+    public String getGuestAvatarUrl() {
+        return guestAvatarUrl;
+    }
+
+    public void setGuestAvatarUrl(String guestAvatarUrl) {
+        this.guestAvatarUrl = guestAvatarUrl;
     }
 
     public Long getWinnerId() {
@@ -131,4 +164,21 @@ public class WSGameStatusDTO {
     public void setGuestStatus(PlayerStatus guestStatus) {
         this.guestStatus = guestStatus;
     }
+
+    public Boolean getIsPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    public Boolean getIsSingleRound() {
+        return isSingleRound;
+    }
+
+    public void setIsSingleRound(Boolean isSingleRound) {
+        this.isSingleRound = isSingleRound;
+    }
+
 }

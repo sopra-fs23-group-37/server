@@ -75,4 +75,15 @@ public class GameController {
         return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(joinedGame);
     }
 
+    @PutMapping("/games/{gameCode}/join/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameGetDTO joinGameByCode(@PathVariable String gameCode, @PathVariable Long userId) {
+        // join Game
+        Game joinedGame = gameService.joinGameByCode(gameCode, userId);
+
+        // convert internal representation of game back to API
+        return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(joinedGame);
+    }
+
 }

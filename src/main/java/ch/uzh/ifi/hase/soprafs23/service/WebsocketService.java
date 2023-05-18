@@ -13,11 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.constant.WSErrorType;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+
+import ch.uzh.ifi.hase.soprafs23.rest.dto.WSErrorMessageDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.WSHomeDTO;
+
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSRoundStatusDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.WSStatsDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.WebSockDTOMapper;
 
 @Service
@@ -34,6 +41,29 @@ public class WebsocketService {
     public WebsocketService(GameRepository gameRepository, SimpMessagingTemplate simp) {
         this.simp = simp;
         this.gameRepository = gameRepository;
+    }
+
+    /**
+     * method to send a dto to the Home channel
+     * 
+     * @param dto any data object, should be a dto with only data necessary for
+     *            the client
+     */
+    public WSHomeDTO sendGamesUpdateToHome() {
+        WSHomeDTO dto = new WSHomeDTO();
+        dto.setNumberOpenGames(this.gameRepository.findByGameStatusAndIsPrivate(GameStatus.WAITING, false).size());
+        String destination = "/topic/game/home";
+        this.simp.convertAndSend(destination, dto);
+        return dto;
+    }
+
+    public WSStatsDTO sendStatsUpdateToUser(User user) {
+        WSStatsDTO dto = new WSStatsDTO();
+        dto.setGamesPlayed(user.getGamesPlayed());
+        dto.setGamesWon(user.getGamesWon());
+        String destination = String.format("/queue/user/%d/statistics", user.getUserId());
+        this.simp.convertAndSend(destination, dto);
+        return dto;
     }
 
     /**
@@ -121,6 +151,13 @@ public class WebsocketService {
         dto.setOppCardsInDiscard(opponent.getCardsInDiscard());
         dto.setCardsOnTable(round.getTableCards());
         dto.setDeckCards(round.getCardDeck().getRemaining() > 0);
+        if (opponent.getLastCapturedCards() != null) {
+            dto.setOppLastCapture(opponent.getLastCapturedCards());
+        }
+
+        if (myPlayer.getLastCapturedCards() != null) {
+            dto.setMyLastCapture(myPlayer.getLastCapturedCards());
+        }
 
         // set points
         // players points
@@ -154,7 +191,9 @@ public class WebsocketService {
 
     public synchronized void cancelDisconnect(Long userId, String oldSessionId) {
         // cancel the task to disconnect
-        this.reconnectTimer.get(userId + oldSessionId).cancel();
+        if (this.reconnectTimer.get(userId + oldSessionId) != null) {
+            this.reconnectTimer.get(userId + oldSessionId).cancel();
+        }
     }
 
     public void disconnectPlayer(Game game, Role role) {
@@ -171,14 +210,54 @@ public class WebsocketService {
 
         // update the status of the game and set the reason for the end of the game
         game.setGameStatus(GameStatus.DISCONNECTED);
-        game.setEndGameReason("Player " + username + " unexpectedly disconnected from the game.");
 
+        game.setEndGameReason("Player " + username + " unexpectedly disconnected from the game.");
         // save to ensure DB is up to date
         gameRepository.save(game);
+        sendGamesUpdateToHome();
 
         // send the update to the lobby and the game so that all players are informed
         sendToLobby(game.getGameId(), WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
         sendToGame(game.getGameId(), WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+    }
+
+    public void sendInvalidMoveMsg(Long userId) {
+        sendErrorToUser(userId, createInvalidMoveMsg());
+    }
+
+    public WSErrorMessageDTO createInvalidMoveMsg() {
+        WSErrorMessageDTO dto = new WSErrorMessageDTO();
+        dto.setType(WSErrorType.INVALIDMOVE);
+        dto.setMessage("This is not a valid move. Please try a different move");
+        return dto;
+    }
+
+    public void sendInvalidGameMsg(Long userId) {
+        sendErrorToUser(userId, createInvalidGameMsg());
+    }
+
+    public WSErrorMessageDTO createInvalidGameMsg() {
+        WSErrorMessageDTO dto = new WSErrorMessageDTO();
+        dto.setType(WSErrorType.INVALIDGAME);
+        dto.setMessage("There is no Game under this link. Please create or join a game from the Home page");
+        return dto;
+    }
+
+    public void sendInvalidUserMsg(Long userId) {
+        sendErrorToUser(userId, createInvalidUserMsg());
+    }
+
+    public WSErrorMessageDTO createInvalidUserMsg() {
+        WSErrorMessageDTO dto = new WSErrorMessageDTO();
+        dto.setType(WSErrorType.INVALIDUSER);
+        dto.setMessage(
+                "You tried to play a game you are not a part of! Please create or join a game from the Home screen.");
+        return dto;
+    }
+
+    public void sendErrorToUser(Long userId, Object dto) {
+        String destination = String.format("/queue/user/%d/error", userId);
+        this.simp.convertAndSend(destination, dto);
     }
 
 }

@@ -32,8 +32,11 @@ public class UserService {
 
   private final UserRepository userRepository;
 
-  public UserService(@Qualifier("userRepository") UserRepository userRepository) {
+  private final WebsocketService websocketService;
+
+  public UserService(@Qualifier("userRepository") UserRepository userRepository, WebsocketService websocketService) {
     this.userRepository = userRepository;
+    this.websocketService = websocketService;
   }
 
   public List<User> getUsers() {
@@ -105,25 +108,33 @@ public class UserService {
     return user;
   }
 
-  public void updateUser(Long userId, User userInput) {
+
+
+    public void updateUser(Long userId, User userInput) {
     User updateUser = getUserById(userId);
 
     if (checkIfUsernameExistsWithoutMine(userId, userInput)) {
       String ErrorMessage = "Modifying the user failed because username already exists";
       throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
-    }
 
-    else if (updateUser.getUserStatus() == UserStatus.OFFLINE) {
+    } else if (updateUser.getUserStatus() == UserStatus.OFFLINE) {
       String ErrorMessage = "Modifying the user failed because user is offline";
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, ErrorMessage);
-    } else if (userInput.getUsername().isEmpty()) {
+
+    } else if (userInput.getUsername().isEmpty() || userInput.getUsername().equals("")) {
       String ErrorMessage = "Modifying the user failed because username is empty";
       throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
-    }
 
-    else {
+      // if the avatarUrl is not null or "", then give error!
+    } else if (userInput.getAvatarUrl().isEmpty() || userInput.getAvatarUrl().equals("")) {
+      String ErrorMessage = "Modifying the user failed because avatarUrl is empty";
+      throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
+
+    } else {
       updateUser.setUsername(userInput.getUsername());
       updateUser.setBirthday(userInput.getBirthday());
+      updateUser.setAvatarUrl(userInput.getAvatarUrl());
+
       userRepository.save(updateUser);
       userRepository.flush();
     }
@@ -146,6 +157,20 @@ public class UserService {
 
     // delete user
     userRepository.deleteById(userToDelete.getUserId());
+  }
+
+  public User updateUserWinStatistics(User user, Boolean winner) {
+    user.setGamesPlayed(user.getGamesPlayed() + 1);
+    if (winner) {
+      user.setGamesWon(user.getGamesWon() + 1);
+    }
+
+    userRepository.save(user);
+    userRepository.flush();
+
+    websocketService.sendStatsUpdateToUser(user);
+
+    return user;
   }
 
 }

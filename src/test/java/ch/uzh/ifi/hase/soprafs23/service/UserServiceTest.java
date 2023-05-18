@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -17,11 +18,15 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 public class UserServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private WebsocketService websocketService;
 
     @InjectMocks
     private UserService userService;
@@ -49,7 +54,23 @@ public class UserServiceTest {
         testUser2.setUserStatus(UserStatus.ONLINE);
         testUser2.setCreation_date(new Date());
 
-        Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
+        when(userRepository.save(Mockito.any())).thenReturn(testUser);
+    }
+
+    @Test
+    public void updateStatistics_winner() {
+        User returnUser = userService.updateUserWinStatistics(testUser, true);
+
+        assertEquals(1, returnUser.getGamesPlayed());
+        assertEquals(1, returnUser.getGamesWon());
+    }
+
+    @Test
+    public void updateStatistics_loser() {
+        User returnUser = userService.updateUserWinStatistics(testUser, false);
+
+        assertEquals(1, returnUser.getGamesPlayed());
+        assertEquals(0, returnUser.getGamesWon());
     }
 
     @Test
@@ -64,13 +85,50 @@ public class UserServiceTest {
         assertEquals(UserStatus.ONLINE, createdUser.getUserStatus());
     }
 
+
     @Test
     public void createUser_duplicateUsername_throwsException() {
         userService.createUser(testUser);
 
-        Mockito.when(userRepository.findByUsername(testUser.getUsername())).thenReturn(testUser);
+        when(userRepository.findByUsername(testUser.getUsername())).thenReturn(testUser);
 
         assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
+    }
+
+    @Test
+    public void createUser_nullUsername_throwsException() {
+        User newUser = new User();
+        newUser.setUsername(null);
+        newUser.setPassword("testpassword");
+
+        assertThrows(NullPointerException.class, () -> userService.createUser(newUser));
+    }
+
+    @Test
+    public void createUser_emptyUsername_throwsException() {
+        User newUser = new User();
+        newUser.setUsername("");
+        newUser.setPassword("testpassword");
+
+        assertThrows(ResponseStatusException.class, () -> userService.createUser(newUser));
+    }
+
+    @Test
+    public void createUser_nullPassword_throwsException() {
+        User newUser = new User();
+        newUser.setUsername("testuser");
+        newUser.setPassword(null);
+
+        assertThrows(NullPointerException.class, () -> userService.createUser(newUser));
+    }
+
+    @Test
+    public void createUser_emptyPassword_throwsException() {
+        User newUser = new User();
+        newUser.setUsername("testuser");
+        newUser.setPassword("");
+
+        assertThrows(ResponseStatusException.class, () -> userService.createUser(newUser));
     }
 
     @Test
@@ -79,7 +137,7 @@ public class UserServiceTest {
         userList.add(testUser);
         userList.add(testUser2);
 
-        Mockito.when(userRepository.findAll()).thenReturn(userList);
+        when(userRepository.findAll()).thenReturn(userList);
 
         List<User> returnedList = userService.getUsers();
 
@@ -90,7 +148,7 @@ public class UserServiceTest {
 
     @Test
     public void getUserById_validId_returnsUser() {
-        Mockito.when(userRepository.findById(testUser.getUserId())).thenReturn(Optional.of(testUser));
+        when(userRepository.findById(testUser.getUserId())).thenReturn(Optional.of(testUser));
 
         User returnedUser = userService.getUserById(testUser.getUserId());
 
@@ -99,7 +157,7 @@ public class UserServiceTest {
 
     @Test
     public void getUserById_invalidId_throwsException() {
-        Mockito.when(userRepository.findById(testUser.getUserId())).thenReturn(Optional.empty());
+        when(userRepository.findById(testUser.getUserId())).thenReturn(Optional.empty());
 
         assertThrows(ResponseStatusException.class, () -> userService.getUserById(testUser.getUserId()));
     }
@@ -107,7 +165,7 @@ public class UserServiceTest {
     @Test
     public void deleteUser_validInputs_success() {
         // given -> a user with the given ID exists in the repository
-        Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(testUser));
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(testUser));
 
         // when -> the user is deleted
         userService.deleteUser(testUser.getUserId());
@@ -119,7 +177,7 @@ public class UserServiceTest {
     @Test
     public void deleteUser_invalidUserId_throwsException() {
         // given -> a user with the given ID does not exist in the repository
-        Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
         // then -> attempt to delete the user -> check that an error is thrown
         assertThrows(ResponseStatusException.class, () -> userService.deleteUser(1L));
@@ -128,7 +186,7 @@ public class UserServiceTest {
     @Test
     public void getUserById_validInputs_returnsUser() {
         // given -> a user with the given ID exists in the repository
-        Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(testUser));
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(testUser));
 
         // when -> the user is retrieved by ID
         User retrievedUser = userService.getUserById(testUser.getUserId());
@@ -141,7 +199,7 @@ public class UserServiceTest {
     @Test
     public void getUserById_invalidUserId_throwsException() {
         // given -> a user with the given ID does not exist in the repository
-        Mockito.when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+        when(userRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
         // then -> attempt to retrieve the user by ID -> check that an error is thrown
         assertThrows(ResponseStatusException.class, () -> userService.getUserById(1L));
@@ -150,7 +208,7 @@ public class UserServiceTest {
     @Test
     public void getUserByUsername_validInputs_returnsUser() {
         // given -> a user with the given username exists in the repository
-        Mockito.when(userRepository.findByUsername(Mockito.anyString())).thenReturn(testUser);
+        when(userRepository.findByUsername(Mockito.anyString())).thenReturn(testUser);
 
         // when -> the user is retrieved by username
         User retrievedUser = userRepository.findByUsername(testUser.getUsername());
@@ -158,6 +216,120 @@ public class UserServiceTest {
         // then -> verify that the correct user was retrieved
         assertEquals(testUser.getUserId(), retrievedUser.getUserId());
         assertEquals(testUser.getUsername(), retrievedUser.getUsername());
+    }
+
+    // Tests that updating a user with valid inputs is successful
+    @Test
+    public void updateUser_validInputs_success() {
+        User updateUser = new User();
+        updateUser.setUserId(1L);
+        updateUser.setUsername("newUsername");
+        updateUser.setBirthday(new Date());
+        updateUser.setAvatarUrl("newAvatarUrl");
+
+        User databaseUser = new User();
+        databaseUser.setUserId(1L);
+        databaseUser.setUserStatus(UserStatus.ONLINE);
+
+        Mockito.when(userRepository.findById(updateUser.getUserId())).thenReturn(Optional.of(databaseUser));
+
+        userService.updateUser(updateUser.getUserId(), updateUser);
+
+        Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
+        Mockito.verify(userRepository, Mockito.times(1)).flush();
+
+        assertEquals(updateUser.getUsername(), databaseUser.getUsername());
+        assertEquals(updateUser.getBirthday(), databaseUser.getBirthday());
+        assertEquals(updateUser.getAvatarUrl(), databaseUser.getAvatarUrl());
+    }
+
+    // Tests that updating a user with a username that already exists throws an exception
+    @Test
+    public void updateUser_usernameExists_throwsException() {
+        User updateUser = new User();
+        updateUser.setUserId(1L);
+        updateUser.setUsername("newUsername");
+        updateUser.setBirthday(new Date());
+        updateUser.setAvatarUrl("newAvatarUrl");
+
+        User existingUser = new User();
+        existingUser.setUserId(2L);
+        existingUser.setUsername("newUsername");
+
+        Mockito.when(userRepository.findById(updateUser.getUserId())).thenReturn(Optional.of(existingUser));
+        Mockito.when(userRepository.findByUsername(updateUser.getUsername())).thenReturn(existingUser);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> userService.updateUser(updateUser.getUserId(), updateUser));
+
+        assertEquals(HttpStatus.CONFLICT, exception.getStatus());
+        assertEquals("Modifying the user failed because username already exists", exception.getReason());
+    }
+
+    // Tests that updating an offline user throws an exceptio
+    @Test
+    public void updateUser_offlineUser_throwsException() {
+        User updateUser = new User();
+        updateUser.setUserId(1L);
+        updateUser.setUsername("newUsername");
+        updateUser.setBirthday(new Date());
+        updateUser.setAvatarUrl("newAvatarUrl");
+
+        User databaseUser = new User();
+        databaseUser.setUserId(1L);
+        databaseUser.setUserStatus(UserStatus.OFFLINE);
+
+        Mockito.when(userRepository.findById(updateUser.getUserId())).thenReturn(Optional.of(databaseUser));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> userService.updateUser(updateUser.getUserId(), updateUser));
+
+        assertEquals(HttpStatus.FORBIDDEN, exception.getStatus());
+        assertEquals("Modifying the user failed because user is offline", exception.getReason());
+    }
+
+    // Tests that updating a user with an empty username throws an exception
+    @Test
+    public void updateUser_emptyUsername_throwsException() {
+        User updateUser = new User();
+        updateUser.setUserId(1L);
+        updateUser.setUsername("");
+        updateUser.setBirthday(new Date());
+        updateUser.setAvatarUrl("newAvatarUrl");
+
+        User databaseUser = new User();
+        databaseUser.setUserId(1L);
+        databaseUser.setUserStatus(UserStatus.ONLINE);
+
+        Mockito.when(userRepository.findById(updateUser.getUserId())).thenReturn(Optional.of(databaseUser));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> userService.updateUser(updateUser.getUserId(), updateUser));
+
+        assertEquals(HttpStatus.CONFLICT, exception.getStatus());
+        assertEquals("Modifying the user failed because username is empty", exception.getReason());
+    }
+
+    // Tests that updating a user with an empty avatar URL throws an exception
+    @Test
+    public void updateUser_emptyAvatarUrl_throwsException() {
+        User updateUser = new User();
+        updateUser.setUserId(1L);
+        updateUser.setUsername("newUsername");
+        updateUser.setBirthday(new Date());
+        updateUser.setAvatarUrl("");
+
+        User databaseUser = new User();
+        databaseUser.setUserId(1L);
+        databaseUser.setUserStatus(UserStatus.ONLINE);
+
+        Mockito.when(userRepository.findById(updateUser.getUserId())).thenReturn(Optional.of(databaseUser));
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> userService.updateUser(updateUser.getUserId(), updateUser));
+
+        assertEquals(HttpStatus.CONFLICT, exception.getStatus());
+        assertEquals("Modifying the user failed because avatarUrl is empty", exception.getReason());
     }
 
 }
