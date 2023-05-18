@@ -383,7 +383,8 @@ public class GameServiceTest {
 
         // check statuses
         assertEquals(null, updatedGame);
-        verify(websocketService).sendInvalidGameMsg(testHost.getUserId());
+        verify(websocketService).sendInvalidGameMsg(testHost.getUserId(), 99L);
+
     }
 
     @Test
@@ -408,7 +409,7 @@ public class GameServiceTest {
 
         // check statuses
         assertEquals(null, updatedGame);
-        verify(websocketService).sendInvalidGameMsg(testHost.getUserId());
+        verify(websocketService).sendInvalidGameMsg(testHost.getUserId(), 99L);
     }
 
     // update with mock random or something
@@ -528,7 +529,7 @@ public class GameServiceTest {
         gameService.reconnect(99L, testHost.getUserId(), sessionId);
 
         // check statuses
-        verify(websocketService).sendInvalidGameMsg(testHost.getUserId());
+        verify(websocketService).sendInvalidGameMsg(testHost.getUserId(), 99L);
     }
 
     @Test
@@ -538,7 +539,7 @@ public class GameServiceTest {
         gameService.surrender(99L, testHost.getUserId());
 
         // check statuses
-        verify(websocketService).sendInvalidGameMsg(testHost.getUserId());
+        verify(websocketService).sendInvalidGameMsg(testHost.getUserId(), 99L);
     }
 
     @Test
@@ -548,6 +549,6 @@ public class GameServiceTest {
         gameService.confirmEOR(99L, testHost.getUserId());
 
         // check statuses
-        verify(websocketService).sendInvalidGameMsg(testHost.getUserId());
+        verify(websocketService).sendInvalidGameMsg(testHost.getUserId(), 99L);
     }
 }

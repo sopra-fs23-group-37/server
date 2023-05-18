@@ -193,7 +193,7 @@ public class GameService {
         // get the correct game
         Game game = getGame(gameId);
         if (game == null) {
-            websocketService.sendInvalidGameMsg(playerId);
+            websocketService.sendInvalidGameMsg(playerId, gameId);
             return game;
         }
 
@@ -255,7 +255,7 @@ public class GameService {
         Game game = getGame(gameId);
 
         if (game == null) {
-            websocketService.sendInvalidGameMsg(playerId);
+            websocketService.sendInvalidGameMsg(playerId, gameId);
             return game;
         }
 
@@ -307,7 +307,7 @@ public class GameService {
         Boolean validMove = moveLogicService.checkMove(message);
         if (!validMove) {
             // handle the issue if the move is not valid and return
-            websocketService.sendInvalidMoveMsg(message.getPlayerId());
+            websocketService.sendInvalidMoveMsg(message.getPlayerId(), gameId);
             return game;
         }
 
@@ -371,7 +371,7 @@ public class GameService {
         // find the game
         Game game = getGame(gameId);
         if (game == null) {
-            websocketService.sendInvalidGameMsg(playerId);
+            websocketService.sendInvalidGameMsg(playerId, gameId);
             return;
         }
         String oldSessionId = null;
@@ -385,7 +385,7 @@ public class GameService {
             oldSessionId = game.getGuestSessionId();
             game.setGuestSessionId(sessionId);
         } else {
-            websocketService.sendInvalidUserMsg(playerId);
+            websocketService.sendInvalidUserMsg(playerId, gameId);
         }
 
         // cancel disconnecting for the previous session disconnect event
@@ -395,7 +395,8 @@ public class GameService {
         gameRepository.save(game);
 
         // send the current game status to the reconnecting user
-        websocketService.sendGameToUser(playerId, WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+        websocketService.sendGameToUser(playerId, game.getGameId(),
+                WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
 
         // send the current round info to the reconnecting user
         websocketService.sendRoundInfoToUser(game, game.getCurrentRound(), playerId);
@@ -439,7 +440,7 @@ public class GameService {
         // find the game & player username
         Game game = getGame(gameId);
         if (game == null) {
-            websocketService.sendInvalidGameMsg(playerId);
+            websocketService.sendInvalidGameMsg(playerId, gameId);
             return;
         }
 
@@ -471,7 +472,7 @@ public class GameService {
 
         Game game = getGame(gameId);
         if (game == null) {
-            websocketService.sendInvalidGameMsg(playerId);
+            websocketService.sendInvalidGameMsg(playerId, gameId);
             return;
         }
 
