@@ -127,6 +127,11 @@ public class GameService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, joinErrorMessage);
         }
 
+        String userErrorMessage = "You cannot join your own game.";
+        if (gameByCode.getHost().getUserId().equals(guestId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, userErrorMessage);
+        }
+
         gameByCode.setGuest(guest);
         gameByCode.setGameStatus(GameStatus.GUEST_SET);
 
