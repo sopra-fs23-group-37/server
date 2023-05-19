@@ -127,7 +127,7 @@ public class GameService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, joinErrorMessage);
         }
 
-        String userErrorMessage = "You cannot join your own game.";
+        String userErrorMessage = "You cannot join your own game. Ask a friend to join.";
         if (gameByCode.getHost().getUserId().equals(guestId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, userErrorMessage);
         }
