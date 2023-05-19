@@ -102,8 +102,8 @@ public class WebsocketService {
         this.simp.convertAndSend(destination, dto);
     }
 
-    public void sendGameToUser(Long userId, Object dto) {
-        String destination = String.format("/queue/user/%d/game", userId);
+    public void sendGameToUser(Long userId, Long gameId, Object dto) {
+        String destination = String.format("/queue/user/%d/%d/game", userId, gameId);
         this.simp.convertAndSend(destination, dto);
     }
 
@@ -123,7 +123,7 @@ public class WebsocketService {
 
     public void sendRoundInfoToUser(Game game, Round round, Long userId) {
         WSRoundStatusDTO dto = createWSRoundStatusDTOforUser(game, round, userId);
-        String destination = String.format("/queue/user/%d/round", userId);
+        String destination = String.format("/queue/user/%d/%d/round", userId, game.getGameId());
 
         this.simp.convertAndSend(destination, dto);
     }
@@ -221,8 +221,8 @@ public class WebsocketService {
         sendToGame(game.getGameId(), WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
     }
 
-    public void sendInvalidMoveMsg(Long userId) {
-        sendErrorToUser(userId, createInvalidMoveMsg());
+    public void sendInvalidMoveMsg(Long userId, Long gameId) {
+        sendErrorToUser(userId, gameId, createInvalidMoveMsg());
     }
 
     public WSErrorMessageDTO createInvalidMoveMsg() {
@@ -232,8 +232,8 @@ public class WebsocketService {
         return dto;
     }
 
-    public void sendInvalidGameMsg(Long userId) {
-        sendErrorToUser(userId, createInvalidGameMsg());
+    public void sendInvalidGameMsg(Long userId, Long gameId) {
+        sendErrorToUser(userId, gameId, createInvalidGameMsg());
     }
 
     public WSErrorMessageDTO createInvalidGameMsg() {
@@ -243,8 +243,8 @@ public class WebsocketService {
         return dto;
     }
 
-    public void sendInvalidUserMsg(Long userId) {
-        sendErrorToUser(userId, createInvalidUserMsg());
+    public void sendInvalidUserMsg(Long userId, Long gameId) {
+        sendErrorToUser(userId, gameId, createInvalidUserMsg());
     }
 
     public WSErrorMessageDTO createInvalidUserMsg() {
@@ -255,8 +255,8 @@ public class WebsocketService {
         return dto;
     }
 
-    public void sendErrorToUser(Long userId, Object dto) {
-        String destination = String.format("/queue/user/%d/error", userId);
+    public void sendErrorToUser(Long userId, Long gameId, Object dto) {
+        String destination = String.format("/queue/user/%d/%d/error", userId, gameId);
         this.simp.convertAndSend(destination, dto);
     }
 

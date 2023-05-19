@@ -48,11 +48,14 @@ class WebsocketServiceTest {
 
     private Long testUserId;
 
+    private Long testGameId;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
         testUserId = 9L;
+        testGameId = 10L;
 
     }
 
@@ -150,8 +153,8 @@ class WebsocketServiceTest {
     @Test
     public void sendErrorToUserTest() {
         Object dto = new Object();
-        String destination = "/queue/user/" + testUserId + "/error";
-        websocketService.sendErrorToUser(testUserId, dto);
+        String destination = "/queue/user/" + testUserId + "/" + testGameId + "/error";
+        websocketService.sendErrorToUser(testUserId, testGameId, dto);
         verify(simp).convertAndSend(destination, dto);
     }
 
