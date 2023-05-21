@@ -52,17 +52,6 @@ public class GameController {
         return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
     }
 
-    @GetMapping("/games/{gameId}")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public GameGetDTO getGame(@PathVariable Long gameId) {
-
-        Game game = gameService.getGame(gameId);
-        GameGetDTO gameGetDTO = GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
-
-        return gameGetDTO;
-    }
-
     @PutMapping("/games/join/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
