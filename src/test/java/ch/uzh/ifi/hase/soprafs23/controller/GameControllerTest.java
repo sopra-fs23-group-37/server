@@ -155,7 +155,6 @@ public class GameControllerTest {
                 .andExpect(jsonPath("$.gameStatus", is("WAITING")));
     }
 
-
         @Test
         public void givenGames_whenJoin_thenReturnJsonArray() throws Exception {
 
