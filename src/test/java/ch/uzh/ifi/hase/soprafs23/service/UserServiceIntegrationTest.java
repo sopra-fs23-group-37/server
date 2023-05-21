@@ -2,9 +2,6 @@ package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
-import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
-import ch.uzh.ifi.hase.soprafs23.repository.RoundRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,26 +43,11 @@ public class UserServiceIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Qualifier("gameRepository")
-    @Autowired
-    private GameRepository gameRepository;
-
-    @Qualifier("roundRepository")
-    @Autowired
-    private RoundRepository roundRepository;
-
-    @Qualifier("playerRepository")
-    @Autowired
-    private PlayerRepository playerRepository;
-
     @Autowired
     private UserService userService;
 
     @BeforeEach
     public void setup() {
-        gameRepository.deleteAll();
-        roundRepository.deleteAll();
-        playerRepository.deleteAll();
         userRepository.deleteAll();
     }
 
