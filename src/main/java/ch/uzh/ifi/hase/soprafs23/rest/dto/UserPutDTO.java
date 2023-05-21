@@ -12,7 +12,6 @@ public class UserPutDTO {
   private UserStatus userStatus;
   private Date creation_date;
   private Date birthday;
-  private String avatarUrl;
 
   public Long getUserId() {
     return userId;
@@ -60,14 +59,6 @@ public class UserPutDTO {
 
   public void setBirthday(Date birthday) {
     this.birthday = birthday;
-  }
-
-  public String getAvatarUrl() {
-    return avatarUrl;
-  }
-
-  public void setAvatarUrl(String avatarUrl) {
-    this.avatarUrl = avatarUrl;
   }
 
 }
