@@ -108,9 +108,7 @@ public class UserService {
     return user;
   }
 
-
-
-    public void updateUser(Long userId, User userInput) {
+  public void updateUser(Long userId, User userInput) {
     User updateUser = getUserById(userId);
 
     if (checkIfUsernameExistsWithoutMine(userId, userInput)) {
@@ -125,15 +123,9 @@ public class UserService {
       String ErrorMessage = "Modifying the user failed because username is empty";
       throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
 
-      // if the avatarUrl is not null or "", then give error!
-    } else if (userInput.getAvatarUrl().isEmpty() || userInput.getAvatarUrl().equals("")) {
-      String ErrorMessage = "Modifying the user failed because avatarUrl is empty";
-      throw new ResponseStatusException(HttpStatus.CONFLICT, ErrorMessage);
-
     } else {
       updateUser.setUsername(userInput.getUsername());
       updateUser.setBirthday(userInput.getBirthday());
-      updateUser.setAvatarUrl(userInput.getAvatarUrl());
 
       userRepository.save(updateUser);
       userRepository.flush();

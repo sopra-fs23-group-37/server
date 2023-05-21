@@ -85,7 +85,6 @@ public class UserServiceTest {
         assertEquals(UserStatus.ONLINE, createdUser.getUserStatus());
     }
 
-
     @Test
     public void createUser_duplicateUsername_throwsException() {
         userService.createUser(testUser);
@@ -225,7 +224,6 @@ public class UserServiceTest {
         updateUser.setUserId(1L);
         updateUser.setUsername("newUsername");
         updateUser.setBirthday(new Date());
-        updateUser.setAvatarUrl("newAvatarUrl");
 
         User databaseUser = new User();
         databaseUser.setUserId(1L);
@@ -240,17 +238,16 @@ public class UserServiceTest {
 
         assertEquals(updateUser.getUsername(), databaseUser.getUsername());
         assertEquals(updateUser.getBirthday(), databaseUser.getBirthday());
-        assertEquals(updateUser.getAvatarUrl(), databaseUser.getAvatarUrl());
     }
 
-    // Tests that updating a user with a username that already exists throws an exception
+    // Tests that updating a user with a username that already exists throws an
+    // exception
     @Test
     public void updateUser_usernameExists_throwsException() {
         User updateUser = new User();
         updateUser.setUserId(1L);
         updateUser.setUsername("newUsername");
         updateUser.setBirthday(new Date());
-        updateUser.setAvatarUrl("newAvatarUrl");
 
         User existingUser = new User();
         existingUser.setUserId(2L);
@@ -273,7 +270,6 @@ public class UserServiceTest {
         updateUser.setUserId(1L);
         updateUser.setUsername("newUsername");
         updateUser.setBirthday(new Date());
-        updateUser.setAvatarUrl("newAvatarUrl");
 
         User databaseUser = new User();
         databaseUser.setUserId(1L);
@@ -295,7 +291,6 @@ public class UserServiceTest {
         updateUser.setUserId(1L);
         updateUser.setUsername("");
         updateUser.setBirthday(new Date());
-        updateUser.setAvatarUrl("newAvatarUrl");
 
         User databaseUser = new User();
         databaseUser.setUserId(1L);
@@ -308,28 +303,6 @@ public class UserServiceTest {
 
         assertEquals(HttpStatus.CONFLICT, exception.getStatus());
         assertEquals("Modifying the user failed because username is empty", exception.getReason());
-    }
-
-    // Tests that updating a user with an empty avatar URL throws an exception
-    @Test
-    public void updateUser_emptyAvatarUrl_throwsException() {
-        User updateUser = new User();
-        updateUser.setUserId(1L);
-        updateUser.setUsername("newUsername");
-        updateUser.setBirthday(new Date());
-        updateUser.setAvatarUrl("");
-
-        User databaseUser = new User();
-        databaseUser.setUserId(1L);
-        databaseUser.setUserStatus(UserStatus.ONLINE);
-
-        Mockito.when(userRepository.findById(updateUser.getUserId())).thenReturn(Optional.of(databaseUser));
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> userService.updateUser(updateUser.getUserId(), updateUser));
-
-        assertEquals(HttpStatus.CONFLICT, exception.getStatus());
-        assertEquals("Modifying the user failed because avatarUrl is empty", exception.getReason());
     }
 
 }
