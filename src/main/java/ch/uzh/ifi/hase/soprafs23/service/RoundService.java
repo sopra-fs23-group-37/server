@@ -136,13 +136,10 @@ public class RoundService {
 
         // give any remaining table cards to the player who last grabbed some cards
         Player recipient = round.getLastCardGrab() == Role.HOST ? round.getHost() : round.getGuest();
-        // List<Card> capturedCards = new ArrayList<>();
         for (Card c : round.getTableCards()) {
             recipient.addCardToDiscard(c);
-            // capturedCards.add(c);
         }
 
-        // recipient.setLastCapturedCards(capturedCards);
         round.removeAllCardsFromTable();
 
         // count points of the hands
