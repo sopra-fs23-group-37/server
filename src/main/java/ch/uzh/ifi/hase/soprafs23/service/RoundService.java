@@ -140,6 +140,8 @@ public class RoundService {
             recipient.addCardToDiscard(c);
         }
 
+        round.removeAllCardsFromTable();
+
         // count points of the hands
         round.setHostPoints(round.getHost().countDiscard());
         round.setGuestPoints(round.getGuest().countDiscard());
