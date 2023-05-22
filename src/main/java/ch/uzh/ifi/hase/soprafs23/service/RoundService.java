@@ -189,10 +189,10 @@ public class RoundService {
         }
 
         // change player turn if the other player still has cards
-        if (round.getCurrentTurnPlayer().equals(Role.GUEST) && round.getHost().getCardsInHand().size() != 0) {
+        if (round.getCurrentTurnPlayer().equals(Role.GUEST)) {
             round.setCurrentTurnPlayer(Role.HOST);
 
-        } else if (round.getCurrentTurnPlayer().equals(Role.HOST) && round.getGuest().getCardsInHand().size() != 0) {
+        } else if (round.getCurrentTurnPlayer().equals(Role.HOST)) {
             round.setCurrentTurnPlayer(Role.GUEST);
         }
 
