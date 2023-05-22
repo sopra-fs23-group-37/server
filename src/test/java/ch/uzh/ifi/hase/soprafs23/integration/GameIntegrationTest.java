@@ -76,8 +76,8 @@ public class GameIntegrationTest {
     @BeforeEach
     public void setup() throws InterruptedException, ExecutionException, TimeoutException {
 
-        userRepository.deleteAll();
         gameRepository.deleteAll();
+        userRepository.deleteAll();
 
         // set up basic data for users and games
         hostUser = new User();
