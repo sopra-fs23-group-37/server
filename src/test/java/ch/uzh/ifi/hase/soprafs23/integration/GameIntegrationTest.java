@@ -141,7 +141,7 @@ public class GameIntegrationTest {
         testGame = gameRepository.saveAndFlush(testGame);
 
         // set up websocket connection
-        setWsConnection();
+        session = setWsConnection();
 
         // add subscription for Home Screen
         completableFutureHome = new CompletableFuture<>();
@@ -376,17 +376,16 @@ public class GameIntegrationTest {
         // Home DTO
         assertNotNull(gameReceived);
         assertEquals(GameStatus.SURRENDERED, gameReceived.getGameStatus());
-
     }
 
     // helper method to set websocket connection, not overlading setup method
-    private void setWsConnection() throws InterruptedException, ExecutionException, TimeoutException {
+    private StompSession setWsConnection() throws InterruptedException, ExecutionException, TimeoutException {
         webSocketStompClient = new WebSocketStompClient(new SockJsClient(
                 List.of(new WebSocketTransport(new StandardWebSocketClient()))));
 
         webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
 
-        session = webSocketStompClient
+        return webSocketStompClient
                 .connect(String.format("ws://localhost:%d/websocket", port), new StompSessionHandlerAdapter() {
                 }).get(20, TimeUnit.SECONDS);
 
