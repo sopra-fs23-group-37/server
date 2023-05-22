@@ -155,7 +155,6 @@ public class GameControllerTest {
                 .andExpect(jsonPath("$.gameStatus", is("WAITING")));
     }
 
-
         @Test
         public void givenGames_whenJoin_thenReturnJsonArray() throws Exception {
 
@@ -166,6 +165,24 @@ public class GameControllerTest {
 
                 // build put request
                 MockHttpServletRequestBuilder putRequest = put("/games/join/1")
+                                .contentType(MediaType.APPLICATION_JSON);
+
+                // test return
+                mockMvc.perform(putRequest).andExpect(status().isOk())
+                                .andExpect(jsonPath("$.gameId", is(999)));
+
+        }
+
+        @Test
+        public void givenGamesByCode_whenJoin_thenReturnJsonArray() throws Exception {
+
+                // given the Game is returned by the Service
+                Game game = new Game();
+                game.setGameId(999L);
+                given(gameService.joinGameByCode(any(), any())).willReturn(game);
+
+                // build put request
+                MockHttpServletRequestBuilder putRequest = put("/games/999/join/1")
                                 .contentType(MediaType.APPLICATION_JSON);
 
                 // test return

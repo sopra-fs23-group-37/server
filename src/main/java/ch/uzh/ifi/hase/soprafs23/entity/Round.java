@@ -134,6 +134,10 @@ public class Round implements Serializable {
         cardsOnTable.removeIf(n -> (n.getCode().equals(card.getCode())));
     }
 
+    public void removeAllCardsFromTable() {
+        cardsOnTable.clear();
+    }
+
     public Long getRoundId() {
         return roundId;
     }
