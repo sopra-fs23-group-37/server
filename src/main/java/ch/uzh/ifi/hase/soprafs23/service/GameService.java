@@ -203,8 +203,10 @@ public class GameService {
         }
 
         // if the game is already closed, send the game info back without joining it
-        if (game.getGameStatus().equals(GameStatus.DISCONNECTED) || game.getGameStatus()
-                .equals(GameStatus.FINISHED) || game.getGameStatus().equals(GameStatus.SURRENDERED)) {
+        if (game.getGameStatus().equals(GameStatus.ONGOING)
+                || game.getGameStatus().equals(GameStatus.DISCONNECTED) || game.getGameStatus()
+                        .equals(GameStatus.FINISHED)
+                || game.getGameStatus().equals(GameStatus.SURRENDERED)) {
             websocketService.sendToLobby(gameId, WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
             return game;
         }
@@ -264,8 +266,15 @@ public class GameService {
             return game;
         }
 
-        // if the guest is trying to start the game, just return the game as is
+        // if the guest is trying to start the game, just send the game as is
         if (game.getGuest().getUserId().equals(playerId) || game.getGameStatus().equals(GameStatus.ONGOING)) {
+            websocketService.sendGameToUser(playerId, game.getGameId(),
+                    WebSockDTOMapper.INSTANCE.convertEntityToWSGameStatusDTO(game));
+
+            // if there is a round, send that also
+            if (game.getCurrentRound() != null) {
+                websocketService.sendRoundInfoToUser(game, game.getCurrentRound(), playerId);
+            }
             return game;
         }
 
