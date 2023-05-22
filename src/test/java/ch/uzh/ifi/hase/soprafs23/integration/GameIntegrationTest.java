@@ -51,6 +51,7 @@ import ch.uzh.ifi.hase.soprafs23.rest.dto.WSGameStatusDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSHomeDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSRoundStatusDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSStatsDTO;
+import ch.uzh.ifi.hase.soprafs23.service.GameService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {
@@ -80,6 +81,7 @@ public class GameIntegrationTest {
     private CompletableFuture<WSStatsDTO> completableFutureGuestStats;
     private CompletableFuture<WSRoundStatusDTO> completableFutureGuestRound;
     private CompletableFuture<WSGameStatusDTO> completableFutureGame;
+    private CompletableFuture<WSGameStatusDTO> completableFutureGameHost;
 
     @Autowired
     private UserRepository userRepository;
@@ -98,6 +100,9 @@ public class GameIntegrationTest {
 
     @Autowired
     private CardDeckRepository cardDeckRepository;
+
+    @Autowired
+    private GameService gameService;
 
     @BeforeEach
     public void setup() throws InterruptedException, ExecutionException, TimeoutException {
@@ -220,6 +225,22 @@ public class GameIntegrationTest {
                     }
                 });
 
+        // add subscription for game for host
+        completableFutureGameHost = new CompletableFuture<>();
+        session.subscribe("/queue/user/" + hostUser.getUserId() + "/" + testGame.getGameId()
+                + "/game",
+                new StompFrameHandler() {
+
+                    @Override
+                    public java.lang.reflect.Type getPayloadType(StompHeaders headers) {
+                        return WSGameStatusDTO.class;
+                    }
+
+                    @Override
+                    public void handleFrame(StompHeaders headers, Object o) {
+                        completableFutureGameHost.complete((WSGameStatusDTO) o);
+                    }
+                });
     }
 
     // test websocket home
@@ -307,39 +328,13 @@ public class GameIntegrationTest {
     // test websocket move
     @Test
     void setCardonTableMoveTest() throws Exception {
-        // make sure game status is connected and all infos are there
-        testGame.setGameStatus(GameStatus.CONNECTED);
 
+        // create the card to play
         Card card1 = new Card();
         card1.setCode("QH");
-        Card card2 = new Card();
-        card2.setCode("3C");
-        List<Card> cards = new ArrayList<>();
-        cards.add(card1);
-        cards.add(card2);
-        cardRepository.saveAll(cards);
-        cardRepository.flush();
 
-        Player guestPlayer = new Player(guestUser, Role.GUEST);
-        guestPlayer.addCardsToHand(cards);
-        playerRepository.saveAndFlush(guestPlayer);
-
-        Player hostPlayer = new Player(hostUser, Role.HOST);
-        playerRepository.saveAndFlush(hostPlayer);
-
-        CardDeck cardDeck = new CardDeck();
-        cardDeck.setRemaining(16);
-        cardDeckRepository.saveAndFlush(cardDeck);
-
-        Round round = new Round();
-        round.setGuest(guestPlayer);
-        round.setHost(hostPlayer);
-        round.setCurrentTurnPlayer(Role.GUEST);
-        round.setCardDeck(cardDeck);
-        roundRepository.saveAndFlush(round);
-
-        testGame.setCurrentRound(round);
-        testGame = gameRepository.saveAndFlush(testGame);
+        // all setters for game-related entities, saving everything
+        addBasicGameInfo();
 
         PlayerMoveMessage playerMoveMessage = new PlayerMoveMessage();
         playerMoveMessage.setPlayerId(guestUser.getUserId());
@@ -378,6 +373,49 @@ public class GameIntegrationTest {
         assertEquals(GameStatus.SURRENDERED, gameReceived.getGameStatus());
     }
 
+    @Test
+    void disconnectGameTest() throws Exception {
+
+        // set up the game
+        testGame.setGameStatus(GameStatus.ONGOING);
+        testGame.setHostSessionId("testSessionId");
+        testGame = gameRepository.saveAndFlush(testGame);
+
+        // disconnect the game in the gameservice
+        gameService.findDisconnectedPlayer("testSessionId");
+
+        // wait for the DTOs to be received over STOMP
+        WSGameStatusDTO gameReceived = completableFutureGame.get(20, TimeUnit.SECONDS);
+
+        // assert result
+        assertNotNull(gameReceived);
+        assertEquals(GameStatus.DISCONNECTED, gameReceived.getGameStatus());
+
+    }
+
+    @Test
+    void disconnectReconnectGameTest() throws Exception {
+
+        // set up the game with everything needed to not fail
+        testGame.setGameStatus(GameStatus.ONGOING);
+        testGame.setHostSessionId("testSessionId");
+        addBasicGameInfo();
+        testGame = gameRepository.saveAndFlush(testGame);
+
+        // disconnect the game in the gameservice
+        gameService.findDisconnectedPlayer("testSessionId");
+
+        PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(hostUser.getUserId());
+        session.send("/game/reconnect/" + testGame.getGameId(), playerJoinMessage);
+
+        // wait for the DTOs to be received over STOMP
+        WSGameStatusDTO gameReceived = completableFutureGameHost.get(120, TimeUnit.SECONDS);
+
+        assertNotNull(gameReceived);
+        assertEquals(GameStatus.ONGOING, gameReceived.getGameStatus());
+
+    }
+
     // helper method to set websocket connection, not overlading setup method
     private StompSession setWsConnection() throws InterruptedException, ExecutionException, TimeoutException {
         webSocketStompClient = new WebSocketStompClient(new SockJsClient(
@@ -388,6 +426,45 @@ public class GameIntegrationTest {
         return webSocketStompClient
                 .connect(String.format("ws://localhost:%d/websocket", port), new StompSessionHandlerAdapter() {
                 }).get(20, TimeUnit.SECONDS);
+
+    }
+
+    // helper method to add all basic game entities and minimum information for db
+    // to work
+    private void addBasicGameInfo() {
+
+        testGame.setGameStatus(GameStatus.ONGOING);
+
+        Card card1 = new Card();
+        card1.setCode("QH");
+        Card card2 = new Card();
+        card2.setCode("3C");
+        List<Card> cards = new ArrayList<>();
+        cards.add(card1);
+        cards.add(card2);
+        cardRepository.saveAll(cards);
+        cardRepository.flush();
+
+        Player guestPlayer = new Player(guestUser, Role.GUEST);
+        guestPlayer.addCardsToHand(cards);
+        playerRepository.saveAndFlush(guestPlayer);
+
+        Player hostPlayer = new Player(hostUser, Role.HOST);
+        playerRepository.saveAndFlush(hostPlayer);
+
+        CardDeck cardDeck = new CardDeck();
+        cardDeck.setRemaining(16);
+        cardDeckRepository.saveAndFlush(cardDeck);
+
+        Round round = new Round();
+        round.setGuest(guestPlayer);
+        round.setHost(hostPlayer);
+        round.setCurrentTurnPlayer(Role.GUEST);
+        round.setCardDeck(cardDeck);
+        roundRepository.saveAndFlush(round);
+
+        testGame.setCurrentRound(round);
+        testGame = gameRepository.saveAndFlush(testGame);
 
     }
 }
