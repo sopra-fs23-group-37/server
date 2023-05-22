@@ -35,9 +35,12 @@ import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerJoinMessage;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.RoundRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSGameStatusDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSHomeDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.WSRoundStatusDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSStatsDTO;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -66,6 +69,8 @@ public class GameIntegrationTest {
     private CompletableFuture<WSHomeDTO> completableFutureHome;
     private CompletableFuture<WSGameStatusDTO> completableFutureLobby;
     private CompletableFuture<WSStatsDTO> completableFutureGuestStats;
+    private CompletableFuture<WSRoundStatusDTO> completableFutureGuestRound;
+    private CompletableFuture<WSGameStatusDTO> completableFutureGame;
 
     @Autowired
     private UserRepository userRepository;
@@ -73,10 +78,18 @@ public class GameIntegrationTest {
     @Autowired
     private GameRepository gameRepository;
 
+    @Autowired
+    private RoundRepository roundRepository;
+
+    @Autowired
+    private PlayerRepository playerRepository;
+
     @BeforeEach
     public void setup() throws InterruptedException, ExecutionException, TimeoutException {
 
         gameRepository.deleteAll();
+        roundRepository.deleteAll();
+        playerRepository.deleteAll();
         userRepository.deleteAll();
 
         // set up basic data for users and games
@@ -159,6 +172,38 @@ public class GameIntegrationTest {
             }
         });
 
+        // add subscription for game
+        completableFutureGame = new CompletableFuture<>();
+        session.subscribe("/topic/game/" + testGame.getGameId() + "/game",
+                new StompFrameHandler() {
+
+                    @Override
+                    public java.lang.reflect.Type getPayloadType(StompHeaders headers) {
+                        return WSGameStatusDTO.class;
+                    }
+
+                    @Override
+                    public void handleFrame(StompHeaders headers, Object o) {
+                        completableFutureGame.complete((WSGameStatusDTO) o);
+                    }
+                });
+
+        // add subscription for round for guest
+        completableFutureGuestRound = new CompletableFuture<>();
+        session.subscribe("/queue/user/" + guestUser.getUserId() + "/" + testGame.getGameId() + "/round",
+                new StompFrameHandler() {
+
+                    @Override
+                    public java.lang.reflect.Type getPayloadType(StompHeaders headers) {
+                        return WSRoundStatusDTO.class;
+                    }
+
+                    @Override
+                    public void handleFrame(StompHeaders headers, Object o) {
+                        completableFutureGuestRound.complete((WSRoundStatusDTO) o);
+                    }
+                });
+
     }
 
     // test websocket home
@@ -213,6 +258,37 @@ public class GameIntegrationTest {
 
     }
 
+    // test websocket start
+    @Test
+    void startGameTest() throws Exception {
+
+        // make sure game status is connected
+        testGame.setGameStatus(GameStatus.CONNECTED);
+        testGame = gameRepository.saveAndFlush(testGame);
+
+        // send game start update
+        PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(hostUser.getUserId());
+        session.send("/game/start/" + testGame.getGameId(), playerJoinMessage);
+
+        // wait for the DTOs to be received over STOMP
+        WSGameStatusDTO gameReceived = completableFutureGame.get(20, TimeUnit.SECONDS);
+        WSRoundStatusDTO roundReceived = completableFutureGuestRound.get(20, TimeUnit.SECONDS);
+
+        // assert that the received DTOs are not null and match the expected DTOs
+        // Home DTO
+        assertNotNull(gameReceived);
+        assertEquals(GameStatus.ONGOING, gameReceived.getGameStatus());
+
+        // Lobby DTO
+        assertNotNull(roundReceived);
+        assertEquals(4, roundReceived.getCardsOnTable().size());
+        assertEquals(8, roundReceived.getMyCardsInHand().size());
+        assertEquals(8, roundReceived.getOppCards());
+        assertNotNull(roundReceived.getMyTurn());
+
+    }
+    // test websocket move
+
     // helper method to set websocket connection, not overlading setup method
     private void setWsConnection() throws InterruptedException, ExecutionException, TimeoutException {
         webSocketStompClient = new WebSocketStompClient(new SockJsClient(
@@ -225,5 +301,4 @@ public class GameIntegrationTest {
                 }).get(20, TimeUnit.SECONDS);
 
     }
-
 }
