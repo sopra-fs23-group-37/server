@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.integration;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -30,15 +31,27 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.entity.Card;
+import ch.uzh.ifi.hase.soprafs23.entity.CardDeck;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerJoinMessage;
+import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
+import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.repository.CardDeckRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.CardRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.RoundRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSGameStatusDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSHomeDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.WSRoundStatusDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSStatsDTO;
+import ch.uzh.ifi.hase.soprafs23.service.GameService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {
@@ -66,6 +79,9 @@ public class GameIntegrationTest {
     private CompletableFuture<WSHomeDTO> completableFutureHome;
     private CompletableFuture<WSGameStatusDTO> completableFutureLobby;
     private CompletableFuture<WSStatsDTO> completableFutureGuestStats;
+    private CompletableFuture<WSRoundStatusDTO> completableFutureGuestRound;
+    private CompletableFuture<WSGameStatusDTO> completableFutureGame;
+    private CompletableFuture<WSGameStatusDTO> completableFutureGameHost;
 
     @Autowired
     private UserRepository userRepository;
@@ -73,11 +89,29 @@ public class GameIntegrationTest {
     @Autowired
     private GameRepository gameRepository;
 
+    @Autowired
+    private RoundRepository roundRepository;
+
+    @Autowired
+    private PlayerRepository playerRepository;
+
+    @Autowired
+    private CardRepository cardRepository;
+
+    @Autowired
+    private CardDeckRepository cardDeckRepository;
+
+    @Autowired
+    private GameService gameService;
+
     @BeforeEach
     public void setup() throws InterruptedException, ExecutionException, TimeoutException {
 
         gameRepository.deleteAll();
+        roundRepository.deleteAll();
+        playerRepository.deleteAll();
         userRepository.deleteAll();
+        cardDeckRepository.deleteAll();
 
         // set up basic data for users and games
         hostUser = new User();
@@ -112,7 +146,7 @@ public class GameIntegrationTest {
         testGame = gameRepository.saveAndFlush(testGame);
 
         // set up websocket connection
-        setWsConnection();
+        session = setWsConnection();
 
         // add subscription for Home Screen
         completableFutureHome = new CompletableFuture<>();
@@ -159,6 +193,54 @@ public class GameIntegrationTest {
             }
         });
 
+        // add subscription for game
+        completableFutureGame = new CompletableFuture<>();
+        session.subscribe("/topic/game/" + testGame.getGameId() + "/game",
+                new StompFrameHandler() {
+
+                    @Override
+                    public java.lang.reflect.Type getPayloadType(StompHeaders headers) {
+                        return WSGameStatusDTO.class;
+                    }
+
+                    @Override
+                    public void handleFrame(StompHeaders headers, Object o) {
+                        completableFutureGame.complete((WSGameStatusDTO) o);
+                    }
+                });
+
+        // add subscription for round for guest
+        completableFutureGuestRound = new CompletableFuture<>();
+        session.subscribe("/queue/user/" + guestUser.getUserId() + "/" + testGame.getGameId() + "/round",
+                new StompFrameHandler() {
+
+                    @Override
+                    public java.lang.reflect.Type getPayloadType(StompHeaders headers) {
+                        return WSRoundStatusDTO.class;
+                    }
+
+                    @Override
+                    public void handleFrame(StompHeaders headers, Object o) {
+                        completableFutureGuestRound.complete((WSRoundStatusDTO) o);
+                    }
+                });
+
+        // add subscription for game for host
+        completableFutureGameHost = new CompletableFuture<>();
+        session.subscribe("/queue/user/" + hostUser.getUserId() + "/" + testGame.getGameId()
+                + "/game",
+                new StompFrameHandler() {
+
+                    @Override
+                    public java.lang.reflect.Type getPayloadType(StompHeaders headers) {
+                        return WSGameStatusDTO.class;
+                    }
+
+                    @Override
+                    public void handleFrame(StompHeaders headers, Object o) {
+                        completableFutureGameHost.complete((WSGameStatusDTO) o);
+                    }
+                });
     }
 
     // test websocket home
@@ -213,17 +295,176 @@ public class GameIntegrationTest {
 
     }
 
+    // test websocket start
+    @Test
+    void startGameTest() throws Exception {
+
+        // make sure game status is connected
+        testGame.setGameStatus(GameStatus.CONNECTED);
+        testGame = gameRepository.saveAndFlush(testGame);
+
+        // send game start update
+        PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(hostUser.getUserId());
+        session.send("/game/start/" + testGame.getGameId(), playerJoinMessage);
+
+        // wait for the DTOs to be received over STOMP
+        WSGameStatusDTO gameReceived = completableFutureGame.get(20, TimeUnit.SECONDS);
+        WSRoundStatusDTO roundReceived = completableFutureGuestRound.get(20, TimeUnit.SECONDS);
+
+        // assert that the received DTOs are not null and match the expected DTOs
+        // Home DTO
+        assertNotNull(gameReceived);
+        assertEquals(GameStatus.ONGOING, gameReceived.getGameStatus());
+
+        // Lobby DTO
+        assertNotNull(roundReceived);
+        assertEquals(4, roundReceived.getCardsOnTable().size());
+        assertEquals(8, roundReceived.getMyCardsInHand().size());
+        assertEquals(8, roundReceived.getOppCards());
+        assertNotNull(roundReceived.getMyTurn());
+
+    }
+
+    // test websocket move
+    @Test
+    void setCardonTableMoveTest() throws Exception {
+
+        // create the card to play
+        Card card1 = new Card();
+        card1.setCode("QH");
+
+        // all setters for game-related entities, saving everything
+        addBasicGameInfo();
+
+        PlayerMoveMessage playerMoveMessage = new PlayerMoveMessage();
+        playerMoveMessage.setPlayerId(guestUser.getUserId());
+        playerMoveMessage.setMoveType(4);
+        playerMoveMessage.setCardFromHand(card1);
+
+        session.send("/game/move/" + testGame.getGameId(), playerMoveMessage);
+
+        // get the updated round info sent to the user
+        WSRoundStatusDTO updatedRound = completableFutureGuestRound.get(120, TimeUnit.SECONDS);
+
+        // assert that the received DTOs are not null and match the expected DTOs
+        // Home DTO
+        assertNotNull(updatedRound);
+        assertEquals(1, updatedRound.getCardsOnTable().size());
+        assertEquals(1, updatedRound.getMyCardsInHand().size());
+
+    }
+
+    @Test
+    void surrenderGameIntegrationTest() throws Exception {
+
+        // make sure game status is connected
+        testGame.setGameStatus(GameStatus.CONNECTED);
+
+        // have the host surrender the game
+        PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(hostUser.getUserId());
+        session.send("/game/surrender/" + testGame.getGameId(), playerJoinMessage);
+
+        // wait for the DTOs to be received over STOMP
+        WSGameStatusDTO gameReceived = completableFutureGame.get(20, TimeUnit.SECONDS);
+
+        // assert that the received DTOs are not null and match the expected DTOs
+        // Home DTO
+        assertNotNull(gameReceived);
+        assertEquals(GameStatus.SURRENDERED, gameReceived.getGameStatus());
+    }
+
+    @Test
+    void disconnectGameTest() throws Exception {
+
+        // set up the game
+        testGame.setGameStatus(GameStatus.ONGOING);
+        testGame.setHostSessionId("testSessionId");
+        testGame = gameRepository.saveAndFlush(testGame);
+
+        // disconnect the game in the gameservice
+        gameService.findDisconnectedPlayer("testSessionId");
+
+        // wait for the DTOs to be received over STOMP
+        WSGameStatusDTO gameReceived = completableFutureGame.get(20, TimeUnit.SECONDS);
+
+        // assert result
+        assertNotNull(gameReceived);
+        assertEquals(GameStatus.DISCONNECTED, gameReceived.getGameStatus());
+
+    }
+
+    @Test
+    void disconnectReconnectGameTest() throws Exception {
+
+        // set up the game with everything needed to not fail
+        testGame.setGameStatus(GameStatus.ONGOING);
+        testGame.setHostSessionId("testSessionId");
+        addBasicGameInfo();
+        testGame = gameRepository.saveAndFlush(testGame);
+
+        // disconnect the game in the gameservice
+        gameService.findDisconnectedPlayer("testSessionId");
+
+        PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(hostUser.getUserId());
+        session.send("/game/reconnect/" + testGame.getGameId(), playerJoinMessage);
+
+        // wait for the DTOs to be received over STOMP
+        WSGameStatusDTO gameReceived = completableFutureGameHost.get(120, TimeUnit.SECONDS);
+
+        assertNotNull(gameReceived);
+        assertEquals(GameStatus.ONGOING, gameReceived.getGameStatus());
+
+    }
+
     // helper method to set websocket connection, not overlading setup method
-    private void setWsConnection() throws InterruptedException, ExecutionException, TimeoutException {
+    private StompSession setWsConnection() throws InterruptedException, ExecutionException, TimeoutException {
         webSocketStompClient = new WebSocketStompClient(new SockJsClient(
                 List.of(new WebSocketTransport(new StandardWebSocketClient()))));
 
         webSocketStompClient.setMessageConverter(new MappingJackson2MessageConverter());
 
-        session = webSocketStompClient
+        return webSocketStompClient
                 .connect(String.format("ws://localhost:%d/websocket", port), new StompSessionHandlerAdapter() {
                 }).get(20, TimeUnit.SECONDS);
 
     }
 
+    // helper method to add all basic game entities and minimum information for db
+    // to work
+    private void addBasicGameInfo() {
+
+        testGame.setGameStatus(GameStatus.ONGOING);
+
+        Card card1 = new Card();
+        card1.setCode("QH");
+        Card card2 = new Card();
+        card2.setCode("3C");
+        List<Card> cards = new ArrayList<>();
+        cards.add(card1);
+        cards.add(card2);
+        cardRepository.saveAll(cards);
+        cardRepository.flush();
+
+        Player guestPlayer = new Player(guestUser, Role.GUEST);
+        guestPlayer.addCardsToHand(cards);
+        playerRepository.saveAndFlush(guestPlayer);
+
+        Player hostPlayer = new Player(hostUser, Role.HOST);
+        playerRepository.saveAndFlush(hostPlayer);
+
+        CardDeck cardDeck = new CardDeck();
+        cardDeck.setRemaining(16);
+        cardDeckRepository.saveAndFlush(cardDeck);
+
+        Round round = new Round();
+        round.setGuest(guestPlayer);
+        round.setHost(hostPlayer);
+        round.setCurrentTurnPlayer(Role.GUEST);
+        round.setCardDeck(cardDeck);
+        roundRepository.saveAndFlush(round);
+
+        testGame.setCurrentRound(round);
+        testGame = gameRepository.saveAndFlush(testGame);
+
+    }
 }
