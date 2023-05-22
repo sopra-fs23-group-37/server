@@ -359,6 +359,26 @@ public class GameIntegrationTest {
 
     }
 
+    @Test
+    void surrenderGameIntegrationTest() throws Exception {
+
+        // make sure game status is connected
+        testGame.setGameStatus(GameStatus.CONNECTED);
+
+        // have the host surrender the game
+        PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(hostUser.getUserId());
+        session.send("/game/surrender/" + testGame.getGameId(), playerJoinMessage);
+
+        // wait for the DTOs to be received over STOMP
+        WSGameStatusDTO gameReceived = completableFutureGame.get(20, TimeUnit.SECONDS);
+
+        // assert that the received DTOs are not null and match the expected DTOs
+        // Home DTO
+        assertNotNull(gameReceived);
+        assertEquals(GameStatus.SURRENDERED, gameReceived.getGameStatus());
+
+    }
+
     // helper method to set websocket connection, not overlading setup method
     private void setWsConnection() throws InterruptedException, ExecutionException, TimeoutException {
         webSocketStompClient = new WebSocketStompClient(new SockJsClient(
