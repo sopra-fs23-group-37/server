@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.integration;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -30,10 +31,18 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.PlayerStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.entity.Card;
+import ch.uzh.ifi.hase.soprafs23.entity.CardDeck;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
+import ch.uzh.ifi.hase.soprafs23.entity.Player;
 import ch.uzh.ifi.hase.soprafs23.entity.PlayerJoinMessage;
+import ch.uzh.ifi.hase.soprafs23.entity.PlayerMoveMessage;
+import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.repository.CardDeckRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.CardRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.PlayerRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.RoundRepository;
@@ -84,6 +93,12 @@ public class GameIntegrationTest {
     @Autowired
     private PlayerRepository playerRepository;
 
+    @Autowired
+    private CardRepository cardRepository;
+
+    @Autowired
+    private CardDeckRepository cardDeckRepository;
+
     @BeforeEach
     public void setup() throws InterruptedException, ExecutionException, TimeoutException {
 
@@ -91,6 +106,7 @@ public class GameIntegrationTest {
         roundRepository.deleteAll();
         playerRepository.deleteAll();
         userRepository.deleteAll();
+        cardDeckRepository.deleteAll();
 
         // set up basic data for users and games
         hostUser = new User();
@@ -287,7 +303,61 @@ public class GameIntegrationTest {
         assertNotNull(roundReceived.getMyTurn());
 
     }
+
     // test websocket move
+    @Test
+    void setCardonTableMoveTest() throws Exception {
+        // make sure game status is connected and all infos are there
+        testGame.setGameStatus(GameStatus.CONNECTED);
+
+        Card card1 = new Card();
+        card1.setCode("QH");
+        Card card2 = new Card();
+        card2.setCode("3C");
+        List<Card> cards = new ArrayList<>();
+        cards.add(card1);
+        cards.add(card2);
+        cardRepository.saveAll(cards);
+        cardRepository.flush();
+
+        Player guestPlayer = new Player(guestUser, Role.GUEST);
+        guestPlayer.addCardsToHand(cards);
+        playerRepository.saveAndFlush(guestPlayer);
+
+        Player hostPlayer = new Player(hostUser, Role.HOST);
+        playerRepository.saveAndFlush(hostPlayer);
+
+        CardDeck cardDeck = new CardDeck();
+        cardDeck.setRemaining(16);
+        cardDeckRepository.saveAndFlush(cardDeck);
+
+        Round round = new Round();
+        round.setGuest(guestPlayer);
+        round.setHost(hostPlayer);
+        round.setCurrentTurnPlayer(Role.GUEST);
+        round.setCardDeck(cardDeck);
+        roundRepository.saveAndFlush(round);
+
+        testGame.setCurrentRound(round);
+        testGame = gameRepository.saveAndFlush(testGame);
+
+        PlayerMoveMessage playerMoveMessage = new PlayerMoveMessage();
+        playerMoveMessage.setPlayerId(guestUser.getUserId());
+        playerMoveMessage.setMoveType(4);
+        playerMoveMessage.setCardFromHand(card1);
+
+        session.send("/game/move/" + testGame.getGameId(), playerMoveMessage);
+
+        // get the updated round info sent to the user
+        WSRoundStatusDTO updatedRound = completableFutureGuestRound.get(120, TimeUnit.SECONDS);
+
+        // assert that the received DTOs are not null and match the expected DTOs
+        // Home DTO
+        assertNotNull(updatedRound);
+        assertEquals(1, updatedRound.getCardsOnTable().size());
+        assertEquals(1, updatedRound.getMyCardsInHand().size());
+
+    }
 
     // helper method to set websocket connection, not overlading setup method
     private void setWsConnection() throws InterruptedException, ExecutionException, TimeoutException {
