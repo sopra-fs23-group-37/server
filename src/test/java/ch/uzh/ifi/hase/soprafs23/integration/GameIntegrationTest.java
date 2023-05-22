@@ -38,6 +38,7 @@ import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSGameStatusDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.WSHomeDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.WSStatsDTO;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(properties = {
@@ -64,6 +65,7 @@ public class GameIntegrationTest {
     private StompSession session;
     private CompletableFuture<WSHomeDTO> completableFutureHome;
     private CompletableFuture<WSGameStatusDTO> completableFutureLobby;
+    private CompletableFuture<WSStatsDTO> completableFutureGuestStats;
 
     @Autowired
     private UserRepository userRepository;
@@ -94,6 +96,8 @@ public class GameIntegrationTest {
         guestUser.setCreation_date(new Date());
         guestUser.setToken(UUID.randomUUID().toString());
         guestUser.setUserStatus(UserStatus.ONLINE);
+        guestUser.setGamesPlayed(4L);
+        guestUser.setGamesWon(2L);
 
         hostUser = userRepository.saveAndFlush(hostUser);
         guestUser = userRepository.saveAndFlush(guestUser);
@@ -140,6 +144,47 @@ public class GameIntegrationTest {
             }
         });
 
+        // add subscription for Stats for guest
+        completableFutureGuestStats = new CompletableFuture<>();
+        session.subscribe("/queue/user/" + guestUser.getUserId() + "/statistics", new StompFrameHandler() {
+
+            @Override
+            public java.lang.reflect.Type getPayloadType(StompHeaders headers) {
+                return WSStatsDTO.class;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object o) {
+                completableFutureGuestStats.complete((WSStatsDTO) o);
+            }
+        });
+
+    }
+
+    // test websocket home
+    @Test
+    void sendHome() throws Exception {
+
+        // create a player join message for the guest user
+        PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(guestUser.getUserId());
+
+        // send the player join message to the server over STOMP
+        session.send("/game/home", playerJoinMessage);
+
+        // wait for the DTOs to be received over STOMP
+        WSStatsDTO statsReceived = completableFutureGuestStats.get(20, TimeUnit.SECONDS);
+        WSHomeDTO homeReceived = completableFutureHome.get(20, TimeUnit.SECONDS);
+
+        // assert that the received DTOs are not null and match the expected DTOs
+        // Home DTO
+        assertNotNull(homeReceived);
+        assertEquals(1, homeReceived.getNumberOpenGames());
+
+        // Stats DTO
+        assertNotNull(statsReceived);
+        assertEquals(4, statsReceived.getGamesPlayed());
+        assertEquals(2, statsReceived.getGamesWon());
+
     }
 
     // test websocket join
@@ -147,7 +192,7 @@ public class GameIntegrationTest {
     void sendGuestJoinMessageReturnsSuccess() throws Exception {
 
         // create a player join message for the guest user
-        PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(2L);
+        PlayerJoinMessage playerJoinMessage = new PlayerJoinMessage(guestUser.getUserId());
 
         // send the player join message to the server over STOMP
         session.send("/game/join/" + testGame.getGameId(), playerJoinMessage);
