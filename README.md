@@ -12,7 +12,7 @@ One of the main appeals of 2-and-10 is the need for strategic thinking and calcu
 - github, sonarqube and google cloud
 
 ## High-level components
-- Websocket: This project uses the springframework.web.socket library to transfer data easily and in real-time for the users, round and game overall. The WSGameController class manages all incoming requests. The WebsocketService manages all outgoing messages over the websocket, with methods available to send different DTOs to different subscribers (e.g. WSGameStatusDTO to all clients that subscribed to a specific game).
+- Websocket: This project uses the springframework.web.socket library with a STOMP messaging protocol to transfer data easily and in real-time for the users, round and game overall. The WSGameController class manages all incoming requests. The WebsocketService manages all outgoing messages over the websocket, with methods available to send different DTOs to different subscribers (e.g. WSGameStatusDTO to all clients that subscribed to a specific game).
 - The GameService and RoundService classes manage the bulk of the game logic, from setting up to finishing a game. 
 - External Carddeck API: In order not to re-invent the wheel for a well-known use case (requiring a card deck with methods to shuffle, draw, etc.), this project leverages https://deckofcardsapi.com/. The full documentation can be found on the site. Within the project, the CardDeckService is responsible for managing all requests to the API and returning data in the format expected by the rest of the application.
 - Database: Application.java uses the jpa interface to store data defined in the entity classes in a remote google cloud mySQL server.
