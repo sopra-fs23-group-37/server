@@ -1,14 +1,10 @@
-# SoPra FS23 - Group 37 2-and-10
+# Project 2-and-10 (SoPra FS23 - Group 37)
 
 ## Introduction
 
-2-and-10 is an interactive, dynamic, online card game. Central to the 2-and-10 experience are the real-time, thrilling game sessions.
+2-and-10 is a captivating and engaging card game that originates from Balkan region. The game showcases an appealing blend of strategy, skill, and a dash of luck, providing an enjoyable experience to both beginner and experienced players. The objective of the game is straightforward - to collect cards from the table that sum up to the value of the card in your hand, aiming to capture as many points as possible.
 
-Whether you’re playing with friends or challenging players from across the globe, 2-and-10 ensures a seamless and exciting gaming experience.
-
-What truly sets 2-and-10 apart is its unique public and private game sessions. Private sessions allow you to enjoy intense matches with your circle of friends.
-
-Public sessions, on the other hand, open up to all registered users around the world. 2-and-10 is more than just a card game, it's a global community and a test of strategy.
+One of the main appeals of 2-and-10 is the need for strategic thinking and calculation. The game not only requires you to maximize your points but also strategize on how to minimize your opponent's potential score. As the game progresses, the ability to anticipate opponents' moves becomes increasingly important, adding an additional layer of depth and complexity to the game.
 
 ## Technologies
 - HTTP/Rest
@@ -16,8 +12,10 @@ Public sessions, on the other hand, open up to all registered users around the w
 - github, sonarqube and google cloud
 
 ## High-level components
-- Websocket: Socket.java uses the springframework.web.socket library to transfer data easily and in real-time for the users, round and game overall.
-- Database: Application.java uses the jpa interface to store all kinds of information in a remote google cloud mySQL server.
+- Websocket: This project uses the springframework.web.socket library with a STOMP messaging protocol to transfer data easily and in real-time for the users, round and game overall. The WSGameController class manages all incoming requests. The WebsocketService manages all outgoing messages over the websocket, with methods available to send different DTOs to different subscribers (e.g. WSGameStatusDTO to all clients that subscribed to a specific game).
+- The GameService and RoundService classes manage the bulk of the game logic, from setting up to finishing a game. 
+- External Carddeck API: In order not to re-invent the wheel for a well-known use case (requiring a card deck with methods to shuffle, draw, etc.), this project leverages https://deckofcardsapi.com/. The full documentation can be found on the site. Within the project, the CardDeckService is responsible for managing all requests to the API and returning data in the format expected by the rest of the application.
+- Database: Application.java uses the jpa interface to store data defined in the entity classes in a remote google cloud mySQL server.
 
 ## Launch & Deployment
 ### First get to know Spring Boot
@@ -34,8 +32,7 @@ Download your IDE of choice:
 - [Visual Studio Code](https://code.visualstudio.com/)
 - Or any other IDE
 
-
-Make Sure ```Java 15``` is installed on your system <br/>
+Make Sure ```Java 17``` is installed on your system <br/>
 -> **For Windows Users:** please make sure your ```JAVA_HOME``` environment variable is set to the correct version of Java
 
 1. File -> Open... -> server
@@ -82,6 +79,7 @@ You have to take no arrangements for the database. The database will be running 
 1. In the future, you could add a speed mode, where the users had limited time to play a move and could set that before the game start.
 2. In addition, it would be nice to have a spectate mode, where other player could watch the card game.
 3. It would also be interesting if users could also use a chat function in the game.
+4. Giving users the possibility to play against an AI could be a good extension, so that they can play even if nobody else is available.
 
 ## Authors and acknowledgment
 
